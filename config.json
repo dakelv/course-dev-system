@@ -1,0 +1,37 @@
+{
+  "llmProviders": {
+    "openai": {
+      "defaultModel": "gpt-4",
+      "temperature": 0.7,
+      "maxTokens": 4000,
+      "timeout": 60000
+    },
+    "claude": {
+      "defaultModel": "claude-3-sonnet-20240229",
+      "temperature": 0.7,
+      "maxTokens": 4000,
+      "timeout": 60000
+    }
+  },
+  "agentModelMapping": {
+    "instructional-designer": "gpt-4",
+    "curriculum-architect": "claude-3-sonnet-20240229",
+    "business-analyst": "gpt-4"
+  },
+  "qualityStandards": {
+    "minimumScore": 0.85,
+    "accessibilityCompliance": "WCAG_2.1_AA",
+    "educationalAlignment": 0.90
+  },
+  "outputFormat": {
+    "htmlTemplate": "cmp-doc-converter-ready",
+    "includeMetadata": true,
+    "generatePreview": true,
+    "wcagCompliance": true
+  },
+  "processing": {
+    "maxConcurrentAgents": 3,
+    "retryAttempts": 2,
+    "timeoutMinutes": 10
+  }
+}
