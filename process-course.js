@@ -28,11 +28,21 @@ async function processCourse(courseId, options = {}) {
     
     logger.info(`Successfully processed ${courseContent.documents.length} documents`);
     
-    // TODO: Phase 2: AI Agent Processing (Phase A)
-    logger.info('Phase 2: AI Agent Processing - Coming next...');
+    // Phase 2: AI Agent Processing (Phase A)
+    logger.info('Phase 2: Executing AI agents for educational foundation...');
+    const BlueprintGenerator = require('./src/blueprint-generator');
+    const blueprintGenerator = new BlueprintGenerator();
+    
+    const blueprintResult = await blueprintGenerator.generateCourseBlueprint(courseId, options);
+    
+    if (!blueprintResult.success) {
+      throw new Error(`Blueprint generation failed: ${blueprintResult.error}`);
+    }
+    
+    logger.info(`Phase A completed with quality score: ${Math.round(blueprintResult.qualityScore * 100)}%`);
     
     // TODO: Phase 3: HTML Generation
-    logger.info('Phase 3: HTML Generation - Coming next...');
+    logger.info('Phase 3: HTML Generation - Coming in Week 3...');
     
     const totalDuration = Date.now() - startTime;
     
@@ -47,7 +57,9 @@ async function processCourse(courseId, options = {}) {
       courseId,
       duration: totalDuration,
       documentsProcessed: courseContent.documents.length,
-      courseContent
+      qualityScore: blueprintResult.qualityScore,
+      phaseAResults: blueprintResult.phaseAResults,
+      blueprint: blueprintResult.blueprint
     };
     
   } catch (error) {
@@ -125,7 +137,10 @@ Options:
   if (result.success) {
     console.log(`✅ Success! Course ${courseId} processed in ${result.duration}ms`);
     console.log(`📄 Documents processed: ${result.documentsProcessed}`);
+    console.log(`🎯 Quality score: ${Math.round(result.qualityScore * 100)}%`);
+    console.log(`🤖 AI agents executed: ${Object.keys(result.phaseAResults.agentResults).length}`);
     console.log(`📁 Results saved to: ./course-data/${courseId}/`);
+    console.log(`📋 Blueprint: ./course-data/${courseId}/final-output/course-blueprint.md`);
     process.exit(0);
   } else {
     console.error(`❌ Failed to process course ${courseId}`);

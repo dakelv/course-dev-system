@@ -14,9 +14,9 @@
     }
   },
   "agentModelMapping": {
-    "instructional-designer": "gpt-4",
-    "curriculum-architect": "claude-3-sonnet-20240229",
-    "business-analyst": "gpt-4"
+    "instructional-designer": "claude-3-5-sonnet-20241022",
+    "curriculum-architect": "claude-3-5-sonnet-20241022",
+    "business-analyst": "claude-3-5-sonnet-20241022"
   },
   "qualityStandards": {
     "minimumScore": 0.85,

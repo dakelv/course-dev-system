@@ -9,7 +9,7 @@ const FileManager = require('../utils/file-manager');
 class DocumentProcessor {
   constructor() {
     this.fileManager = new FileManager();
-    this.supportedFormats = ['.pdf', '.docx', '.doc', '.pptx', '.ppt'];
+    this.supportedFormats = ['.pdf', '.docx', '.doc', '.pptx', '.ppt', '.txt'];
   }
 
   async processUploadedFiles(courseId) {
@@ -88,6 +88,8 @@ class DocumentProcessor {
       case '.pptx':
       case '.ppt':
         return await this.extractPowerPointContent(file);
+      case '.txt':
+        return await this.extractTextContent(file);
       default:
         logger.warn(`Unsupported file format: ${extension}`);
         return null;
@@ -169,6 +171,27 @@ class DocumentProcessor {
     } catch (error) {
       logger.logError(error, { fileName: file.name, operation: 'extractPowerPointContent' });
       throw new Error(`Failed to extract PowerPoint content from ${file.name}: ${error.message}`);
+    }
+  }
+
+  async extractTextContent(file) {
+    try {
+      const content = await fs.readFile(file.path, 'utf8');
+      
+      return {
+        fileName: file.name,
+        fileType: 'text',
+        extractedAt: new Date().toISOString(),
+        content: {
+          text: content,
+          structure: this.extractStructureFromText(content)
+        },
+        wordCount: this.countWords(content),
+        quality: this.assessContentQuality(content)
+      };
+    } catch (error) {
+      logger.logError(error, { fileName: file.name, operation: 'extractTextContent' });
+      throw new Error(`Failed to extract text content from ${file.name}: ${error.message}`);
     }
   }
 
