@@ -262,6 +262,12 @@ class AgentService {
   }
 
   buildPrompt(agent, context) {
+    // Determine if this is Phase B and build specialized prompts
+    if (context.phase === 'B') {
+      return this.buildPhaseBPrompt(agent, context);
+    }
+    
+    // Default Phase A prompt
     const prompt = `
 COURSE CONTEXT:
 Course ID: ${context.courseId}
@@ -303,6 +309,179 @@ Remember: ONLY return the JSON object, nothing else.
     `.trim();
 
     return prompt;
+  }
+
+  buildPhaseBPrompt(agent, context) {
+    const baseContext = `
+COURSE CONTEXT:
+Course ID: ${context.courseId}
+Phase: B (Activity Design)
+
+COURSE CONTENT:
+${JSON.stringify(context.inputData?.courseContent || {}, null, 2)}
+
+PHASE A RESULTS:
+${JSON.stringify(context.inputData?.phaseAResults || {}, null, 2)}
+
+PROCESSING REQUIREMENTS:
+- Quality Threshold: ${context.qualityRequirements?.minimumScore || 0.85}
+- Accessibility: ${context.qualityRequirements?.accessibilityCompliance || 'WCAG 2.1 AA'}
+- Platform: D2L Brightspace
+- Subject Area: Municipal Administration
+- Institution: Saskatchewan Polytechnic
+`;
+
+    switch (agent.name) {
+      case 'assessment-specialist':
+        return `${baseContext}
+
+ROLE: Assessment Design Specialist for Municipal Administration Course
+
+TASK: Design comprehensive assessment strategy based on Phase A educational foundations.
+
+FOCUS AREAS:
+1. Create authentic assessments aligned to municipal administration learning outcomes
+2. Design formative and summative evaluation strategies
+3. Develop rubrics with clear performance criteria
+4. Ensure assessment accessibility and bias-free design
+5. Plan H5P interactive assessments for D2L Brightspace
+
+SPECIFIC REQUIREMENTS:
+- Assessment types: quizzes, case studies, projects, peer evaluations
+- Real municipal scenarios and case-based assessments
+- Canadian municipal administration contexts
+- Performance rubrics with 4-level criteria (Excellent, Good, Satisfactory, Needs Improvement)
+- Accessibility compliance (screen readers, alternative formats)
+- Anti-cheating measures and academic integrity
+
+DELIVERABLES TO INCLUDE:
+- Assessment blueprint with types and timing
+- Sample question banks with correct answers
+- Detailed rubrics for major assessments
+- H5P activity specifications for Brightspace
+- Accessibility accommodations plan
+
+CRITICAL: You MUST respond with ONLY valid JSON. Use this format:
+{
+  "analysis": "Analysis of Phase A foundations and assessment needs",
+  "recommendations": ["Assessment strategy recommendations"],
+  "output": "Detailed assessment design plan and specifications",
+  "qualityAssessment": {
+    "score": 0.85,
+    "strengths": ["Assessment strengths identified"],
+    "improvements": ["Assessment improvements needed"]
+  },
+  "nextSteps": ["Implementation steps for assessment strategy"]
+}`;
+
+      case 'instructional-designer':
+        return `${baseContext}
+
+ROLE: Instructional Designer - Activity Design Specialist
+
+TASK: Design engaging learning activities based on Phase A educational framework and assessment requirements.
+
+FOCUS AREAS:
+1. Apply learning theories to activity design (constructivism, adult learning)
+2. Create scaffolded learning progressions
+3. Design multi-modal activities for diverse learning styles
+4. Ensure cognitive load management and UDL compliance
+5. Connect activities to authentic municipal administration practice
+
+SPECIFIC REQUIREMENTS:
+- Activity types: readings, case studies, simulations, discussions, media creation
+- Real Canadian municipal examples and scenarios
+- Progressive complexity building from basic to advanced
+- Collaborative and individual learning opportunities
+- Integration with assessment strategy from assessment-specialist
+- Accessibility and inclusive design principles
+
+DELIVERABLES TO INCLUDE:
+- Activity design framework with learning theory rationale
+- Scaffolded activity progressions for each learning outcome
+- Multi-modal activity templates and specifications
+- Engagement strategies and motivation techniques
+- UDL compliance guidelines for activities
+
+CRITICAL: You MUST respond with ONLY valid JSON. Use this format:
+{
+  "analysis": "Analysis of Phase A framework and activity design needs",
+  "recommendations": ["Activity design strategy recommendations"],
+  "output": "Comprehensive activity design framework and specifications",
+  "qualityAssessment": {
+    "score": 0.85,
+    "strengths": ["Activity design strengths"],
+    "improvements": ["Activity design improvements needed"]
+  },
+  "nextSteps": ["Implementation steps for activity framework"]
+}`;
+
+      case 'lms-integrator':
+        return `${baseContext}
+
+ROLE: LMS Integration Specialist - D2L Brightspace Optimization
+
+TASK: Optimize activities and assessments for D2L Brightspace platform based on Phase A foundations and Phase B designs.
+
+FOCUS AREAS:
+1. D2L Brightspace specific implementation strategies
+2. SCORM/xAPI compliance for interactive content
+3. Mobile-responsive design and accessibility optimization
+4. H5P integration for interactive activities
+5. Grade passback and analytics configuration
+
+SPECIFIC REQUIREMENTS:
+- D2L Brightspace Creator+ features and limitations
+- WCAG 2.1 AA accessibility standards
+- Mobile optimization for diverse devices
+- SCORM packaging for portable content
+- Learning analytics and progress tracking
+- Integration with Saskatchewan Polytechnic systems
+
+DELIVERABLES TO INCLUDE:
+- D2L Brightspace implementation guide
+- SCORM/H5P packaging specifications
+- Accessibility compliance checklist
+- Mobile optimization requirements
+- Analytics and reporting configuration
+- Platform-specific best practices
+
+CRITICAL: You MUST respond with ONLY valid JSON. Use this format:
+{
+  "analysis": "Analysis of LMS requirements and optimization opportunities",
+  "recommendations": ["Platform optimization recommendations"],
+  "output": "Comprehensive LMS integration and optimization plan",
+  "qualityAssessment": {
+    "score": 0.85,
+    "strengths": ["LMS integration strengths"],
+    "improvements": ["Platform optimization improvements needed"]
+  },
+  "nextSteps": ["Implementation steps for LMS optimization"]
+}`;
+
+      default:
+        // Fallback to generic Phase B prompt
+        return `${baseContext}
+
+ROLE: ${agent.name} - Phase B Activity Design Contributor
+
+TASK: Contribute to activity design based on your expertise and Phase A educational foundations.
+
+FOCUS: Apply your specialized knowledge to enhance the activity design process.
+
+CRITICAL: You MUST respond with ONLY valid JSON. Use this format:
+{
+  "analysis": "Your Phase B analysis",
+  "recommendations": ["Your recommendations for activity design"],
+  "output": "Your specialized contribution to activity design",
+  "qualityAssessment": {
+    "score": 0.85,
+    "strengths": ["Identified strengths"],
+    "improvements": ["Suggested improvements"]
+  },
+  "nextSteps": ["Implementation steps"]
+}`;
+    }
   }
 
   async validateAgentOutput(response, agent, context) {
@@ -449,6 +628,59 @@ Remember: ONLY return the JSON object, nothing else.
     };
   }
 
+  // Phase B specific method - Activity Design
+  async executePhaseB(courseContent, phaseAResults, userConfig = {}) {
+    const phaseBAgents = ['assessment-specialist', 'instructional-designer', 'lms-integrator'];
+    const results = {};
+    const errors = [];
+
+    logger.info(`Starting Phase B execution with ${phaseBAgents.length} agents`);
+
+    // Execute agents sequentially to build on each other's outputs
+    for (const agentName of phaseBAgents) {
+      try {
+        const context = {
+          courseId: courseContent.courseId,
+          phase: 'B',
+          inputData: { 
+            courseContent, 
+            phaseAResults,
+            previousPhaseBResults: results
+          },
+          processingHistory: [phaseAResults],
+          qualityRequirements: config.get('qualityStandards'),
+          userPreferences: userConfig
+        };
+
+        const result = await this.executeAgent(agentName, context);
+        results[agentName] = result;
+        
+        logger.info(`Phase B agent ${agentName} completed`, {
+          qualityScore: result.metadata.qualityScore,
+          duration: result.metadata.processingTime
+        });
+        
+      } catch (error) {
+        logger.logError(error, { agent: agentName, phase: 'B' });
+        errors.push({ agent: agentName, error: error.message });
+        // Continue with other agents even if one fails
+      }
+    }
+
+    // Validate integration
+    const integration = await this.validatePhaseBIntegration(results, phaseAResults);
+
+    return {
+      agentResults: results,
+      integration: integration,
+      errors: errors,
+      phase: 'B',
+      completedAt: new Date().toISOString(),
+      qualityScore: integration.overallQualityScore,
+      phaseAReference: phaseAResults.phase
+    };
+  }
+
   async validatePhaseAIntegration(results) {
     const agentNames = Object.keys(results);
     const validResults = agentNames.filter(name => results[name] !== null);
@@ -531,6 +763,169 @@ Remember: ONLY return the JSON object, nothing else.
 
     recommendations.push('Review agent outputs for educational alignment');
     recommendations.push('Validate accessibility compliance in recommendations');
+
+    return recommendations;
+  }
+
+  // Phase B Integration Validation
+  async validatePhaseBIntegration(results, phaseAResults) {
+    const agentNames = Object.keys(results);
+    const validResults = agentNames.filter(name => results[name] !== null);
+    
+    if (validResults.length === 0) {
+      return {
+        overallQualityScore: 0,
+        consistency: 0,
+        completeness: 0,
+        activityDesignQuality: 0,
+        assessmentAlignment: 0,
+        lmsOptimization: 0,
+        issues: ['No Phase B agents completed successfully'],
+        recommendations: ['Check agent configurations and Phase A results', 'Verify assessment-specialist and lms-integrator availability']
+      };
+    }
+
+    // Calculate Phase B specific metrics
+    const qualityScores = validResults.map(name => results[name].metadata.qualityScore);
+    const averageQuality = qualityScores.reduce((sum, score) => sum + score, 0) / qualityScores.length;
+    
+    const completeness = validResults.length / 3; // 3 expected Phase B agents
+    const consistency = this.calculatePhaseBConsistency(results, phaseAResults);
+    
+    // Phase B specific quality metrics
+    const activityDesignQuality = this.assessActivityDesignQuality(results);
+    const assessmentAlignment = this.assessAssessmentAlignment(results, phaseAResults);
+    const lmsOptimization = this.assessLMSOptimization(results);
+
+    const overallScore = (averageQuality * 0.4) + (activityDesignQuality * 0.25) + 
+                        (assessmentAlignment * 0.2) + (lmsOptimization * 0.15);
+
+    return {
+      overallQualityScore: Math.round(overallScore * 100) / 100,
+      consistency: Math.round(consistency * 100) / 100,
+      completeness: Math.round(completeness * 100) / 100,
+      activityDesignQuality: Math.round(activityDesignQuality * 100) / 100,
+      assessmentAlignment: Math.round(assessmentAlignment * 100) / 100,
+      lmsOptimization: Math.round(lmsOptimization * 100) / 100,
+      agentQualityScores: Object.fromEntries(
+        validResults.map(name => [name, results[name].metadata.qualityScore])
+      ),
+      issues: this.identifyPhaseBIssues(results, phaseAResults),
+      recommendations: this.generatePhaseBRecommendations(results, phaseAResults)
+    };
+  }
+
+  calculatePhaseBConsistency(results, phaseAResults) {
+    const validResults = Object.values(results).filter(r => r !== null);
+    if (validResults.length < 2) return 1.0;
+    
+    // Check if Phase B builds consistently on Phase A foundations
+    // This is a simplified check - in full implementation would analyze content alignment
+    return 0.88; // Placeholder for Phase B consistency
+  }
+
+  assessActivityDesignQuality(results) {
+    // Assess the quality of activity design from instructional-designer in Phase B context
+    const instructionalResult = results['instructional-designer'];
+    if (!instructionalResult) return 0.6;
+    
+    const output = instructionalResult.output;
+    let score = 0.6; // Base score
+    
+    // Check for activity design elements
+    if (output.recommendations && output.recommendations.length > 0) score += 0.1;
+    if (output.analysis && output.analysis.includes('activity')) score += 0.1;
+    if (output.output && output.output.length > 200) score += 0.2; // Substantial content
+    
+    return Math.min(1.0, score);
+  }
+
+  assessAssessmentAlignment(results, phaseAResults) {
+    // Assess how well assessment-specialist output aligns with Phase A foundations
+    const assessmentResult = results['assessment-specialist'];
+    if (!assessmentResult) return 0.5;
+    
+    const output = assessmentResult.output;
+    let score = 0.5; // Base score
+    
+    // Check for assessment design elements
+    if (output.recommendations && output.recommendations.some(r => r.includes('assessment'))) score += 0.15;
+    if (output.analysis && output.analysis.includes('learning outcome')) score += 0.15;
+    if (output.qualityAssessment && output.qualityAssessment.score > 0.8) score += 0.2;
+    
+    return Math.min(1.0, score);
+  }
+
+  assessLMSOptimization(results) {
+    // Assess LMS integration and optimization quality
+    const lmsResult = results['lms-integrator'];
+    if (!lmsResult) return 0.5;
+    
+    const output = lmsResult.output;
+    let score = 0.5; // Base score
+    
+    // Check for LMS optimization elements
+    if (output.recommendations && output.recommendations.some(r => r.includes('LMS') || r.includes('Brightspace'))) score += 0.15;
+    if (output.analysis && (output.analysis.includes('accessibility') || output.analysis.includes('mobile'))) score += 0.15;
+    if (output.output && output.output.includes('SCORM')) score += 0.2;
+    
+    return Math.min(1.0, score);
+  }
+
+  identifyPhaseBIssues(results, phaseAResults) {
+    const issues = [];
+    const validResults = Object.keys(results).filter(name => results[name] !== null);
+    
+    if (validResults.length < 3) {
+      issues.push(`Only ${validResults.length}/3 Phase B agents completed successfully`);
+    }
+
+    if (!results['assessment-specialist']) {
+      issues.push('Assessment-specialist failed - assessment design may be incomplete');
+    }
+
+    if (!results['lms-integrator']) {
+      issues.push('LMS-integrator failed - platform optimization missing');
+    }
+
+    validResults.forEach(agentName => {
+      const result = results[agentName];
+      if (result.metadata.qualityScore < 0.75) {
+        issues.push(`${agentName} Phase B quality score below threshold: ${result.metadata.qualityScore}`);
+      }
+    });
+
+    return issues;
+  }
+
+  generatePhaseBRecommendations(results, phaseAResults) {
+    const recommendations = [];
+    const validResults = Object.keys(results).filter(name => results[name] !== null);
+    
+    if (validResults.length < 3) {
+      recommendations.push('Review failed Phase B agents and verify Phase A integration');
+    }
+
+    if (!results['assessment-specialist']) {
+      recommendations.push('Retry assessment-specialist with simplified context or use fallback assessment templates');
+    }
+
+    if (!results['lms-integrator']) {
+      recommendations.push('Implement basic LMS optimization or manual platform configuration');
+    }
+
+    if (validResults.length > 0) {
+      const avgQuality = validResults.reduce((sum, name) => 
+        sum + results[name].metadata.qualityScore, 0) / validResults.length;
+      
+      if (avgQuality < 0.80) {
+        recommendations.push('Consider enhancing Phase B agent prompts or providing more detailed Phase A context');
+      }
+    }
+
+    recommendations.push('Review activity design alignment with learning outcomes');
+    recommendations.push('Validate assessment strategies against course objectives');
+    recommendations.push('Ensure LMS optimization meets accessibility standards');
 
     return recommendations;
   }

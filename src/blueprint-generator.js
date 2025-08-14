@@ -2,12 +2,14 @@ const logger = require('../utils/logger');
 const FileManager = require('../utils/file-manager');
 const DocumentProcessor = require('./document-processor');
 const AgentService = require('./agent-service');
+const SearchService = require('./search-service');
 
 class BlueprintGenerator {
     constructor() {
         this.fileManager = new FileManager();
         this.documentProcessor = new DocumentProcessor();
         this.agentService = new AgentService();
+        this.searchService = new SearchService();
     }
 
     async generateCourseBlueprint(courseId, options = {}) {
@@ -32,18 +34,25 @@ class BlueprintGenerator {
             // Step 3: Save Phase A results
             await this.savePhaseResults(courseId, 'A', phaseAResults);
 
-            // Step 4: Generate preliminary blueprint
-            const blueprint = await this.generatePreliminaryBlueprint(courseContent, phaseAResults);
+            // Step 4: Execute Phase B agents (Activity Design)
+            const phaseBResults = await this.executePhaseB(courseContent, phaseAResults, options);
 
-            // Step 5: Save blueprint
+            // Step 5: Save Phase B results
+            await this.savePhaseResults(courseId, 'B', phaseBResults);
+
+            // Step 6: Generate enhanced blueprint with Phase B integration
+            const blueprint = await this.generateEnhancedBlueprint(courseContent, phaseAResults, phaseBResults);
+
+            // Step 7: Save blueprint
             await this.saveBlueprint(courseId, blueprint);
 
             const duration = Date.now() - startTime;
 
             logger.logProcessingComplete(courseId, 'blueprint-generation', duration, {
                 qualityScore: blueprint.qualityMetrics.overallScore,
-                agentsExecuted: Object.keys(phaseAResults.agentResults).length,
-                phaseAScore: phaseAResults.qualityScore
+                phaseAScore: phaseAResults.qualityScore,
+                phaseBScore: phaseBResults.qualityScore,
+                agentsExecuted: Object.keys(phaseAResults.agentResults).length + Object.keys(phaseBResults.agentResults).length
             });
 
             return {
@@ -51,6 +60,7 @@ class BlueprintGenerator {
                 courseId,
                 blueprint,
                 phaseAResults,
+                phaseBResults,
                 duration,
                 qualityScore: blueprint.qualityMetrics.overallScore
             };
@@ -110,6 +120,43 @@ class BlueprintGenerator {
         }
     }
 
+    async executePhaseB(courseContent, phaseAResults, options = {}) {
+        logger.info(`Executing Phase B agents for course ${courseContent.courseId}`);
+
+        try {
+            const phaseBResults = await this.agentService.executePhaseB(courseContent, phaseAResults, options);
+
+            if (phaseBResults.errors.length > 0) {
+                logger.warn(`Phase B completed with ${phaseBResults.errors.length} errors`, {
+                    errors: phaseBResults.errors
+                });
+            }
+
+            if (phaseBResults.qualityScore < 0.7) {
+                logger.warn(`Phase B quality score below recommended threshold`, {
+                    score: phaseBResults.qualityScore,
+                    threshold: 0.7
+                });
+            }
+
+            return phaseBResults;
+
+        } catch (error) {
+            logger.logError(error, { courseId: courseContent.courseId, phase: 'B' });
+            
+            // Phase B is not critical - continue with Phase A only if it fails
+            logger.warn(`Phase B failed, continuing with Phase A results only: ${error.message}`);
+            return {
+                agentResults: {},
+                integration: { overallQualityScore: 0.5 },
+                errors: [{ phase: 'B', error: error.message }],
+                phase: 'B',
+                completedAt: new Date().toISOString(),
+                qualityScore: 0.5
+            };
+        }
+    }
+
     async savePhaseResults(courseId, phase, results) {
         const resultsPath = this.fileManager.getCoursePath(courseId, `phase-${phase.toLowerCase()}-results/results.json`);
         await this.fileManager.saveJSON(resultsPath, results);
@@ -127,6 +174,46 @@ class BlueprintGenerator {
         logger.info(`Phase ${phase} results saved for course ${courseId}`);
     }
 
+    async generateEnhancedBlueprint(courseContent, phaseAResults, phaseBResults) {
+        logger.info(`Generating enhanced blueprint with Phase B integration for course ${courseContent.courseId}`);
+
+        const blueprint = {
+            courseInfo: {
+                courseId: courseContent.courseId,
+                title: this.extractCourseTitle(courseContent),
+                credits: this.extractCredits(courseContent),
+                duration: this.extractDuration(courseContent),
+                institution: 'Saskatchewan Polytechnic',
+                generatedAt: new Date().toISOString(),
+                processingPhases: ['A', 'B']
+            },
+
+            educationalFoundation: this.extractEducationalFoundation(phaseAResults),
+
+            learningOutcomes: await this.extractLearningOutcomes(courseContent, phaseAResults),
+
+            courseStructure: this.extractCourseStructure(phaseAResults),
+
+            // Enhanced with Phase B agent outputs
+            assessmentFramework: this.extractEnhancedAssessmentFramework(phaseAResults, phaseBResults),
+
+            activityDesign: this.extractActivityDesignFramework(phaseBResults),
+
+            lmsIntegration: this.extractLMSIntegrationPlan(phaseBResults),
+
+            resourceRequirements: this.extractEnhancedResourceRequirements(phaseAResults, phaseBResults),
+
+            qualityMetrics: this.calculateEnhancedQualityMetrics(courseContent, phaseAResults, phaseBResults),
+
+            implementationPlan: this.generateEnhancedImplementationPlan(phaseAResults, phaseBResults),
+
+            nextSteps: this.generateEnhancedNextSteps(phaseAResults, phaseBResults)
+        };
+
+        return blueprint;
+    }
+
+    // Keep the original method as fallback
     async generatePreliminaryBlueprint(courseContent, phaseAResults) {
         logger.info(`Generating preliminary blueprint for course ${courseContent.courseId}`);
 
@@ -451,7 +538,22 @@ For each activity, provide:
 - Technical requirements for media activities
 - Clear learning objectives
 
-Return ONLY a valid JSON object in this exact format:
+CRITICAL INSTRUCTION: You are a JSON generator. Your ONLY job is to return valid JSON. 
+
+DO NOT:
+- Write explanatory text
+- Provide educational analysis  
+- Give recommendations
+- Include markdown formatting
+- Add any text before or after the JSON
+
+DO:
+- Return ONLY the JSON object below
+- Fill in the activities array with 4-5 activities per learning step
+- Use the exact structure shown
+
+JSON RESPONSE REQUIRED:
+
 {
   "activities": [
     {
@@ -465,23 +567,29 @@ Return ONLY a valid JSON object in this exact format:
           "content": "Read Chapter 4 'Service Delivery Models' from 'Municipal Administration in Canada' by Andrew Sancton (University of Toronto Press, 2015). Additionally, access the journal article 'Municipal Service Innovation in Canadian Cities' by Kitchen & Slack (2019) in Canadian Public Administration via your library's database. Focus on theoretical frameworks and practical applications."
         },
         {
-          "type": "video",
-          "title": "Municipal Service Delivery Models",
-          "description": "Watch and analyze a video on municipal service delivery",
-          "content": "IMPORTANT: You must provide a REAL YouTube video that exists. Search your knowledge for actual videos about municipal service delivery.\n\nIf you know a real video, format it like this:\n**How Cities Deliver Services** by CBC News (8:45)\n<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/ACTUAL_VIDEO_ID\" title=\"How Cities Deliver Services\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>\n\n**Discussion Questions:**\n1. What service delivery models are discussed in the video?\n2. How do these models apply to Canadian municipalities?\n3. What are the advantages and challenges of each approach?\n4. Which model would work best for your local community and why?\n\nIf you don't know a real video, respond with: 'Real video curation needed for: municipal service delivery models'"
+          "type": "case-study",
+          "title": "Municipal Service Analysis",
+          "description": "Analyze real municipal service delivery case",
+          "content": "Select a Canadian municipality and analyze their service delivery approach for one specific service (water, waste, recreation, etc.). Create a 2-page analysis including service model, stakeholders, challenges, and recommendations."
         },
         {
           "type": "infographic",
-          "title": "Municipal Services Visual Framework",
+          "title": "Municipal Services Visual Framework", 
           "description": "Create an infographic mapping municipal service relationships",
-          "content": "Design a comprehensive infographic using Canva or Adobe Creative Suite showing the interconnections between municipal services. Requirements: (1) 11x17 inch format, (2) Include all major service categories, (3) Show interdependencies with arrows/lines, (4) Use consistent color coding, (5) Include data from 3 real municipalities, (6) Cite all sources, (7) Export as high-resolution PDF."
+          "content": "Design a comprehensive infographic using Canva showing municipal service interconnections. Requirements: 11x17 format, major service categories, interdependencies with arrows, consistent color coding, data from 3 municipalities, source citations, high-resolution PDF export."
+        },
+        {
+          "type": "discussion",
+          "title": "Service Delivery Debate",
+          "description": "Debate optimal service delivery models",
+          "content": "Participate in structured online debate about public vs private service delivery. Research arguments for both sides, post initial position (300 words), respond to 2 classmates, defend your position with evidence from Canadian examples."
         }
       ]
     }
   ]
 }
 
-Generate meaningful, specific activities that help students understand municipal administration concepts through practical application with strong academic foundations and creative media components.
+Generate 4-5 activities per learning step. Include diverse activity types: reading, case-study, research, discussion, infographic, presentation, simulation. Make activities specific to municipal administration with Canadian examples.
             `;
 
             // Use the agent service to generate activities
@@ -492,7 +600,8 @@ Generate meaningful, specific activities that help students understand municipal
                     learningOutcome: outcome,
                     prompt: activityPrompt,
                     courseContext: 'Municipal Administration',
-                    targetAudience: 'Business Diploma students'
+                    targetAudience: 'Business Diploma students',
+                    systemInstruction: 'You are a JSON generator. Return ONLY valid JSON. No explanatory text, no analysis, no recommendations. Just the requested JSON structure with learning activities.'
                 },
                 processingHistory: [],
                 qualityRequirements: { minimumScore: 0.8 },
@@ -502,42 +611,60 @@ Generate meaningful, specific activities that help students understand municipal
             // Parse the response and format activities
             if (response.output && response.output.output) {
                 try {
-                    // Clean the response to extract JSON
-                    let jsonString = response.output.output;
+                    let activityData = response.output.output;
                     
-                    // Ensure jsonString is a string
-                    if (typeof jsonString !== 'string') {
-                        if (typeof jsonString === 'object') {
-                            // If it's already an object, use it directly
-                            const activityData = jsonString;
-                            if (activityData.activities && Array.isArray(activityData.activities)) {
-                                return this.formatActivities(activityData.activities, outcome.id);
-                            }
+                    // Handle different response formats
+                    if (typeof activityData === 'object' && activityData !== null) {
+                        // If it's already an object, use it directly
+                        if (activityData.activities && Array.isArray(activityData.activities)) {
+                            console.log(`✅ AI generated ${activityData.activities.length} activity groups for outcome: ${outcome.text}`);
+                            return this.formatActivities(activityData.activities, outcome.id);
                         }
-                        jsonString = String(jsonString);
+                        
+                        // Check if it has other common structures
+                        if (activityData.learningActivities && Array.isArray(activityData.learningActivities)) {
+                            console.log(`✅ AI generated ${activityData.learningActivities.length} activity groups for outcome: ${outcome.text}`);
+                            return this.formatActivities(activityData.learningActivities, outcome.id);
+                        }
+                        
+                        // Check if the object itself is the activities array
+                        if (Array.isArray(activityData)) {
+                            console.log(`✅ AI generated ${activityData.length} activity groups for outcome: ${outcome.text}`);
+                            return this.formatActivities(activityData, outcome.id);
+                        }
                     }
                     
-                    // Remove any markdown formatting
-                    jsonString = jsonString.replace(/```json\n?/g, '').replace(/```\n?/g, '');
-                    
-                    // Find JSON object boundaries
-                    const startIndex = jsonString.indexOf('{');
-                    const lastIndex = jsonString.lastIndexOf('}');
-                    
-                    if (startIndex !== -1 && lastIndex !== -1) {
-                        jsonString = jsonString.substring(startIndex, lastIndex + 1);
+                    // If it's a string, try to parse as JSON
+                    if (typeof activityData === 'string') {
+                        // Remove any markdown formatting
+                        let jsonString = activityData.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+                        
+                        // Find JSON object boundaries
+                        const startIndex = jsonString.indexOf('{');
+                        const lastIndex = jsonString.lastIndexOf('}');
+                        
+                        if (startIndex !== -1 && lastIndex !== -1) {
+                            jsonString = jsonString.substring(startIndex, lastIndex + 1);
+                        }
+                        
+                        const parsedData = JSON.parse(jsonString);
+                        
+                        if (parsedData.activities && Array.isArray(parsedData.activities)) {
+                            console.log(`✅ AI generated ${parsedData.activities.length} activity groups for outcome: ${outcome.text}`);
+                            return this.formatActivities(parsedData.activities, outcome.id);
+                        }
                     }
                     
-                    const activityData = JSON.parse(jsonString);
+                    console.log('⚠️  AI response structure not recognized, using fallback');
+                    console.log('Response structure:', Object.keys(activityData));
                     
-                    if (activityData.activities && Array.isArray(activityData.activities)) {
-                        return this.formatActivities(activityData.activities, outcome.id);
-                    }
                 } catch (parseError) {
-                    console.log('Failed to parse AI response, using enhanced fallback:', parseError.message);
+                    console.log('❌ Failed to parse AI response, using enhanced fallback:', parseError.message);
                     console.log('AI Response type:', typeof response.output.output);
-                    console.log('AI Response:', JSON.stringify(response.output.output).substring(0, 200) + '...');
+                    console.log('AI Response sample:', JSON.stringify(response.output.output).substring(0, 300) + '...');
                 }
+            } else {
+                console.log('❌ No AI response received, using enhanced fallback');
             }
 
             // Enhanced fallback with meaningful content
@@ -552,9 +679,31 @@ Generate meaningful, specific activities that help students understand municipal
     formatActivities(activities, outcomeId) {
         const formatted = [];
         
+        if (!Array.isArray(activities)) {
+            console.log('❌ Activities is not an array:', typeof activities);
+            return formatted;
+        }
+        
         activities.forEach((stepActivities, stepIndex) => {
-            if (stepActivities.activities) {
-                stepActivities.activities.forEach((activity, activityIndex) => {
+            let stepActivitiesList = [];
+            
+            // Handle different response structures
+            if (stepActivities.activities && Array.isArray(stepActivities.activities)) {
+                // Expected format: { stepId: "1", stepText: "...", activities: [...] }
+                stepActivitiesList = stepActivities.activities;
+            } else if (Array.isArray(stepActivities)) {
+                // Direct array of activities
+                stepActivitiesList = stepActivities;
+            } else if (stepActivities.type) {
+                // Single activity object
+                stepActivitiesList = [stepActivities];
+            } else {
+                console.log(`⚠️  Unrecognized step format at index ${stepIndex}:`, Object.keys(stepActivities));
+                return;
+            }
+            
+            stepActivitiesList.forEach((activity, activityIndex) => {
+                if (activity && typeof activity === 'object') {
                     formatted.push({
                         id: `${outcomeId.split('.')[0]}.${stepIndex + 1}.${activityIndex + 1}`,
                         stepId: `${outcomeId.split('.')[0]}.${stepIndex + 1}.0`,
@@ -563,10 +712,11 @@ Generate meaningful, specific activities that help students understand municipal
                         description: activity.description || '',
                         content: activity.content || activity.description || ''
                     });
-                });
-            }
+                }
+            });
         });
 
+        console.log(`📋 Formatted ${formatted.length} activities for outcome ${outcomeId}`);
         return formatted;
     }
 
@@ -887,7 +1037,7 @@ Include detailed feedback explaining the interconnected nature of municipal chal
     }
 
     generateContextualActivities(stepText) {
-        // Generate contextual activities based on the step text
+        // Generate 2-3 focused activities per step to keep course manageable
         const activities = [];
         const lowerStepText = stepText.toLowerCase();
         
@@ -899,6 +1049,7 @@ Include detailed feedback explaining the interconnected nature of municipal chal
             content: `Read relevant chapters from "Municipal Administration in Canada" by Andrew Sancton or "Local Government in a Global World" by Tindal & Tindal. Additionally, search for recent journal articles on "${stepText}" using your library's academic databases (JSTOR, ProQuest, or Google Scholar). Focus on Canadian municipal contexts where possible. Prepare a 1-page summary of key concepts and findings.`
         });
         
+        // Add one primary activity based on the step content
         if (lowerStepText.includes('identify') || lowerStepText.includes('list')) {
             activities.push({
                 type: 'research',
@@ -906,128 +1057,29 @@ Include detailed feedback explaining the interconnected nature of municipal chal
                 description: `Research and identify key elements related to: ${stepText}`,
                 content: `Conduct research using municipal websites, government publications, and academic sources to identify and list key elements related to "${stepText}". Create a comprehensive list with brief descriptions and examples from real municipalities.`
             });
-        }
-        
-        if (lowerStepText.includes('describe') || lowerStepText.includes('explain')) {
+        } else if (lowerStepText.includes('describe') || lowerStepText.includes('explain')) {
             activities.push({
                 type: 'infographic_request',
                 title: `Visual Explanation Infographic`,
                 description: `Professional infographic explaining: ${stepText}`,
-                content: `**MEDIA PRODUCTION REQUEST**: Design a professional infographic that visually explains "${stepText}". Specifications: (1) 8.5x11 inch format for easy sharing and printing, (2) Include key definitions and concepts with clear hierarchy, (3) Use charts, diagrams, or flowcharts where appropriate, (4) Include real Canadian municipal examples, (5) Professional color scheme and typography, (6) Accessible design with alt text, (7) Cite all data sources. Purpose: Provide students with a clear visual reference for understanding "${stepText}" concepts.`
+                content: `**📊 MEDIA PRODUCTION REQUEST**: Design a professional infographic that visually explains "${stepText}". Specifications: (1) 8.5x11 inch format for easy sharing and printing, (2) Include key definitions and concepts with clear hierarchy, (3) Use charts, diagrams, or flowcharts where appropriate, (4) Include real Canadian municipal examples, (5) Professional color scheme and typography, (6) Accessible design with alt text, (7) Cite all data sources. Purpose: Provide students with a clear visual reference for understanding "${stepText}" concepts.`
             });
-        }
-        
-        if (lowerStepText.includes('review') || lowerStepText.includes('analyze')) {
+        } else if (lowerStepText.includes('review') || lowerStepText.includes('analyze')) {
             activities.push({
                 type: 'analysis',
                 title: `Critical Analysis Exercise`,
                 description: `Critically analyze aspects of: ${stepText}`,
                 content: `Conduct a critical analysis of "${stepText}" by examining multiple perspectives, identifying strengths and weaknesses, and evaluating effectiveness. Use case studies from different municipalities to support your analysis.`
             });
+        } else {
+            // Default to discussion for other step types
+            activities.push({
+                type: 'discussion',
+                title: `Collaborative Discussion Forum`,
+                description: `Engage in meaningful discussion about: ${stepText}`,
+                content: `Participate in an online discussion forum about "${stepText}". Share your insights, ask thoughtful questions, and respond to classmates' posts. Focus on practical applications and real-world examples from your own community or research.`
+            });
         }
-        
-        // Add YouTube curation instead of video production for most cases
-        activities.push({
-            type: 'youtube_curation',
-            title: `Educational Videos on ${stepText}`,
-            description: `Curated YouTube videos explaining: ${stepText}`,
-            content: `**AI CURATION REQUEST**: Curate 2-3 YouTube videos (3-10 minutes each) explaining "${stepText}" in municipal administration context.
-
-**Video 1: [Title to be determined based on curation]**
-<iframe width="560" height="315" src="https://www.youtube.com/embed/[VIDEO_ID_1]" title="${stepText} - Part 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-**Video 2: [Title to be determined based on curation]**
-<iframe width="560" height="315" src="https://www.youtube.com/embed/[VIDEO_ID_2]" title="${stepText} - Part 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-**Discussion Questions:**
-1. How does "${stepText}" apply to your local municipality?
-2. What challenges are highlighted in these videos?
-3. What best practices can be identified from the examples shown?
-
-**Curation Criteria:** Canadian municipal context preferred, recent content (2020-2024), credible sources (government, educational institutions, professional associations), clear educational value.`
-        });
-
-        // Add graphics request for visual learners
-        activities.push({
-            type: 'graphics_request',
-            title: `Visual Guide to ${stepText}`,
-            description: `Professional graphic explaining: ${stepText}`,
-            content: `**GRAPHICS PRODUCTION REQUEST**: Create a professional visual guide explaining "${stepText}" for municipal administration students.
-
-**Specifications:**
-- Format: 8.5x11 inches, digital-first design
-- Style: Clean, educational infographic
-- Content: Key concepts, process flows, or comparison charts related to "${stepText}"
-
-**Creation Instructions:**
-1. Title section with clear heading
-2. 3-4 main concept areas with icons and brief explanations
-3. Process flow or relationship diagram if applicable
-4. Canadian municipal examples or case studies
-5. Professional color scheme (blues, greens, with accent colors)
-
-**Reference Examples:**
-- Municipal government annual reports and infographics
-- ICMA (International City/County Management Association) resources
-- Canadian Municipal Network educational materials
-
-**Tools:** Canva Pro, Adobe Illustrator, or Piktochart for professional design`
-        });
-
-        // Add interactive assessment
-        activities.push({
-            type: 'assessment',
-            title: `Knowledge Check: ${stepText}`,
-            description: `Interactive self-assessment on: ${stepText}`,
-            content: `**H5P ASSESSMENT REQUEST**: Create an interactive self-assessment using H5P in Brightspace Creator+.
-
-**Multiple Choice Questions:**
-1. The primary purpose of "${stepText}" in municipal administration is to:
-   a) Increase bureaucratic processes
-   b) Comply with provincial regulations
-   *c) Improve service delivery and community outcomes
-   d) Generate additional revenue
-
-2. When implementing "${stepText}", municipalities should prioritize:
-   a) Cost reduction above all else
-   *b) Balancing efficiency with community needs
-   c) Following other municipalities' approaches exactly
-   d) Avoiding public consultation
-
-3. The most significant challenge in "${stepText}" is typically:
-   a) Lack of technology
-   *b) Balancing competing priorities and limited resources
-   c) Staff resistance to change
-   d) Provincial interference
-
-**True/False Questions:**
-4. "${stepText}" requires the same approach in all municipalities regardless of size or context.
-   a) True
-   *b) False
-   (Explanation: Municipal approaches must be tailored to local context, resources, and community needs.)
-
-5. Successful "${stepText}" always requires significant financial investment.
-   a) True
-   *b) False
-   (Explanation: While resources are important, strategic planning and efficient processes can often achieve significant improvements with existing resources.)
-
-**Scenario-Based Question:**
-6. A municipality wants to improve "${stepText}". What should be the first step?
-   a) Hire external consultants immediately
-   b) Copy successful practices from larger cities
-   *c) Assess current situation and identify specific improvement areas
-   d) Increase the budget for this area
-
-Include immediate feedback for each answer and progress tracking with final score.`
-        });
-        
-        // Always add a discussion activity
-        activities.push({
-            type: 'discussion',
-            title: `Collaborative Discussion Forum`,
-            description: `Engage in meaningful discussion about: ${stepText}`,
-            content: `Participate in an online discussion forum about "${stepText}". Share your insights, ask thoughtful questions, and respond to classmates' posts. Focus on practical applications and real-world examples from your own community or research.`
-        });
         
         return activities;
     }
@@ -1096,7 +1148,7 @@ Political acumen is a critical skill for municipal administrators who must navig
         return typeMap[type] || type.charAt(0).toUpperCase() + type.slice(1);
     }
 
-    formatActivityContent(activity) {
+    async formatActivityContent(activity) {
         let content = activity.content || '';
         
         // Handle video activities specially
@@ -1104,15 +1156,325 @@ Political acumen is a critical skill for municipal administrators who must navig
             return this.formatVideoActivity(activity);
         }
         
+        // Always enhance reading activities with web search, regardless of existing content
+        if (activity.type === 'reading') {
+            content = await this.generateDetailedActivityContent(activity);
+        }
+        // For other activities, generate detailed content if content is empty or very short
+        else if (!content || content.length < 50) {
+            content = await this.generateDetailedActivityContent(activity);
+        }
+        
         // For other activities, merge description into content if needed
         let formattedContent = content;
         
         // If description exists and isn't already in content, merge it
-        if (activity.description && !content.includes(activity.description)) {
+        if (activity.description && !content.includes(activity.description) && activity.type !== 'reading') {
             formattedContent = `${activity.description}\n\n${content}`;
         }
         
         return formattedContent;
+    }
+
+    async generateDetailedActivityContent(activity) {
+        const activityType = activity.type || 'activity';
+        const title = activity.title || 'Learning Activity';
+        const description = activity.description || '';
+        
+        switch (activityType.toLowerCase()) {
+            case 'reading':
+                return await this.generateReadingActivity(title, description);
+            case 'case-study':
+            case 'case_study':
+                return await this.generateCaseStudyActivity(title, description);
+            case 'infographic':
+            case 'infographic_request':
+                return await this.generateInfographicActivity(title, description);
+            case 'discussion':
+                return await this.generateDiscussionActivity(title, description);
+            case 'research':
+                return await this.generateResearchActivity(title, description);
+            case 'presentation':
+                return await this.generatePresentationActivity(title, description);
+            case 'quiz':
+            case 'assessment':
+                return await this.generateQuizActivity(title, description);
+            default:
+                return await this.generateGenericActivity(title, description);
+        }
+    }
+
+    async generateReadingActivity(title, description) {
+        // Get current information to enhance the activity
+        const currentInfo = await this.searchService.searchForActivityContent('reading', title, 'municipal administration');
+        
+        return `## Objective
+${description || 'Develop foundational knowledge through guided reading'}
+
+## Required Readings
+1. **Primary Source**: Relevant chapter from "Municipal Administration in Canada" by Andrew Sancton (University of Toronto Press, 2015)
+2. **Secondary Source**: Recent journal article from Canadian Public Administration or Canadian Public Policy (access via library database)
+3. **Current Context**: Recent municipal government report or policy document
+
+${currentInfo ? `## Current Context\n${currentInfo}\n` : ''}
+
+## Instructions
+1. Read the assigned materials with focus on key concepts and Canadian examples
+2. Take notes on main themes, definitions, and practical applications
+3. Identify 3-5 key takeaways that relate to your local municipality
+4. Prepare a 1-page summary highlighting connections between theory and practice
+
+## Deliverable
+Submit a 300-500 word reflection connecting the readings to current municipal challenges
+
+## Assessment Criteria
+Understanding of concepts (40%), Canadian context application (30%), Critical analysis (30%)`;
+    }
+
+    async generateCaseStudyActivity(title, description) {
+        // Get current information to enhance the case study
+        const currentInfo = await this.searchService.searchForActivityContent('case-study', title, 'municipal administration');
+        
+        return `## Objective
+${description || 'Apply theoretical knowledge to real-world municipal scenarios'}
+
+## Case Study Focus
+Analyze a specific municipal challenge or success story from a Canadian city
+
+${currentInfo ? `## Current Context\n${currentInfo}\n` : ''}
+
+## Instructions
+1. **Select a Case**: Choose from provided options or find a recent municipal case study (2020-2024)
+2. **Research Phase**: Gather background information, stakeholder perspectives, and outcomes
+3. **Analysis Framework**: Apply course concepts to analyze the situation
+4. **Solution Evaluation**: Assess the effectiveness of actions taken
+5. **Recommendations**: Propose alternative approaches or improvements
+
+## Deliverable
+- 2-3 page case study analysis
+- Include executive summary, problem analysis, solution evaluation, and recommendations
+- Cite minimum 5 credible sources
+
+## Assessment Criteria
+Problem identification (25%), Analysis depth (35%), Recommendations quality (25%), Sources and citations (15%)`;
+    }
+
+    async generateInfographicActivity(title, description) {
+        return `**📊 MEDIA PRODUCTION REQUEST**: Create a professional infographic
+
+**Objective**: ${description || 'Visualize complex municipal concepts in an accessible format'}
+
+**Content Requirements**:
+- **Main Topic**: Focus on the specific learning objective
+- **Key Elements**: 5-7 main concepts with supporting details
+- **Data Integration**: Include relevant statistics or examples from Canadian municipalities
+- **Visual Hierarchy**: Clear flow from most to least important information
+
+**Design Specifications**:
+- **Format**: 11x17 inches (tabloid size) for printing, 300 DPI
+- **Orientation**: Portrait preferred, landscape acceptable
+- **Color Scheme**: Professional palette (blues, greens, with accent colors)
+- **Typography**: Minimum 12pt font, maximum 3 font families
+- **Accessibility**: High contrast, alt-text descriptions provided
+
+**Technical Requirements**:
+- **Software**: Canva Pro, Adobe Illustrator, or Piktochart
+- **File Formats**: Submit both PDF (print) and PNG (digital) versions
+- **File Size**: Under 10MB for digital sharing
+
+**Content Structure**:
+1. **Header**: Clear title and subtitle
+2. **Main Sections**: 3-4 primary content areas with icons
+3. **Supporting Data**: Charts, graphs, or statistics
+4. **Examples**: 2-3 Canadian municipal examples
+5. **Footer**: Sources and creation credits
+
+**Assessment Criteria**: Visual design (30%), Content accuracy (25%), Information clarity (25%), Technical quality (20%)`;
+    }
+
+    async generateDiscussionActivity(title, description) {
+        return `**Objective**: ${description || 'Engage in collaborative learning through structured discussion'}
+
+**Discussion Format**: Online forum or in-class structured discussion
+
+**Preparation**:
+1. Review assigned readings and course materials
+2. Research current examples from Canadian municipalities
+3. Prepare 2-3 discussion points or questions
+
+**Discussion Prompts**:
+1. How does this topic apply to your local municipality?
+2. What are the main challenges and opportunities?
+3. What best practices can be identified from other jurisdictions?
+4. How might this evolve in the next 5-10 years?
+
+**Participation Requirements**:
+- **Initial Post**: 200-300 words with specific examples and citations
+- **Peer Responses**: Respond to at least 2 classmates with substantive comments (100+ words each)
+- **Follow-up**: Engage in ongoing dialogue throughout the discussion period
+
+**Assessment Criteria**: Initial post quality (40%), Peer engagement (30%), Use of examples (20%), Professional tone (10%)`;
+    }
+
+    async generateResearchActivity(title, description) {
+        // Get current information to enhance the research activity
+        const currentInfo = await this.searchService.searchForActivityContent('research', title, 'municipal administration');
+        
+        return `## Objective
+${description || 'Conduct independent research on municipal administration topics'}
+
+## Research Focus
+Investigate current trends, challenges, or innovations in the specified area
+
+${currentInfo ? `## Current Context\n${currentInfo}\n` : ''}
+
+## Research Process
+1. **Topic Definition**: Narrow your focus to a specific aspect or jurisdiction
+2. **Source Identification**: Use academic databases, government reports, and credible news sources
+3. **Data Collection**: Gather quantitative and qualitative information
+4. **Analysis**: Identify patterns, trends, and implications
+5. **Synthesis**: Draw conclusions and make recommendations
+
+## Required Sources
+- Minimum 5 academic sources (journal articles, books)
+- 3+ government or municipal reports
+- 2+ current news articles (within last 2 years)
+- 1+ interview or primary source (optional but encouraged)
+
+**Deliverable**: 
+- 1,500-2,000 word research report
+- Include executive summary, methodology, findings, and recommendations
+- APA citation format required
+
+**Assessment Criteria**: Research depth (30%), Source quality (25%), Analysis (25%), Writing quality (20%)`;
+    }
+
+    async generatePresentationActivity(title, description) {
+        return `**Objective**: ${description || 'Present research findings or analysis to peers'}
+
+**Presentation Format**: 10-15 minute presentation with Q&A session
+
+**Content Requirements**:
+1. **Introduction**: Context and objectives (2 minutes)
+2. **Main Content**: Key findings or analysis (8-10 minutes)
+3. **Conclusions**: Implications and recommendations (2-3 minutes)
+4. **Q&A**: Respond to audience questions (5 minutes)
+
+**Technical Requirements**:
+- **Slides**: 10-15 slides maximum
+- **Visuals**: Include charts, graphs, images, or infographics
+- **Format**: PowerPoint, Google Slides, or Prezi
+- **Backup**: Bring presentation on USB drive and email copy
+
+**Presentation Skills**:
+- Clear, professional delivery
+- Eye contact and engagement with audience
+- Appropriate pacing and time management
+- Effective use of visual aids
+
+**Assessment Criteria**: Content quality (40%), Presentation skills (30%), Visual aids (20%), Q&A handling (10%)`;
+    }
+
+    async generateQuizActivity(title, description) {
+        return `**Objective**: ${description || 'Assess understanding of key concepts and applications'}
+
+**Quiz Format**: Online quiz with multiple question types
+
+**Question Types**:
+- Multiple choice (40%)
+- True/False with justification (20%)
+- Short answer (25%)
+- Case study application (15%)
+
+**Content Coverage**:
+- Key terminology and definitions
+- Conceptual understanding
+- Application to Canadian municipal context
+- Current issues and trends
+
+**Quiz Details**:
+- **Duration**: 45 minutes
+- **Questions**: 20-25 questions
+- **Attempts**: 2 attempts allowed (highest score counts)
+- **Resources**: Closed book, no external resources
+
+**Preparation Recommendations**:
+1. Review all assigned readings and lecture notes
+2. Practice with sample questions if provided
+3. Focus on Canadian examples and case studies
+4. Understand key concepts rather than memorizing facts
+
+**Assessment Criteria**: Accuracy (70%), Application of concepts (20%), Canadian context understanding (10%)`;
+    }
+
+    async generateGenericActivity(title, description) {
+        return `**Objective**: ${description || 'Engage with course content through active learning'}
+
+**Activity Overview**: Complete the specified learning task to deepen understanding of municipal administration concepts
+
+**Instructions**:
+1. Review relevant course materials and readings
+2. Apply concepts to real-world municipal scenarios
+3. Consider Canadian municipal context and examples
+4. Document your learning process and outcomes
+
+**Requirements**:
+- Demonstrate understanding of key concepts
+- Connect theory to practice
+- Use credible sources and citations
+- Submit work in professional format
+
+**Assessment**: Based on completion, quality of analysis, and demonstration of learning objectives
+
+**Support**: Contact instructor if you need clarification on requirements or expectations`;
+    }
+
+    async formatActivitiesForStep(outcome, stepIndex) {
+        if (!outcome.learningActivities) {
+            return 'No activities generated';
+        }
+        const filteredActivities = outcome.learningActivities
+            .filter(activity => activity.stepId === `${outcome.id.split('.')[0]}.${stepIndex + 1}.0`);
+        if (filteredActivities.length === 0) {
+            return 'No activities generated';
+        }
+        const formattedActivities = [];
+        for (const activity of filteredActivities) {
+            const content = await this.formatActivityContent(activity);
+            formattedActivities.push(`
+# ${activity.id} ${this.formatActivityType(activity.type)}: ${activity.title}
+
+${content}
+`);
+        }
+        return formattedActivities.join('\n');
+    }
+
+    async formatLearningOutcome(outcome) {
+        let outcomeText = `
+# ${outcome.id} Learning Outcome: ${outcome.text}
+**Bloom's Level**: ${outcome.bloomLevel}  
+**Source**: ${outcome.source}
+
+${this.generateLearningOutcomeIntroduction(outcome)}
+`;
+
+        if (outcome.learningSteps && outcome.learningSteps.length > 0) {
+            for (let stepIndex = 0; stepIndex < outcome.learningSteps.length; stepIndex++) {
+                const step = outcome.learningSteps[stepIndex];
+                outcomeText += `
+# ${outcome.id.split('.')[0]}.${stepIndex + 1}.0 Learning Step: ${step.text}
+
+${this.generateLearningStepIntroduction(step, outcome)}
+
+${await this.formatActivitiesForStep(outcome, stepIndex)}
+`;
+            }
+        } else {
+            outcomeText += '\nNo learning steps defined';
+        }
+
+        return outcomeText;
     }
 
     formatVideoActivity(activity) {
@@ -1513,13 +1875,18 @@ ${qualityCriteria.map(criteria => `- ${criteria}`).join('\n')}
 
     async saveBlueprint(courseId, blueprint) {
         // Save JSON version
-        const jsonPath = this.fileManager.getCoursePath(courseId, 'final-output/course-blueprint.json');
+        const jsonPath = this.fileManager.getCoursePath(courseId, `final-output/${courseId}-course-blueprint.json`);
         await this.fileManager.saveJSON(jsonPath, blueprint);
 
-        // Save Markdown version for human readability
-        const markdownContent = this.generateEnhancedMarkdownBlueprint(blueprint);
-        const mdPath = this.fileManager.getCoursePath(courseId, 'final-output/course-blueprint.md');
+        // Save clean blueprint (learning content only)
+        const markdownContent = await this.generateEnhancedMarkdownBlueprint(blueprint);
+        const mdPath = this.fileManager.getCoursePath(courseId, `final-output/${courseId}-course-blueprint.md`);
         await this.fileManager.saveText(mdPath, markdownContent);
+
+        // Save course metadata (preamble content)
+        const metadataContent = await this.generateCourseMetadata(blueprint);
+        const metadataPath = this.fileManager.getCoursePath(courseId, `final-output/${courseId}-course-metadata.md`);
+        await this.fileManager.saveText(metadataPath, metadataContent);
 
         logger.info(`Blueprint saved for course ${courseId}`, {
             qualityScore: blueprint.qualityMetrics.overallScore,
@@ -1528,7 +1895,7 @@ ${qualityCriteria.map(criteria => `- ${criteria}`).join('\n')}
         });
     }
 
-    generateMarkdownBlueprint(blueprint) {
+    async generateMarkdownBlueprint(blueprint) {
         return `# Course Blueprint: ${blueprint.courseInfo.title}
 
 ## Course Information
@@ -1605,8 +1972,9 @@ ${blueprint.nextSteps.map(step => `1. ${step}`).join('\n')}
            line.match(/^\d+\.\s*[A-Z]/);
   }
 
-  generateEnhancedMarkdownBlueprint(blueprint) {
-    return `# Course Blueprint: ${blueprint.courseInfo.title}
+  async generateCourseMetadata(blueprint) {
+    // Generate metadata file with course information, quality metrics, and educational foundation
+    return `# Course Metadata: ${blueprint.courseInfo.title}
 
 ## Course Information
 - **Course ID**: ${blueprint.courseInfo.courseId}
@@ -1629,31 +1997,44 @@ ${blueprint.nextSteps.map(step => `1. ${step}`).join('\n')}
 **Instructional Strategies**:
 ${blueprint.educationalFoundation.instructionalStrategies.map(strategy => `- ${strategy}`).join('\n')}
 
-## Learning Structure
+## Course Structure
+**Sequencing**: ${blueprint.courseStructure.sequencing}
+**Estimated Hours**: ${blueprint.courseStructure.estimatedHours}
 
-${blueprint.learningOutcomes.map(outcome => `
-### ${outcome.id} Learning Outcome: ${outcome.text}
-**Bloom's Level**: ${outcome.bloomLevel}  
-**Source**: ${outcome.source}
+### Modules
+${blueprint.courseStructure.modules.map(module => 
+  `#### ${module.title}\n- **Hours**: ${module.estimatedHours}\n- **Learning Outcomes**: ${module.learningOutcomes.join(', ')}\n- **Assessments**: ${module.assessments.join(', ')}`
+).join('\n\n')}
 
-${this.generateLearningOutcomeIntroduction(outcome)}
+## Assessment Framework
+- **Formative**: ${blueprint.assessmentFramework.formativePercentage}%
+- **Summative**: ${blueprint.assessmentFramework.summativePercentage}%
+- **Rubric Approach**: ${blueprint.assessmentFramework.rubricApproach}
+- **Feedback Strategy**: ${blueprint.assessmentFramework.feedbackStrategy}
 
-${outcome.learningSteps && outcome.learningSteps.length > 0 ? 
-  outcome.learningSteps.map((step, stepIndex) => `
-#### ${outcome.id.split('.')[0]}.${stepIndex + 1}.0 Learning Step: ${step.text}
+## Resource Requirements
+- **Development Time**: ${blueprint.resourceRequirements.developmentTime}
+- **Team Size**: ${blueprint.resourceRequirements.teamSize}
+- **Budget Estimate**: ${blueprint.resourceRequirements.budgetEstimate}
 
-${this.generateLearningStepIntroduction(step, outcome)}
+## Implementation Plan
+**Total Estimated Time**: ${blueprint.implementationPlan.totalEstimatedTime}
 
-${outcome.learningActivities ? 
-  outcome.learningActivities
-    .filter(activity => activity.stepId === `${outcome.id.split('.')[0]}.${stepIndex + 1}.0`)
-    .map(activity => `
-**${activity.id} ${this.formatActivityType(activity.type)}: ${activity.title}**
+${blueprint.implementationPlan.phases.map(phase =>
+  `### ${phase.phase} (${phase.duration})\n${phase.tasks.map(task => `- ${task}`).join('\n')}`
+).join('\n\n')}
 
-${this.formatActivityContent(activity)}
-`).join('\n') : 'No activities generated'}
-`).join('\n') : 'No learning steps defined'}
-`).join('\n')}
+## Next Steps
+${blueprint.nextSteps.map(step => `1. ${step}`).join('\n')}
+
+---
+*Generated by AI Curriculum Design System - Saskatchewan Polytechnic*
+    `;
+  }
+
+  async generateEnhancedMarkdownBlueprint(blueprint) {
+    // Generate clean blueprint focused on learning content
+    return `${await Promise.all(blueprint.learningOutcomes.map(outcome => this.formatLearningOutcome(outcome))).then(results => results.join('\n'))}
 
 ## Course Structure
 **Sequencing**: ${blueprint.courseStructure.sequencing}
@@ -1688,6 +2069,204 @@ ${blueprint.nextSteps.map(step => `1. ${step}`).join('\n')}
 ---
 *Generated by AI Curriculum Design System - Saskatchewan Polytechnic*
     `;
+  }
+
+  // Phase B Enhanced Methods
+
+  extractEnhancedAssessmentFramework(phaseAResults, phaseBResults) {
+    // Start with Phase A assessment framework
+    const baseAssessment = this.extractAssessmentFramework(phaseAResults);
+    
+    // Enhance with Phase B assessment-specialist output
+    const assessmentSpecialist = phaseBResults.agentResults?.['assessment-specialist'];
+    
+    if (assessmentSpecialist?.output) {
+      const output = assessmentSpecialist.output;
+      
+      return {
+        ...baseAssessment,
+        // Enhanced with Phase B specialist recommendations
+        assessmentStrategy: output.analysis || baseAssessment.assessmentStrategy,
+        authenticAssessments: output.recommendations?.filter(r => r.includes('assessment')) || [],
+        h5pIntegration: output.recommendations?.filter(r => r.includes('H5P')) || [],
+        accessibilityCompliance: output.recommendations?.filter(r => r.includes('accessibility')) || [],
+        rubricSpecifications: output.output?.includes('rubric') ? 
+          'Detailed rubrics designed by assessment specialist' : baseAssessment.rubricApproach,
+        qualityScore: assessmentSpecialist.metadata?.qualityScore || baseAssessment.qualityScore
+      };
+    }
+    
+    return baseAssessment;
+  }
+
+  extractActivityDesignFramework(phaseBResults) {
+    const instructionalDesigner = phaseBResults.agentResults?.['instructional-designer'];
+    
+    if (!instructionalDesigner?.output) {
+      return {
+        framework: 'Basic activity design framework',
+        learningTheoryApplication: 'Adult learning principles',
+        scaffoldingStrategy: 'Progressive complexity',
+        multiModalDesign: 'Varied activity types',
+        engagementStrategies: 'Interactive elements',
+        qualityScore: 0.5
+      };
+    }
+    
+    const output = instructionalDesigner.output;
+    
+    return {
+      framework: output.analysis || 'Learning theory-based activity design',
+      learningTheoryApplication: output.recommendations?.find(r => r.includes('theory')) || 'Constructivist approach',
+      scaffoldingStrategy: output.recommendations?.find(r => r.includes('scaffold')) || 'Progressive skill building',
+      multiModalDesign: output.recommendations?.find(r => r.includes('modal')) || 'Diverse learning styles',
+      engagementStrategies: output.output?.substring(0, 200) + '...' || 'Interactive and collaborative activities',
+      udlCompliance: output.recommendations?.filter(r => r.includes('UDL') || r.includes('accessibility')) || [],
+      qualityScore: instructionalDesigner.metadata?.qualityScore || 0.7
+    };
+  }
+
+  extractLMSIntegrationPlan(phaseBResults) {
+    const lmsIntegrator = phaseBResults.agentResults?.['lms-integrator'];
+    
+    if (!lmsIntegrator?.output) {
+      return {
+        platform: 'D2L Brightspace',
+        optimization: 'Basic LMS compatibility',
+        accessibility: 'WCAG 2.1 AA compliance',
+        mobileSupport: 'Responsive design',
+        analytics: 'Standard tracking',
+        qualityScore: 0.5
+      };
+    }
+    
+    const output = lmsIntegrator.output;
+    
+    return {
+      platform: 'D2L Brightspace (optimized)',
+      optimization: output.analysis || 'Platform-specific optimization',
+      scormCompliance: output.recommendations?.find(r => r.includes('SCORM')) || 'SCORM 2004 4th Edition',
+      accessibility: output.recommendations?.find(r => r.includes('accessibility')) || 'WCAG 2.1 AA compliance',
+      mobileSupport: output.recommendations?.find(r => r.includes('mobile')) || 'Mobile-responsive design',
+      h5pIntegration: output.recommendations?.filter(r => r.includes('H5P')) || [],
+      analytics: output.recommendations?.find(r => r.includes('analytics')) || 'Learning analytics integration',
+      implementation: output.output?.substring(0, 300) + '...' || 'Comprehensive LMS integration plan',
+      qualityScore: lmsIntegrator.metadata?.qualityScore || 0.7
+    };
+  }
+
+  extractEnhancedResourceRequirements(phaseAResults, phaseBResults) {
+    const baseRequirements = this.extractResourceRequirements(phaseAResults);
+    
+    // Add Phase B specific requirements
+    const hasAssessmentSpecialist = phaseBResults.agentResults?.['assessment-specialist'];
+    const hasLMSIntegrator = phaseBResults.agentResults?.['lms-integrator'];
+    
+    return {
+      ...baseRequirements,
+      // Enhanced requirements based on Phase B agents
+      assessmentDevelopment: hasAssessmentSpecialist ? '15-20 hours (professional assessment design)' : '8-12 hours (basic assessments)',
+      lmsIntegration: hasLMSIntegrator ? '10-15 hours (full optimization)' : '4-6 hours (basic setup)',
+      qualityAssurance: '8-10 hours (Phase B validation)',
+      additionalTools: [
+        'H5P authoring for interactive content',
+        'SCORM packaging tools',
+        'Accessibility testing tools',
+        'LMS testing environment'
+      ],
+      teamSkills: [
+        ...baseRequirements.teamSkills || [],
+        'Assessment design expertise',
+        'LMS administration',
+        'Accessibility compliance',
+        'Interactive content creation'
+      ]
+    };
+  }
+
+  calculateEnhancedQualityMetrics(courseContent, phaseAResults, phaseBResults) {
+    const baseMetrics = this.calculateQualityMetrics(courseContent, phaseAResults);
+    
+    // Add Phase B quality metrics
+    const phaseBScore = phaseBResults.qualityScore || 0.5;
+    const activityDesignQuality = phaseBResults.integration?.activityDesignQuality || 0.6;
+    const assessmentAlignment = phaseBResults.integration?.assessmentAlignment || 0.6;
+    const lmsOptimization = phaseBResults.integration?.lmsOptimization || 0.6;
+    
+    const enhancedScore = (baseMetrics.overallScore * 0.6) + (phaseBScore * 0.4);
+    
+    return {
+      ...baseMetrics,
+      overallScore: Math.round(enhancedScore * 100) / 100,
+      phaseAScore: phaseAResults.qualityScore,
+      phaseBScore: phaseBScore,
+      activityDesignQuality: Math.round(activityDesignQuality * 100) / 100,
+      assessmentAlignment: Math.round(assessmentAlignment * 100) / 100,
+      lmsOptimization: Math.round(lmsOptimization * 100) / 100,
+      agentIntegration: phaseBResults.integration?.consistency || 0.8,
+      enhancedFeatures: [
+        'Professional assessment design',
+        'Learning theory-based activities',
+        'LMS platform optimization',
+        'Accessibility compliance',
+        'Interactive content integration'
+      ]
+    };
+  }
+
+  generateEnhancedImplementationPlan(phaseAResults, phaseBResults) {
+    const basePlan = this.generateImplementationPlan(phaseAResults);
+    
+    // Add Phase B specific implementation phases
+    const enhancedPhases = [
+      ...basePlan.phases,
+      {
+        phase: 'Phase B - Activity Design',
+        duration: '2-3 weeks',
+        tasks: [
+          'Implement assessment specialist recommendations',
+          'Apply instructional design framework',
+          'Configure LMS platform optimization',
+          'Create H5P interactive content',
+          'Conduct accessibility compliance testing',
+          'Integrate learning analytics'
+        ],
+        dependencies: ['Phase A completion', 'Content development'],
+        quality: phaseBResults.qualityScore
+      }
+    ];
+    
+    return {
+      ...basePlan,
+      phases: enhancedPhases,
+      totalEstimatedTime: '8-12 weeks (enhanced with Phase B)',
+      qualityGates: [
+        ...basePlan.qualityGates || [],
+        'Phase B agent validation (minimum 75%)',
+        'Assessment alignment verification',
+        'LMS optimization testing',
+        'Accessibility compliance audit'
+      ]
+    };
+  }
+
+  generateEnhancedNextSteps(phaseAResults, phaseBResults) {
+    const baseSteps = this.generateNextSteps(phaseAResults);
+    
+    // Add Phase B specific next steps
+    const enhancedSteps = [
+      ...baseSteps,
+      'Review Phase B agent outputs and recommendations',
+      'Implement assessment specialist assessment strategy',
+      'Apply instructional designer activity framework',
+      'Configure LMS integration according to specialist recommendations',
+      'Develop H5P interactive content as specified',
+      'Conduct comprehensive accessibility testing',
+      'Validate learning analytics configuration',
+      'Prepare for Phase C content generation (if applicable)'
+    ];
+    
+    return enhancedSteps;
   }
 }
 

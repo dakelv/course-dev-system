@@ -140,7 +140,7 @@ Options:
     console.log(`🎯 Quality score: ${Math.round(result.qualityScore * 100)}%`);
     console.log(`🤖 AI agents executed: ${Object.keys(result.phaseAResults.agentResults).length}`);
     console.log(`📁 Results saved to: ./course-data/${courseId}/`);
-    console.log(`📋 Blueprint: ./course-data/${courseId}/final-output/course-blueprint.md`);
+    console.log(`📋 Blueprint: ./course-data/${courseId}/final-output/${courseId}-course-blueprint.md`);
     process.exit(0);
   } else {
     console.error(`❌ Failed to process course ${courseId}`);
