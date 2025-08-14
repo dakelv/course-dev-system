@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>MATH127-reformatted</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1 id="operate-a-ti-30xa-calculator">1.0.0 Operate a TI-30Xa
+Calculator</h1>
+<p>[[style:note]]</p>
+<p>CMP</p>
+<p>The following should be formatted using the keyboard styles from <a
+href="https://online.saskpolytech.ca/d2l/le/content/335876/viewContent/15662007/View">1.2.18
+KBD - Keyboard Keys Representation - Course Development Standards</a>,
+the examples can be in callout boxes created using CSS.</p>
+<p>Note: The instructor wants to use callouts for emphasis. We cannot
+use Creator+ Callout for these keys, use <strong>CSS Callout</strong> as
+per shown on the Course Development Standards page linked above.</p>
+<p>For the calculator key codes, I met with Corinne, and she said we
+should just put the code right in the document. Here are some examples
+of the types of keys we use. <strong>You will still have to add the
+&lt;div class="kbd-container"&gt;&lt;/div&gt; as per the instructions on
+the Course Development Standards above</strong>.</p>
+<p>Numbers: &lt;kbd class="kbd-numbers"&gt;8&lt;/kbd&gt;</p>
+<p>Functions: &lt;kbd
+class="kbd-functions"&gt;y&lt;sup&gt;x&lt;/sup&gt;&lt;/kbd&gt;</p>
+<p>Operators: &lt;kbd class="kbd-operators"&gt;=&lt;/kbd&gt;</p>
+<p>2<sup>nd</sup> Button: &lt;kbd class="kbd-2nd"&gt;2nd&lt;/kbd&gt;</p>
+<p>2<sup>nd</sup> Function Text: &lt;span
+class="calc-green"&gt;10&lt;sup&gt;x&lt;/sup&gt;&lt;/span&gt;</p>
+<p><strong>The special code &amp;#x2A3C; is used to display a character
+that looks like this</strong> <img src="media/image1.png"
+style="width:0.14583in;height:0.11458in" /> <strong>at various points in
+the content</strong>. I added &lt;strong&gt; and &lt;span
+style="vertical-align: bottom;"&gt;&amp;#x2A3C;&lt;/span&gt;
+&lt;/strong&gt; codes where appropriate so that should be able to paste
+into the code view of DW and it should work.</p>
+<p>[[/style]]</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Interactive Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Interactive Type</strong></td>
+<td><strong>H5P -- Find the Hotspot</strong></td>
+</tr>
+<tr>
+<td><p><strong>Activity Details</strong></p>
+<p><strong>&#x2610;</strong> Details below ticket</p></td>
+<td><p><em>Add details here or immediately after the request ticket. For
+H5P include a title.</em></p>
+<p>Create like this <a
+href="https://h5pstudio.ecampusontario.ca/content/14215">Buttons on a
+scientific calculator | eCampusOntario H5P Studio</a></p>
+<p>I uploaded it to our sandbox <a
+href="https://pressbooks.saskpolytech.ca/h5ptest/wp-admin/admin.php?page=h5p&amp;task=show&amp;id=104">Calculator
+buttons &#x2039; All H5P Content &#x2039; LT H5P Sandbox &#x2014; Pressbooks</a>, can it be
+changed to the TI-30Xa Calculator with an image created by a
+GDA?</p></td>
+</tr>
+<tr>
+<td><strong>Graphics &amp; Media Support</strong></td>
+<td>Yes <em>If yes, provide details; add graphic request(s) below
+interactive request.</em></td>
+</tr>
+<tr>
+<td><p><strong>Text Version</strong></p>
+<p><em>Add click to reveal for accessibility?</em></p></td>
+<td><strong>No</strong> <em>If yes, provide details/description (e.g.,
+&#x201C;Use table from activity details.&#x201D;)</em></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Graphics Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Size</strong></td>
+<td><p><em>width for landscape orientation and height for portrait
+orientation</em></p>
+<p>Sized for readability</p>
+<p>I'm not sure if it would still be possible to right-float beside the
+content below, but it would be good if it wasn&#x2019;t too small.</p></td>
+</tr>
+<tr>
+<td><strong>GDA Instructions</strong></td>
+<td><p>remove background. <strong>Note: an image without any lines on it
+will also be needed for interactives later on.</strong></p>
+<p><a
+href="https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg">https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg</a>
+and create image for use in an interactive like</p>
+<p><a href="https://h5pstudio.ecampusontario.ca/content/14215">Buttons
+on a scientific calculator | eCampusOntario H5P Studio</a></p></td>
+</tr>
+<tr>
+<td><strong>Special Use</strong></td>
+<td>Use in Interactive</td>
+</tr>
+<tr>
+<td><strong>Image Sample</strong></td>
+<td><p><img src="media/image2.jpeg"
+style="width:1.38542in;height:2.08333in"
+alt="A grey calculator with a display AI-generated content may be incorrect." />
+The hot spots would be as follows, please change to lines pointing at
+individual buttons instead of a rectangle around. Put rectangles around
+the numbers, brackets, and operations:</p>
+<p><img src="media/image3.jpeg" style="width:0.76042in;height:1.45833in"
+alt="A calculator with a number on the screen AI-generated content may be incorrect." /><img
+src="media/image4.jpeg" style="width:0.77083in;height:1.47917in"
+alt="A calculator with a button AI-generated content may be incorrect." /><img
+src="media/image5.jpeg" style="width:0.76042in;height:1.46875in"
+alt="A grey calculator with a screen AI-generated content may be incorrect." /><img
+src="media/image6.jpeg" style="width:0.75in;height:1.44792in"
+alt="A calculator with a screen AI-generated content may be incorrect." /><img
+src="media/image7.jpeg" style="width:0.76042in;height:1.44792in"
+alt="A grey calculator with a display AI-generated content may be incorrect." /><img
+src="media/image8.jpeg" style="width:0.75in;height:1.42708in"
+alt="A grey calculator with a display AI-generated content may be incorrect." /><img
+src="media/image9.jpeg" style="width:0.73958in;height:1.41667in"
+alt="A grey calculator with a display AI-generated content may be incorrect." /><img
+src="media/image10.jpeg" style="width:0.76042in;height:1.44792in"
+alt="A grey calculator with a red square AI-generated content may be incorrect." /><img
+src="media/image11.jpeg" style="width:0.76042in;height:1.45833in"
+alt="A grey calculator with a square in the center AI-generated content may be incorrect." /><img
+src="media/image12.jpeg" style="width:0.73958in;height:1.41667in"
+alt="A grey calculator with a display AI-generated content may be incorrect." /><img
+src="media/image13.jpeg" style="width:0.75in;height:1.42708in"
+alt="A grey calculator with a display AI-generated content may be incorrect." /></p></td>
+</tr>
+<tr>
+<td><strong>Completed Filename</strong></td>
+<td>sample.jpg</td>
+</tr>
+<tr>
+<td><strong>Alignment</strong></td>
+<td>Other - include instructions</td>
+</tr>
+<tr>
+<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>
+<p><strong>&#x2610;</strong> Decorative</p></td>
+<td>Picture of the TI-30Xa calculator.</td>
+</tr>
+<tr>
+<td><strong>Citation</strong></td>
+<td><p>Other</p>
+<p>Public Domain</p></td>
+</tr>
+<tr>
+<td><strong>Caption</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Comments for CMP</strong></td>
+<td><p>Would like to right float an interactive if possible like <a
+href="https://h5pstudio.ecampusontario.ca/content/14215">Buttons on a
+scientific calculator | eCampusOntario H5P Studio</a></p>
+<p>If it is too big to right float, put it below the Evaluation
+Summary.</p></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<p>Calculations considered in this course will be performed using a
+calculator instead of &#x201C;by hand&#x201D;.</p>
+<p>The Texas Instruments TI-30Xa scientific calculator will be supplied
+when writing the Interprovincial Journeyman Exam. For this reason, it is
+recommended that students use this model calculator for all levels of
+training. This learning outcome will introduce useful features of that
+calculator model that simplify the effort required when performing
+common calculations.</p>
+<h2 id="learning-steps">Learning Steps</h2>
+<p>By the end of this learning outcome, you will:</p>
+<ol type="1">
+<li><p>Perform basic calculator operations.</p></li>
+<li><p>Demonstrate operations for fractions, decimals and
+percentages.</p></li>
+<li><p>Use order of operations to simplify expressions.</p></li>
+<li><p>Use the calculator memory.</p></li>
+</ol>
+<h2 id="evaluation">Evaluation </h2>
+<p>Refer to the Evaluation Summary page for details.</p>
+<p>[[style:note]]</p>
+<p>CMP: link to the evaluation summary</p>
+<p>[[/style]]</p>
+<h1 id="perform-basic-calculator-operations">1.1.0 Perform Basic
+Calculator Operations</h1>
+<p>The Texas Instruments TI-30Xa scientific calculator will be supplied
+when writing the Interprovincial Journeyman Exam. For this reason, it is
+highly recommended that you familiarize yourself with its layout and
+essential features, as well as common functions that will simplify
+common calculations.</p>
+<p>This first learning step focuses on the basic use of the TI-30Xa
+calculator, such as changing display options or deleting/clearing
+calculations. Subsequent sections will introduce other useful features,
+like working with fractions.</p>
+<p>The intent is to introduce you to the basic structure of this tool,
+just as you would when learning about power equipment such as a table
+saw. With any tool, you should consider its basic function and operation
+before attempting more advanced applications.</p>
+<h1 id="layout-and-basic-functions-of-the-ti-30xa-calculator">1.1.1
+Layout and Basic Functions of the TI-30Xa Calculator</h1>
+<p>In this section, you will consider the layout and basic functionality
+of the TI-30Xa scientific calculator.</p>
+<p>Turning On/Off the Calculator</p>
+<p>To turn on the calculator:</p>
+<p>press the &lt;kbd class="kbd-functions"&gt;ON/C&lt;/kbd&gt; key on
+the upper right side below the display.</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Graphics Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Size</strong></td>
+<td><p><em>width for landscape orientation and height for portrait
+orientation</em></p>
+<p>Sized for readability</p>
+<p>Size what would look good with this image below the above content in
+a column on the left and the next image and content on the
+right..</p></td>
+</tr>
+<tr>
+<td><strong>GDA Instructions</strong></td>
+<td><p>use image from LO1 intro and add red box around ON/C.</p>
+<p><a
+href="https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg">https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg</a></p></td>
+</tr>
+<tr>
+<td><strong>Special Use</strong></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Image Sample</strong></td>
+<td><img src="media/image3.jpeg" style="width:1.69792in;height:3.25in"
+alt="A calculator with a number on the screen AI-generated content may be incorrect." /></td>
+</tr>
+<tr>
+<td><strong>Completed Filename</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Alignment</strong></td>
+<td>Align left (no text wrap)</td>
+</tr>
+<tr>
+<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>
+<p><strong>&#x2610;</strong> Decorative</p></td>
+<td>Picture of the TI-30Xa calculator with the ON/C key emphasized.</td>
+</tr>
+<tr>
+<td><strong>Citation</strong></td>
+<td><p>Other</p>
+<p>Public Domain</p></td>
+</tr>
+<tr>
+<td><strong>Caption</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Comments for CMP</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<p>To turn off the calculator:</p>
+<p>press the &lt;kbd class="kbd-functions"&gt;OFF&lt;/kbd&gt; key on the
+upper right side.</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Graphics Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Size</strong></td>
+<td><p><em>width for landscape orientation and height for portrait
+orientation</em></p>
+<p>Sized for readability</p>
+<p>Size what would look with this being beside the image above in a
+column layout.</p></td>
+</tr>
+<tr>
+<td><strong>GDA Instructions</strong></td>
+<td><p>use image from LO1 intro and add red box around OFF.</p>
+<p><a
+href="https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg">https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg</a></p></td>
+</tr>
+<tr>
+<td><strong>Special Use</strong></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Image Sample</strong></td>
+<td><img src="media/image4.jpeg"
+style="width:1.65625in;height:3.17708in"
+alt="A calculator with a button AI-generated content may be incorrect." /></td>
+</tr>
+<tr>
+<td><strong>Completed Filename</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Alignment</strong></td>
+<td>Align left (no text wrap)</td>
+</tr>
+<tr>
+<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>
+<p><strong>&#x2610;</strong> Decorative</p></td>
+<td>Picture of the TI-30Xa calculator with the OFF key emphasized.</td>
+</tr>
+<tr>
+<td><strong>Citation</strong></td>
+<td><p>Other</p>
+<p>Public Domain</p></td>
+</tr>
+<tr>
+<td><strong>Caption</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Comments for CMP</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<h1 id="accessing-secondary-functions">1.1.2 Accessing Secondary
+Functions</h1>
+<p>Most keys of the TI-30Xa have a secondary function printed above a
+corresponding key. For example, the secondary function of the decimal
+point key &lt;kbd class="kbd-numbers"&gt;.&lt;/kbd&gt; is &lt;span
+class="calc-green"&gt;FIX &lt;/span&gt;which allows you to set a fixed
+number of decimal placeholders that will appear on the display.</p>
+<p>[[style:standout]]</p>
+<h2 id="note">Note</h2>
+<p>New models of this calculator have secondary functions printed in
+green ink whereas older versions may use yellow ink.</p>
+<p>[[/style]]</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Graphics Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Size</strong></td>
+<td><p><em>width for landscape orientation and height for portrait
+orientation</em></p>
+<p>Sized for readability</p>
+<p>Size what would look good right floated beside the content
+below.</p></td>
+</tr>
+<tr>
+<td><strong>GDA Instructions</strong></td>
+<td><p>use image from LO1 intro and add red box around
+2<sup>nd</sup>.</p>
+<p><a
+href="https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg">https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg</a></p></td>
+</tr>
+<tr>
+<td><strong>Special Use</strong></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Image Sample</strong></td>
+<td><img src="media/image5.jpeg"
+style="width:1.48958in;height:2.85417in"
+alt="A grey calculator with a screen AI-generated content may be incorrect." /></td>
+</tr>
+<tr>
+<td><strong>Completed Filename</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Alignment</strong></td>
+<td>Float right (text wrap)</td>
+</tr>
+<tr>
+<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>
+<p><strong>&#x2610;</strong> Decorative</p></td>
+<td>Picture of the TI-30Xa calculator with the 2<sup>nd</sup> key
+emphasized.</td>
+</tr>
+<tr>
+<td><strong>Citation</strong></td>
+<td><p>Other</p>
+<p>Public Domain</p></td>
+</tr>
+<tr>
+<td><strong>Caption</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Comments for CMP</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<p>To use a secondary function:</p>
+<ul>
+<li><p>press the coloured &lt;kbd class="kbd-2nd"&gt;2nd&lt;/kbd&gt; key
+located on the upper left side, then</p></li>
+<li><p>press the corresponding key for that function displayed in
+&lt;span class="calc-green"&gt;green &lt;/span&gt;above the
+key.</p></li>
+</ul>
+<p>Note</p>
+<p>The calculator will display <strong>2nd</strong> when the second
+function key has been pressed.</p>
+<p>[[style:note]]</p>
+<p>Use the C+ callout element</p>
+<p>[[/style]]</p>
+<h1 id="displaying-a-fixed-number-of-decimal-places">1.1.3 Displaying a
+Fixed Number of Decimal Places</h1>
+<p>[[style:callout]]</p>
+<h2 id="note-1">Note</h2>
+<p>In this course, you will be asked to round your final calculations
+(where appropriate) to two decimal placeholders. The TI-30Xa may be set
+to automatically display a rounded value, however, the full unrounded
+value will be available for future computations (if necessary).</p>
+<p>[[/style]]</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Graphics Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Size</strong></td>
+<td><p><em>width for landscape orientation and height for portrait
+orientation</em></p>
+<p>Sized for readability</p>
+<p>Size what would look good right floated beside the content
+below.</p></td>
+</tr>
+<tr>
+<td><strong>GDA Instructions</strong></td>
+<td><p>use image from LO1 intro and add red box around the decimal
+key.</p>
+<p><a
+href="https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg">https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg</a></p></td>
+</tr>
+<tr>
+<td><strong>Special Use</strong></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Image Sample</strong></td>
+<td><img src="media/image14.jpeg"
+style="width:1.35417in;height:2.60417in"
+alt="A grey calculator with a display AI-generated content may be incorrect." /></td>
+</tr>
+<tr>
+<td><strong>Completed Filename</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Alignment</strong></td>
+<td>Float right (text wrap)</td>
+</tr>
+<tr>
+<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>
+<p><strong>&#x2610;</strong> Decorative</p></td>
+<td>Picture of the TI-30Xa calculator with the decimal key
+emphasized.</td>
+</tr>
+<tr>
+<td><strong>Citation</strong></td>
+<td><p>Other</p>
+<p>Public Domain</p></td>
+</tr>
+<tr>
+<td><strong>Caption</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Comments for CMP</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<p>To display decimals properly rounded to two decimal places:</p>
+<ul>
+<li><p>press &lt;kbd class="kbd-2nd"&gt;2nd&lt;/kbd&gt; &lt;kbd
+class="kbd-numbers"&gt;.&lt;/kbd&gt; (which accesses the secondary
+function &lt;span class="calc-green"&gt;FIX &lt;/span&gt;),
+then</p></li>
+<li><p>press &lt;kbd class="kbd-numbers"&gt;2&lt;/kbd&gt; .</p></li>
+</ul>
+<p>[[style:instruction]]</p>
+<h2 id="note-2">Note</h2>
+<p>The calculator will display <strong>FIX</strong> when it is set to
+display a fixed number of decimal places.</p>
+<p>If you press the &lt;kbd class="kbd-functions"&gt;OFF&lt;/kbd&gt;
+key, the display setting will change back to the default setting!
+Pressing &lt;kbd class="kbd-functions"&gt;ON/C&lt;/kbd&gt; key will
+clear the display without changing the display setting.</p>
+<p>[[/style]]</p>
+<h1 id="basic-arithmetic-functions">1.1.4 Basic Arithmetic
+Functions</h1>
+<p>The basic operations of addition, subtraction, multiplication and
+division may be performed by using the appropriate key on the right-hand
+side of the calculator and the digit keys followed by the &lt;kbd
+class="kbd-operators"&gt;=&lt;/kbd&gt; to evaluate the calculation:</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Graphics Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Size</strong></td>
+<td><p><em>width for landscape orientation and height for portrait
+orientation</em></p>
+<p>Sized for readability</p>
+<p>Keep size similar to previous images</p></td>
+</tr>
+<tr>
+<td><strong>GDA Instructions</strong></td>
+<td><p>use image from LO1 intro and add red box around the number and
+operator keys. Side-by-side</p>
+<p><a
+href="https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg">https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg</a></p></td>
+</tr>
+<tr>
+<td><strong>Special Use</strong></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Image Sample</strong></td>
+<td><img src="media/image15.jpeg"
+style="width:0.8125in;height:1.55208in"
+alt="A calculator with a screen AI-generated content may be incorrect." /><img
+src="media/image16.jpeg" style="width:0.8125in;height:1.55208in"
+alt="A grey calculator with a display AI-generated content may be incorrect." /></td>
+</tr>
+<tr>
+<td><strong>Completed Filename</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Alignment</strong></td>
+<td>Align left (no text wrap)</td>
+</tr>
+<tr>
+<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>
+<p><strong>&#x2610;</strong> Decorative</p></td>
+<td>Picture of the TI-30Xa calculator with the number and operator keys
+emphasized.</td>
+</tr>
+<tr>
+<td><strong>Citation</strong></td>
+<td><p>Other</p>
+<p>Public Domain</p></td>
+</tr>
+<tr>
+<td><strong>Caption</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Comments for CMP</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<h1 id="deleting-values-on-the-calculator-display">1.1.5 Deleting Values
+on the Calculator Display</h1>
+<p>If you enter an incorrect value into the TI-30Xa calculator, you may
+either clear the entire input or delete the right-most character on the
+display.</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Graphics Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Size</strong></td>
+<td><p><em>width for landscape orientation and height for portrait
+orientation</em></p>
+<p>Sized for readability</p>
+<p>Size what would look good right floated beside the content
+below.</p></td>
+</tr>
+<tr>
+<td><strong>GDA Instructions</strong></td>
+<td><p>use image from LO1 intro and add red box around the back key.</p>
+<p><a
+href="https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg">https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg</a></p></td>
+</tr>
+<tr>
+<td><strong>Special Use</strong></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Image Sample</strong></td>
+<td><img src="media/image17.jpeg"
+style="width:1.47917in;height:2.83333in"
+alt="A grey calculator with a display AI-generated content may be incorrect." /></td>
+</tr>
+<tr>
+<td><strong>Completed Filename</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Alignment</strong></td>
+<td>Float right (text wrap)</td>
+</tr>
+<tr>
+<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>
+<p><strong>&#x2610;</strong> Decorative</p></td>
+<td>Picture of the TI-30Xa calculator with the back key emphasized.</td>
+</tr>
+<tr>
+<td><strong>Citation</strong></td>
+<td><p>Other</p>
+<p>Public Domain</p></td>
+</tr>
+<tr>
+<td><strong>Caption</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Comments for CMP</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<p>To delete only the right-most character on the display:</p>
+<ul>
+<li><p>press the &lt;kbd class="kbd-functions"&gt;&amp;larr;&lt;/kbd&gt;
+on the lower left side of the calculator.</p></li>
+</ul>
+<p>To clear all characters on the display:</p>
+<ul>
+<li><p>press the &lt;kbd class="kbd-functions"&gt;ON/C&lt;/kbd&gt;
+key.</p></li>
+</ul>
+<h1 id="activity-basic-calculator-operation">1.1.6 Activity: Basic
+Calculator Operation</h1>
+<p>[[style: instruction]]</p>
+<h2 id="instructions">Instructions</h2>
+<ol type="1">
+<li><p>Place each of the numbers on the right side of the TI-30Xa
+Calculator over the keys on the calculator in the order you press them
+to complete the following.</p>
+<ol type="a">
+<li><p>Turn On the calculator</p></li>
+<li><p>Make it display a fixed number of 2 decimal places</p></li>
+<li><p>Divide 40 by 3</p></li>
+<li><p>Turn Off the calculator</p></li>
+</ol></li>
+<li><p>Choose Submit once you have placed all the coordinates.</p></li>
+<li><p>Choose Retry to try again.</p></li>
+</ol>
+<p>[[/style]]</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Interactive Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Interactive Type</strong></td>
+<td><strong>H5P -- Drag and Drop</strong></td>
+</tr>
+<tr>
+<td><p><strong>Activity Details</strong></p>
+<p><strong>&#x2610;</strong> Details below ticket</p></td>
+<td><p><em>Add details here or immediately after the request ticket. For
+H5P include a title.</em></p>
+<p>Create a drag and drop where the TI-30Xa Calculator keys are all
+dropzones and there are 10 numbers on the right that can be placed in
+the dropzone in the correct order to do the following:</p>
+<p>On/C button</p>
+<p>2<sup>nd</sup> function</p>
+<p>.</p>
+<p>2</p>
+<p>4</p>
+<p>0</p>
+<p>Divide symbol</p>
+<p>3</p>
+<p>=</p>
+<p>Off</p></td>
+</tr>
+<tr>
+<td><strong>Graphics &amp; Media Support</strong></td>
+<td>Yes <em>If yes, provide details; add graphic request(s) below
+interactive request.</em></td>
+</tr>
+<tr>
+<td><p><strong>Text Version</strong></p>
+<p><em>Add click to reveal for accessibility?</em></p></td>
+<td><strong>No</strong> <em>If yes, provide details/description (e.g.,
+&#x201C;Use table from activity details.&#x201D;)</em></td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Graphics Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Size</strong></td>
+<td><p><em>width for landscape orientation and height for portrait
+orientation</em></p>
+<p>Sized for readability</p></td>
+</tr>
+<tr>
+<td><strong>GDA Instructions</strong></td>
+<td><p><em>Include URL/filename.</em></p>
+<p>Use TI-30Xa Calculator created in first request without any
+hotspots.</p></td>
+</tr>
+<tr>
+<td><strong>Special Use</strong></td>
+<td>Use in Interactive</td>
+</tr>
+<tr>
+<td><strong>Image Sample</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Completed Filename</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Alignment</strong></td>
+<td>Float left (text wrap)</td>
+</tr>
+<tr>
+<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>
+<p><strong>&#x2610;</strong> Decorative</p></td>
+<td>TI-30Xa Calculator</td>
+</tr>
+<tr>
+<td><strong>Citation</strong></td>
+<td><p>Other</p>
+<p>Public Domain</p></td>
+</tr>
+<tr>
+<td><strong>Caption</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Comments for CMP</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<h1
+id="demonstrate-operations-for-fractions-decimals-and-percentages">1.2.0:
+Demonstrate Operations for Fractions, Decimals and Percentages</h1>
+<p>In this section you will consider some features of the TI-30Xa
+calculator for working with decimals, fractions and percentages. The
+purpose is to introduce you to how to utilize such features to simplify
+your efforts with later computations. Calculations involving these
+features will be considered later in this course.</p>
+<p>For example, you will consider how to input fractions and mixed
+numbers into the calculator, which will greatly reduce the effort
+required to perform calculations involving fractions.</p>
+<h1 id="inputting-fractions">1.2.1 Inputting Fractions</h1>
+<p>Fractions are common in the trades as the Imperial system is commonly
+used in North America. Utilizing the fraction features of the TI-30Xa
+simplifies any calculation that involves fractions. To utilize these
+features, you must know how to input fractions into this model of
+calculator.</p>
+<p>Fractions and mixed numbers may be input directly into the TI-30Xa
+and used for calculation.</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Graphics Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Size</strong></td>
+<td><p><em>width for landscape orientation and height for portrait
+orientation</em></p>
+<p>Sized for readability</p>
+<p>Size what would look good right floated beside the content
+below.</p></td>
+</tr>
+<tr>
+<td><strong>GDA Instructions</strong></td>
+<td><p>use image from LO1 intro and add red box around the
+a<sup>b</sup>/<sub>c</sub> key.</p>
+<p><a
+href="https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg">https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg</a></p></td>
+</tr>
+<tr>
+<td><strong>Special Use</strong></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Image Sample</strong></td>
+<td><img src="media/image9.jpeg"
+style="width:1.59375in;height:3.04167in"
+alt="A grey calculator with a display AI-generated content may be incorrect." /></td>
+</tr>
+<tr>
+<td><strong>Completed Filename</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Alignment</strong></td>
+<td>Float right (text wrap)</td>
+</tr>
+<tr>
+<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>
+<p><strong>&#x2610;</strong> Decorative</p></td>
+<td>Picture of the TI-30Xa calculator with the
+a<sup>b</sup>/<sub>c</sub> (fraction) key emphasized.</td>
+</tr>
+<tr>
+<td><strong>Citation</strong></td>
+<td><p>Other</p>
+<p>Public Domain</p></td>
+</tr>
+<tr>
+<td><strong>Caption</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Comments for CMP</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<p>To input a fraction:</p>
+<ul>
+<li><p>input the numerator&#x2019;s value, then</p></li>
+<li><p>press the &lt;kbd
+class="kbd-functions"&gt;a&lt;sup&gt;b&lt;/sup&gt;/&lt;sub&gt;c&lt;/sub&gt;&lt;/kbd&gt;
+key, then</p></li>
+<li><p>input the denominator&#x2019;s value.</p></li>
+</ul>
+<p>The fraction will be displayed on the calculator.</p>
+<p>[[style: standout]]</p>
+<h2 id="example">Example</h2>
+<p>To input the fraction \(\frac12\) into the calculator press:</p>
+<p>1 &lt;kbd
+class="kbd-functions"&gt;a&lt;sup&gt;b&lt;/sup&gt;/&lt;sub&gt;c&lt;/sub&gt;&lt;/kbd&gt;2</p>
+<p>The calculator will display <strong>&lt;strong&gt;1 &lt;span
+style="vertical-align: bottom;"&gt;&amp;#x2A3C;&lt;/span&gt;
+2&lt;/strong&gt;</strong> (the fraction \(frac12\) ).</p>
+<p>[[/style]]</p>
+<h1 id="activity-inputting-fractions">1.2.2 Activity: Inputting
+Fractions</h1>
+<p>[[style: instruction]]</p>
+<h2 id="instructions-1">Instructions</h2>
+<ol type="1">
+<li><p>Place each of the numbers on the right side of the TI-30Xa
+Calculator over the keys on the calculator in the order you press them
+to complete the following.</p>
+<ol type="a">
+<li><p>Turn On the calculator</p></li>
+<li><p>Input the fraction \(\frac38\)</p></li>
+</ol></li>
+<li><p>Choose Submit once you have placed all the coordinates.</p></li>
+<li><p>Choose Retry to try again.</p></li>
+</ol>
+<p>[[/style]]</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Interactive Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Interactive Type</strong></td>
+<td><strong>H5P -- Drag and Drop</strong></td>
+</tr>
+<tr>
+<td><p><strong>Activity Details</strong></p>
+<p><strong>&#x2610;</strong> Details below ticket</p></td>
+<td><p><em>Add details here or immediately after the request ticket. For
+H5P include a title.</em></p>
+<p>Create an interactive the similar to 1.1.6 Activity: Basic Calculator
+Operation with four numbers on the right that can be placed in the
+dropzone in the correct order to do the following:</p>
+<p>On/C button</p>
+<p>3</p>
+<p>a b/c button</p>
+<p>8</p></td>
+</tr>
+<tr>
+<td><strong>Graphics &amp; Media Support</strong></td>
+<td>Yes <em>If yes, provide details; add graphic request(s) below
+interactive request.</em></td>
+</tr>
+<tr>
+<td><p><strong>Text Version</strong></p>
+<p><em>Add click to reveal for accessibility?</em></p></td>
+<td><strong>No</strong> <em>If yes, provide details/description (e.g.,
+&#x201C;Use table from activity details.&#x201D;)</em></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<h1 id="inputting-mixed-numbers">1.2.3 Inputting Mixed Numbers</h1>
+<p>Mixed numbers are a combination of a whole number and a (proper)
+fraction. For example, we write the value \(2+\frac34\) more simply as a
+<strong>mixed number</strong> \[2\,\frac34\] by juxtaposition. This is a
+common notation in Imperial length measurement. Mixed numbers are
+equivalent to <strong>improper fractions</strong> which have numerators
+that are larger than the denominator. For example, the mixed number
+\(2+\frac34\) is equivalent to the improper fraction
+\(\frac{11}{4}\).</p>
+<p>To input a mixed number:</p>
+<ul>
+<li><p>input the whole number, then</p></li>
+<li><p>press the &lt;kbd
+class=&#x201C;kbd-functions&#x201D;&gt;a&lt;sup&gt;b&lt;/sup&gt;/&lt;sub&gt;c&lt;/sub&gt;&lt;/kbd&gt;
+key, then</p></li>
+<li><p>input the numerator&#x2019;s value, then</p></li>
+<li><p>press the &lt;kbd
+class=&#x201C;kbd-functions&#x201D;&gt;a&lt;sup&gt;b&lt;/sup&gt;/&lt;sub&gt;c&lt;/sub&gt;&lt;/kbd&gt;
+key, then</p></li>
+<li><p>input the denominator&#x2019;s value.</p></li>
+</ul>
+<p>The mixed number will be displayed on the calculator.</p>
+<p>[[style: callout]]</p>
+<h2 id="example-1">Example</h2>
+<p>To input the mixed number \(3\,\frac45\) into the calculator
+press:</p>
+<p>3 &lt;kbd
+class=&#x201C;kbd-functions&#x201D;&gt;a&lt;sup&gt;b&lt;/sup&gt;/&lt;sub&gt;c&lt;/sub&gt;&lt;/kbd&gt;
+4 &lt;kbd
+class=&#x201C;kbd-functions&#x201D;&gt;a&lt;sup&gt;b&lt;/sup&gt;/&lt;sub&gt;c&lt;/sub&gt;&lt;/kbd&gt;
+5</p>
+<p>The calculator will display <strong>&lt;strong&gt;3 _ 4 &lt;span
+style="vertical-align: bottom;"&gt;&amp;#x2A3C;&lt;/span&gt;
+5&lt;/strong&gt;</strong> (the mixed number \(3\,\frac45\) ).</p>
+<p>[[/style]]</p>
+<h1 id="activity-inputting-mixed-numbers">1.2.4 Activity: Inputting
+Mixed Numbers</h1>
+<p>[[style: instruction]]</p>
+<h2 id="instructions-2">Instructions</h2>
+<ol type="1">
+<li><p>Place each of the numbers on the right side of the TI-30Xa
+Calculator over the keys on the calculator in the order you press them
+to complete the following.</p>
+<ol type="a">
+<li><p>Turn On the calculator</p></li>
+<li><p>Input the mixed number \(4\,\frac58\)</p></li>
+</ol></li>
+<li><p>Choose Submit once you have placed all the coordinates.</p></li>
+<li><p>Choose Retry to try again.</p></li>
+</ol>
+<p>[[/style]]</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Interactive Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Interactive Type</strong></td>
+<td><strong>H5P -- Drag and Drop</strong></td>
+</tr>
+<tr>
+<td><p><strong>Activity Details</strong></p>
+<p><strong>&#x2610;</strong> Details below ticket</p></td>
+<td><p><em>Add details here or immediately after the request ticket. For
+H5P include a title.</em></p>
+<p>Create an interactive the similar to 1.1.6 Activity: Basic Calculator
+Operation with six numbers on the right that can be placed in the
+dropzone in the correct order to do the following:</p>
+<p>On/C button</p>
+<p>4</p>
+<p>a b/c button</p>
+<p>5</p>
+<p>a b/c button</p>
+<p>8</p></td>
+</tr>
+<tr>
+<td><strong>Graphics &amp; Media Support</strong></td>
+<td>Yes <em>If yes, provide details; add graphic request(s) below
+interactive request.</em></td>
+</tr>
+<tr>
+<td><p><strong>Text Version</strong></p>
+<p><em>Add click to reveal for accessibility?</em></p></td>
+<td><strong>No</strong> <em>If yes, provide details/description (e.g.,
+&#x201C;Use table from activity details.&#x201D;)</em></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<h1 id="converting-between-mixed-numbers-and-improper-fractions">1.2.5
+Converting Between Mixed Numbers and Improper Fractions</h1>
+<p>To convert between a mixed number and an improper fraction:</p>
+<ul>
+<li><p>input the mixed number or improper fraction (if not already
+displayed), then</p></li>
+<li><p>press the &lt;kbd class="kbd-2nd"&gt;2nd&lt;/kbd&gt; key,
+then</p></li>
+<li><p>press the &lt;kbd
+class="kbd-functions"&gt;a&lt;sup&gt;b&lt;/sup&gt;/&lt;sub&gt;c&lt;/sub&gt;&lt;/kbd&gt;
+key (which accesses the secondary function &lt;span
+class="calc-green"&gt;d/c &lt;/span&gt;)</p></li>
+</ul>
+<p>[[style:standout]]</p>
+<h2 id="example-2">Example</h2>
+<p>To convert the mixed number \(3\,\frac45\) into an improper fraction
+press:</p>
+<p>3 &lt;kbd
+class=&#x201C;kbd-functions&#x201D;&gt;a&lt;sup&gt;b&lt;/sup&gt;/&lt;sub&gt;c&lt;/sub&gt;&lt;/kbd&gt;
+4 &lt;kbd
+class=&#x201C;kbd-functions&#x201D;&gt;a&lt;sup&gt;b&lt;/sup&gt;/&lt;sub&gt;c&lt;/sub&gt;&lt;/kbd&gt;
+5 &lt;kbd class="kbd-2nd"&gt;2nd&lt;/kbd&gt; &lt;kbd
+class=&#x201C;kbd-functions&#x201D;&gt;a&lt;sup&gt;b&lt;/sup&gt;/&lt;sub&gt;c&lt;/sub&gt;&lt;/kbd&gt;</p>
+<p>The calculator will display <strong>&lt;strong&gt;19 &lt;span
+style="vertical-align: bottom;"&gt;&amp;#x2A3C;&lt;/span&gt;
+5&lt;/strong&gt;</strong>.</p>
+<p>[[/style]]</p>
+<p>[[style:standout]]</p>
+<h2 id="example-3">Example</h2>
+<p>To convert the improper fraction \(\frac{15}{8}\) to a mixed number
+press:</p>
+<p>1, 5 &lt;kbd
+class=&#x201C;kbd-functions&#x201D;&gt;a&lt;sup&gt;b&lt;/sup&gt;/&lt;sub&gt;c&lt;/sub&gt;&lt;/kbd&gt;
+8 &lt;kbd class="kbd-2nd"&gt;2nd&lt;/kbd&gt; &lt;kbd
+class=&#x201C;kbd-functions&#x201D;&gt;a&lt;sup&gt;b&lt;/sup&gt;/&lt;sub&gt;c&lt;/sub&gt;&lt;/kbd&gt;</p>
+<p>The calculator will display <strong>1 _ 7 &amp;#x2A3C;
+8</strong>.</p>
+<p>[[/style]]</p>
+<h1
+id="activity-converting-between-mixed-numbers-and-improper-fractions">1.2.6
+Activity: Converting Between Mixed Numbers and Improper Fractions</h1>
+<p>[[style:instruction]]</p>
+<h2 id="instructions-3">Instructions</h2>
+<ol type="1">
+<li><p>Place each of the numbers on the right side of the TI-30Xa
+Calculator over the keys on the calculator in the order you press them
+to complete the following.</p>
+<ol type="a">
+<li><p>Turn On the calculator</p></li>
+<li><p>Input the improper fraction \(\frac{19}{4}\)</p></li>
+<li><p>Convert the fraction to a mixed number</p></li>
+</ol></li>
+<li><p>Choose Submit once you have placed all the coordinates.</p></li>
+<li><p>Choose Retry to try again.</p></li>
+</ol>
+<p>[[/style]]</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Interactive Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Interactive Type</strong></td>
+<td><strong>H5P -- Drag and Drop</strong></td>
+</tr>
+<tr>
+<td><p><strong>Activity Details</strong></p>
+<p><strong>&#x2610;</strong> Details below ticket</p></td>
+<td><p><em>Add details here or immediately after the request ticket. For
+H5P include a title.</em></p>
+<p>Create an interactive the similar to 1.1.6 Activity: Basic Calculator
+Operation with seven numbers on the right that can be placed in the
+dropzone in the correct order to do the following:</p>
+<p>On/C button</p>
+<p>1</p>
+<p>9</p>
+<p>a b/c button</p>
+<p>4</p>
+<p>2<sup>nd</sup> button</p>
+<p>a b/c button</p></td>
+</tr>
+<tr>
+<td><strong>Graphics &amp; Media Support</strong></td>
+<td>Yes <em>If yes, provide details; add graphic request(s) below
+interactive request.</em></td>
+</tr>
+<tr>
+<td><p><strong>Text Version</strong></p>
+<p><em>Add click to reveal for accessibility?</em></p></td>
+<td><strong>No</strong> <em>If yes, provide details/description (e.g.,
+&#x201C;Use table from activity details.&#x201D;)</em></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<h1 id="converting-a-fractionmixed-number-to-a-decimal">1.2.7 Converting
+a Fraction/Mixed Number to a Decimal</h1>
+<p>Sometimes it may be beneficial to work with the decimal form of a
+number instead of its fraction form. The TI-30Xa may convert between
+these forms.</p>
+<p>To convert a fraction/mixed number to a decimal:</p>
+<ul>
+<li><p>input the fraction/mixed number (if not already displayed),
+then</p></li>
+<li><p>press the &lt;kbd class="kbd-2nd"&gt;2nd&lt;/kbd&gt; key,
+then</p></li>
+<li><p>press the &lt;kbd class="kbd-functions"&gt;&amp;larr;&lt;/kbd&gt;
+key (which accesses the secondary function&lt;span
+class="calc-green"&gt;d/c &lt;/span)</p></li>
+</ul>
+<p>[[style:standout]]</p>
+<h2 id="example-4">Example</h2>
+<p>To convert the fraction \(\frac45\) to a decimal, input the fraction
+(4 &lt;kbd
+class=&#x201C;kbd-functions&#x201D;&gt;a&lt;sup&gt;b&lt;/sup&gt;/&lt;sub&gt;c&lt;/sub&gt;&lt;/kbd&gt;
+5 ) then press &lt;kbd class="kbd-2nd"&gt;2nd&lt;/kbd&gt; &lt;kbd
+class="kbd-functions"&gt;&amp;larr;&lt;/kbd&gt; .</p>
+<p>The decimal <strong>0.8</strong> should appear on the display.</p>
+<p>[[/style]]</p>
+<p>[[style:standout]]</p>
+<h2 id="note-3">Note</h2>
+<p>You may also convert a fraction to a decimal by using the &lt;kbd
+class="kbd-operators"&gt;&amp;divide;&lt;/kbd&gt; key. For example,
+typing</p>
+<p>4 &lt;kbd class="kbd-operators"&gt;&amp;divide;&lt;/kbd&gt; 5 &lt;kbd
+class="kbd-operators"&gt;=&lt;/kbd&gt;</p>
+<p>also converts \(\frac45\) to the decimal 0.8 as in the example
+above.</p>
+<p>[[/style]]</p>
+<h1 id="activity-converting-fractions-to-decimals">1.2.8 Activity:
+Converting Fractions to Decimals</h1>
+<p>[[style:instruction]]</p>
+<h2 id="instructions-4">Instructions</h2>
+<ol type="1">
+<li><p>Place each of the numbers on the right side of the TI-30Xa
+Calculator over the keys on the calculator in the order you press them
+to complete the following.</p>
+<ol type="a">
+<li><p>Turn On the calculator</p></li>
+<li><p>Input the fraction \(\frac{7}{20}\)</p></li>
+<li><p>Convert the fraction to a decimal</p></li>
+</ol></li>
+<li><p>Choose Submit once you have placed all the coordinates.</p></li>
+<li><p>Choose Retry to try again.</p></li>
+</ol>
+<p>[[/style]]</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Interactive Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Interactive Type</strong></td>
+<td><strong>H5P -- Drag and Drop</strong></td>
+</tr>
+<tr>
+<td><p><strong>Activity Details</strong></p>
+<p><strong>&#x2610;</strong> Details below ticket</p></td>
+<td><p><em>Add details here or immediately after the request ticket. For
+H5P include a title.</em></p>
+<p>Create an interactive the similar to 1.1.6 Activity: Basic Calculator
+Operation with seven numbers on the right that can be placed in the
+dropzone in the correct order to do the following:</p>
+<p>On/C button</p>
+<p>7</p>
+<p>a b/c button</p>
+<p>2</p>
+<p>0</p>
+<p>2<sup>nd</sup> button</p>
+<p>Back arrow button</p></td>
+</tr>
+<tr>
+<td><strong>Graphics &amp; Media Support</strong></td>
+<td>Yes <em>If yes, provide details; add graphic request(s) below
+interactive request.</em></td>
+</tr>
+<tr>
+<td><p><strong>Text Version</strong></p>
+<p><em>Add click to reveal for accessibility?</em></p></td>
+<td><strong>No</strong> <em>If yes, provide details/description (e.g.,
+&#x201C;Use table from activity details.&#x201D;)</em></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<h1 id="decimals-with-the-ti-30xa-calculator">1.2.9 Decimals with the
+TI-30Xa Calculator</h1>
+<p>Decimal notation represents an extension of the usual base-10
+place-value number system to include values between whole numbers. For
+example, the decimal 15.4 represents a value bigger than fifteen but
+less than sixteen; similarly, the decimal representation of the number
+\(\sqrt{2}=1.41421\ldots\) (the length of the diagonal in a square of
+side length one) represents a value between one and two.</p>
+<p>The TI-30Xa calculator has a limited display, so it can only display
+terminating decimals (i.e., decimals with only a certain number of
+digits); values for non-terminating decimals like
+\(\sqrt{2}=1.41421\ldots\) are displayed to a maximum of ten digits. As
+we set the calculator to display at most two decimal placeholders, this
+is not a significant issue; however, there are situations where the
+limitation of the display may limit the features of the calculator.</p>
+<p>For example, the calculator can convert decimals into fractions;
+however, the fraction may be &#x201C;too big&#x201D; to display, so no conversion is
+done. For most examples in this course, the calculator should be able to
+convert decimals to an equivalent fraction.</p>
+<p>Decimal values can be entered by pressing the &lt;kbd
+class="kbd-numbers"&gt;.&lt;/kbd&gt; key at the appropriate time.</p>
+<p>[[style:instruction]]</p>
+<h2 id="example-5">Example</h2>
+<p>To enter 19.5 press:</p>
+<ol type="1">
+<li><p>9 &lt;kbd class="kbd-numbers"&gt;.&lt;/kbd&gt; 5</p></li>
+</ol>
+<p>[[/style]]</p>
+<h1 id="converting-a-decimal-to-a-fraction">1.2.10 Converting a Decimal
+to a Fraction</h1>
+<p>The TI-30Xa has the ability to convert decimals into (reduced)
+fractions. Due to restrictions on the display, the calculator may not
+convert some decimals into a corresponding fraction.</p>
+<p>To convert a decimal to a fraction:</p>
+<ul>
+<li><p>input the decimal (if not already displayed), then</p></li>
+<li><p>press the &lt;kbd class="kbd-2nd"&gt;2nd&lt;/kbd&gt; key,
+then</p></li>
+<li><p>press the &lt;kbd class="kbd-functions"&gt;&amp;larr;&lt;/kbd&gt;
+key.</p></li>
+</ul>
+<p>[[style:callout]]</p>
+<h2 id="note-4">Note</h2>
+<p>If no fraction is displayed, the decimal cannot be displayed in its
+fraction form by the TI-30Xa.</p>
+<p>[[/style]]</p>
+<p>[[style:callout]]</p>
+<h2 id="example-6">Example</h2>
+<p>To convert the decimal 0.5 to a (reduced) fraction:</p>
+<ul>
+<li><p>press 0 &lt;kbd class="kbd-numbers"&gt;.&lt;/kbd&gt; 5 (if not
+already on display) then</p></li>
+<li><p>press the &lt;kbd class="kbd-2nd"&gt;2nd&lt;/kbd&gt; key,
+then</p></li>
+<li><p>press the &lt;kbd class="kbd-functions"&gt;&amp;larr;&lt;/kbd&gt;
+key.</p></li>
+</ul>
+<p>The fraction \(\frac12\) appears on the display as
+<strong>&lt;strong&gt;1 &lt;span style="vertical-align:
+bottom;"&gt;&amp;#x2A3C;&lt;/span&gt; 2&lt;/strong&gt;</strong>.</p>
+<p>[[/style]]</p>
+<h1 id="activity-converting-decimals-to-fractions">1.2.11 Activity:
+Converting Decimals to Fractions</h1>
+<p>[[style:standout]]</p>
+<h2 id="instructions-5">Instructions</h2>
+<ol type="1">
+<li><p>Place each of the numbers on the right side of the TI-30Xa
+Calculator over the keys on the calculator in the order you press them
+to complete the following.</p>
+<ol type="a">
+<li><p>Turn On the calculator</p></li>
+<li><p>Input the decimal 0.35</p></li>
+<li><p>Convert the decimal to a fraction</p></li>
+</ol></li>
+<li><p>Choose Submit once you have placed all the coordinates.</p></li>
+<li><p>Choose Retry to try again.</p></li>
+</ol>
+<p>[[/style]]</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Interactive Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Interactive Type</strong></td>
+<td><strong>H5P -- Drag and Drop</strong></td>
+</tr>
+<tr>
+<td><p><strong>Activity Details</strong></p>
+<p><strong>&#x2610;</strong> Details below ticket</p></td>
+<td><p><em>Add details here or immediately after the request ticket. For
+H5P include a title.</em></p>
+<p>Create an interactive the similar to 1.1.6 Activity: Basic Calculator
+Operation with seven numbers on the right that can be placed in the
+dropzone in the correct order to do the following:</p>
+<p>On/C button</p>
+<p>0</p>
+<p>.</p>
+<p>3</p>
+<p>5</p>
+<p>2<sup>nd</sup> button</p>
+<p>Back arrow button</p></td>
+</tr>
+<tr>
+<td><strong>Graphics &amp; Media Support</strong></td>
+<td>Yes <em>If yes, provide details; add graphic request(s) below
+interactive request.</em></td>
+</tr>
+<tr>
+<td><p><strong>Text Version</strong></p>
+<p><em>Add click to reveal for accessibility?</em></p></td>
+<td><strong>No</strong> <em>If yes, provide details/description (e.g.,
+&#x201C;Use table from activity details.&#x201D;)</em></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<h1 id="percentages-with-the-ti-30xa-calculator">1.2.12 Percentages with
+the TI-30Xa Calculator</h1>
+<p>By definition, percentages compare a numerical value to the number
+one hundred (&#x201C;per hundred&#x201D;). Percentages are another convenient
+representation of numbers and are a common means of comparing two
+quantities. For example, we may compare deductions to gross pay to get a
+sense of how much is being deducted from a paycheck relative to what we
+earned.</p>
+<p>Depending on the situation, it may be convenient to work with
+percentages, decimals, or fractions, so conversion between these forms
+is beneficial. In particular, percentages are often changed to their
+decimal equivalents. The TI-30Xa calculator has a built-in feature to do
+this conversion, which makes calculations such as percentage changes
+quick and easy.</p>
+<p>[[style:standout]]</p>
+<h2 id="note-5">Note</h2>
+<p>The calculator has no built-in function for converting from decimal
+to percentage.</p>
+<p>[[/style]]</p>
+<p>To convert a percentage to a decimal:</p>
+<ul>
+<li><p>input the percentage value, then</p></li>
+<li><p>press &lt;kbd class="kbd-2nd"&gt;2nd&lt;/kbd&gt;, then</p></li>
+<li><p>press 2</p></li>
+</ul>
+<p>[[style:standout]]</p>
+<h2 id="example-7">Example</h2>
+<p>To convert 56% to a decimal press:</p>
+<p>5 6 &lt;kbd class="kbd-2nd"&gt;2nd&lt;/kbd&gt; 2</p>
+<p>The calculator will display <strong>0.56</strong>.</p>
+<p>[[/style]]</p>
+<h1 id="section"></h1>
+<h1 id="use-order-of-operations-to-simplify-expressions">1.3.0: Use
+Order of Operations to Simplify Expressions</h1>
+<p>Whenever multiple distinct operations like addition, subtraction,
+multiplication or division are required for a computation you must
+perform those operations in a certain order. The proper order so that
+computations are performed correctly is commonly known as the
+<strong>order of operations</strong>. This ordering requires you to:</p>
+<ol type="1">
+<li><p>complete operations contained by brackets, then</p></li>
+<li><p>evaluate any exponents, then</p></li>
+<li><p>perform multiplication or division, then finally</p></li>
+<li><p>perform addition or subtraction.</p></li>
+</ol>
+<p>Brackets (or parentheses) are used to isolate certain components so,
+naturally, these components are computed first.</p>
+<p>In this section you will consider how to use the bracket
+(parenthesis) features of the TI-30Xa to group calculations so that
+order of operations is performed properly. You will also consider how to
+calculate exponents using the calculator.</p>
+<p>[[style:standout]]</p>
+<h2 id="note-6">Note</h2>
+<p>The calculator can follow the order of operations for relatively
+simple calculations; however, it is recommended that you utilize
+brackets to ensure that your computations are properly interpreted by
+the calculator.</p>
+<p>[[/style]]</p>
+<h1 id="brackets-with-the-ti-30xa-calculator">1.3.1 Brackets with the
+TI-30Xa Calculator</h1>
+<p>As the TI-30Xa can group calculations, you may enter a computation
+exactly as it is written in a print resource like a course manual (i.e.,
+whenever there is a bracket/parenthesis written you may input it into
+the calculator).</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Graphics Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Size</strong></td>
+<td><p><em>width for landscape orientation and height for portrait
+orientation</em></p>
+<p>Sized for readability</p>
+<p>Size what would look good right floated beside the content
+below.</p></td>
+</tr>
+<tr>
+<td><strong>GDA Instructions</strong></td>
+<td><p>use image from LO1 intro and add red box around the brackets.</p>
+<p><a
+href="https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg">https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg</a></p></td>
+</tr>
+<tr>
+<td><strong>Special Use</strong></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Image Sample</strong></td>
+<td><img src="media/image10.jpeg"
+style="width:1.59375in;height:3.05208in"
+alt="A grey calculator with a red square AI-generated content may be incorrect." /></td>
+</tr>
+<tr>
+<td><strong>Completed Filename</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Alignment</strong></td>
+<td>Float right (text wrap)</td>
+</tr>
+<tr>
+<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>
+<p><strong>&#x2610;</strong> Decorative</p></td>
+<td>Picture of the TI-30Xa calculator with the ON/C key emphasized.</td>
+</tr>
+<tr>
+<td><strong>Citation</strong></td>
+<td><p>Other</p>
+<p>Public Domain</p></td>
+</tr>
+<tr>
+<td><strong>Caption</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Comments for CMP</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<p>To begin a separate calculation with the calculator:</p>
+<ul>
+<li><p>press the &lt;kbd class="kbd-functions"&gt;(&lt;/kbd&gt;
+key.</p></li>
+</ul>
+<p>To end a separate calculation with the calculator:</p>
+<ul>
+<li><p>press the &lt;kbd
+class="kbd-functions"&gt;)&lt;/kbd&gt;key.</p></li>
+</ul>
+<p>[[style:standout]]</p>
+<h2 id="example-8">Example</h2>
+<p>To simplify the expression \(2+3(6-5)\), press:</p>
+<p>2 &lt;kbd class="kbd-operators"&gt;+&lt;/kbd&gt;3 &lt;kbd
+class="kbd-operators"&gt;X&lt;/kbd&gt; &lt;kbd
+class="kbd-functions"&gt;(&lt;/kbd&gt; 6 &lt;kbd
+class="kbd-operators"&gt;-&lt;/kbd&gt;5 &lt;kbd
+class="kbd-functions"&gt;)&lt;/kbd&gt; &lt;kbd
+class="kbd-operators"&gt;=&lt;/kbd&gt;</p>
+<p>The calculator will display the correct value <strong>5</strong>.</p>
+<p>[[/style]]</p>
+<p>[[style:standout]]</p>
+<h2 id="note-7">Note</h2>
+<p>If you don&#x2019;t use the bracket feature of the calculator and press:</p>
+<p>&lt;kbd class="kbd-numbers"&gt;2&lt;/kbd&gt; &lt;kbd
+class="kbd-operators"&gt;+&lt;/kbd&gt; &lt;kbd
+class="kbd-numbers"&gt;3&lt;/kbd&gt; &lt;kbd
+class="kbd-operators"&gt;X/kbd&gt; &lt;kbd
+class="kbd-numbers"&gt;6&lt;/kbd&gt; &lt;kbd
+class="kbd-operators"&gt;-&lt;/kbd&gt;&lt;kbd
+class="kbd-numbers"&gt;5&lt;/kbd&gt; &lt;kbd
+class="kbd-operators"&gt;=&lt;/kbd&gt;</p>
+<p>the calculator will return <strong>15</strong> as it interprets the
+input as \[2+3\times 6 &#x2013; 5\] which would equal 15 due to the order of
+operations.</p>
+<p>[[/style]]</p>
+<p>[[style:standout]]</p>
+<h2 id="note-8">Note</h2>
+<p>It is recommended that you input expressions into the TI-30Xa
+calculator as they are printed.</p>
+<p>[[/style]]</p>
+<h1 id="activity-using-brackets">1.3.2 Activity: Using Brackets</h1>
+<p>[[style:standout]]</p>
+<h2 id="instructions-6">Instructions</h2>
+<ol type="1">
+<li><p>Place each of the numbers on the right side of the TI-30Xa
+Calculator over the keys on the calculator in the order you press them
+to complete the following.</p>
+<ul>
+<li><p>Turn On the calculator</p></li>
+<li><p>Use brackets to evaluate the expression \(2(4+3)\)</p></li>
+</ul></li>
+<li><p>Choose Submit once you have placed all the coordinates.</p></li>
+<li><p>Choose Retry to try again.</p></li>
+</ol>
+<p>[[/style]]</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Interactive Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Interactive Type</strong></td>
+<td><strong>H5P -- Drag and Drop</strong></td>
+</tr>
+<tr>
+<td><p><strong>Activity Details</strong></p>
+<p><strong>&#x2610;</strong> Details below ticket</p></td>
+<td><p><em>Add details here or immediately after the request ticket. For
+H5P include a title.</em></p>
+<p>Create an interactive the similar to 1.1.6 Activity: Basic Calculator
+Operation with nine numbers on the right that can be placed in the
+dropzone in the correct order to do the following:</p>
+<p>On/C button</p>
+<p>2</p>
+<p>Multiply button</p>
+<p>( button</p>
+<p>4</p>
+<p>Add button</p>
+<p>3</p>
+<p>) button</p>
+<p>= button</p></td>
+</tr>
+<tr>
+<td><strong>Graphics &amp; Media Support</strong></td>
+<td>Yes <em>If yes, provide details; add graphic request(s) below
+interactive request.</em></td>
+</tr>
+<tr>
+<td><p><strong>Text Version</strong></p>
+<p><em>Add click to reveal for accessibility?</em></p></td>
+<td><strong>No</strong> <em>If yes, provide details/description (e.g.,
+&#x201C;Use table from activity details.&#x201D;)</em></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<h1 id="exponents-with-the-ti-30xa-calculator">1.3.3 Exponents with the
+TI-30Xa Calculator</h1>
+<p>Exponents are considered second in the order of operation and should
+be determined with care. Terms involving exponents are composed of two
+parts: the base and the power (i.e., exponent). For example, the
+expression \[2^3\] has a base of 2 and a power (exponent) of 3.</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Graphics Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Size</strong></td>
+<td><p><em>width for landscape orientation and height for portrait
+orientation</em></p>
+<p>Sized for readability</p>
+<p>Size what would look good right floated beside the content
+below.</p></td>
+</tr>
+<tr>
+<td><strong>GDA Instructions</strong></td>
+<td><p>use image from LO1 intro and add red box around the exponent
+<strong>y<sup>x</sup></strong> key.</p>
+<p><a
+href="https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg">https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg</a></p></td>
+</tr>
+<tr>
+<td><strong>Special Use</strong></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Image Sample</strong></td>
+<td><img src="media/image11.jpeg"
+style="width:1.72917in;height:3.32292in"
+alt="A grey calculator with a square in the center AI-generated content may be incorrect." /></td>
+</tr>
+<tr>
+<td><strong>Completed Filename</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Alignment</strong></td>
+<td>Float right (text wrap)</td>
+</tr>
+<tr>
+<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>
+<p><strong>&#x2610;</strong> Decorative</p></td>
+<td>Picture of the TI-30Xa calculator with the exponent key
+emphasized.</td>
+</tr>
+<tr>
+<td><strong>Citation</strong></td>
+<td><p>Other</p>
+<p>Public Domain</p></td>
+</tr>
+<tr>
+<td><strong>Caption</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Comments for CMP</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<p>To calculate with exponents:</p>
+<ul>
+<li><p>input the base value, then</p></li>
+<li><p>press the &lt;kbd
+class="kbd-functions"&gt;y&lt;sup&gt;x&lt;/sup&gt;&lt;/kbd&gt; key,
+then</p></li>
+<li><p>input the exponent, then</p></li>
+<li><p>press the &lt;kbd class="kbd-operators"&gt;=&lt;/kbd&gt;
+key.</p></li>
+</ul>
+<p>[[style:standout]]</p>
+<h2 id="example-9">Example</h2>
+<p>To calculate the value of \(8^5\), press:</p>
+<p>8 &lt;kbd
+class="kbd-functions"&gt;y&lt;sup&gt;x&lt;/sup&gt;&lt;/kbd&gt;5 &lt;kbd
+class="kbd-operators"&gt;=&lt;/kbd&gt;</p>
+<p>The calculator will display the value <strong>32768</strong>.</p>
+<p>[[/style]]</p>
+<p>[[style:standout]]</p>
+<h2 id="note-9">Note</h2>
+<p>To calculate the square of a value you may also use the &lt;kbd
+class="kbd-functions"&gt;x&lt;sup&gt;2&lt;/sup&gt;&lt;/kbd&gt;
+instead.</p>
+<p>[[/style]]</p>
+<h1 id="activity-using-exponents">1.3.4 Activity: Using Exponents</h1>
+<p>[[style:standout]]</p>
+<h2 id="instructions-7">Instructions</h2>
+<ol type="1">
+<li><p>Place each of the numbers on the right side of the TI-30Xa
+Calculator over the keys on the calculator in the order you press them
+to complete the following.</p>
+<ol type="a">
+<li><p>Turn On the calculator</p></li>
+<li><p>Use the exponent key to evaluate the expression \(7^4\)</p></li>
+</ol></li>
+<li><p>Choose Submit once you have placed all the coordinates.</p></li>
+<li><p>Choose Retry to try again.</p></li>
+</ol>
+<p>[[/style]]</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Interactive Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Interactive Type</strong></td>
+<td><strong>H5P -- Drag and Drop</strong></td>
+</tr>
+<tr>
+<td><p><strong>Activity Details</strong></p>
+<p><strong>&#x2610;</strong> Details below ticket</p></td>
+<td><p><em>Add details here or immediately after the request ticket. For
+H5P include a title.</em></p>
+<p>Create an interactive the similar to 1.1.6 Activity: Basic Calculator
+Operation with five numbers on the right that can be placed in the
+dropzone in the correct order to do the following:</p>
+<p>On/C button</p>
+<p>7</p>
+<p>y^x button</p>
+<p>4</p>
+<p>= button</p></td>
+</tr>
+<tr>
+<td><strong>Graphics &amp; Media Support</strong></td>
+<td>Yes <em>If yes, provide details; add graphic request(s) below
+interactive request.</em></td>
+</tr>
+<tr>
+<td><p><strong>Text Version</strong></p>
+<p><em>Add click to reveal for accessibility?</em></p></td>
+<td><strong>No</strong> <em>If yes, provide details/description (e.g.,
+&#x201C;Use table from activity details.&#x201D;)</em></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<h1 id="use-the-calculator-memory">1.4.0: Use the Calculator Memory</h1>
+<p>When performing calculations involving multiple steps it becomes easy
+to lose track of intermediate values. Additionally, if those values are
+not terminating decimals like 13.5 or 9.125 but represent irrational
+numbers like \(\pi=3.1415926&#x2026;\) you may be tempted to round them to a
+more convenient value like \(\pi\approx 3.14\). This is not recommended
+as rounding skews from the true value (potentially by a significant
+amount) and may require careful record-keeping on your part.</p>
+<p>To avoid introducing unnecessary rounding error and to save you from
+record-keeping, the TI-30Xa has three built-in memory registers that may
+be used to store numerical values.</p>
+<h1 id="storing-a-value-into-memory">1.4.1 Storing a Value into
+Memory</h1>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Graphics Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Size</strong></td>
+<td><p><em>width for landscape orientation and height for portrait
+orientation</em></p>
+<p>Sized for readability</p>
+<p>Size what would look good right floated beside the content
+below.</p></td>
+</tr>
+<tr>
+<td><strong>GDA Instructions</strong></td>
+<td><p>use image from LO1 intro and add red box around the STO key.</p>
+<p><a
+href="https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg">https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg</a></p></td>
+</tr>
+<tr>
+<td><strong>Special Use</strong></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Image Sample</strong></td>
+<td><img src="media/image18.jpeg"
+style="width:1.77083in;height:3.38542in"
+alt="A grey calculator with a display AI-generated content may be incorrect." /></td>
+</tr>
+<tr>
+<td><strong>Completed Filename</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Alignment</strong></td>
+<td>Float right (text wrap)</td>
+</tr>
+<tr>
+<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>
+<p><strong>&#x2610;</strong> Decorative</p></td>
+<td>Picture of the TI-30Xa calculator with the exponent key
+emphasized.</td>
+</tr>
+<tr>
+<td><strong>Citation</strong></td>
+<td><p>Other</p>
+<p>Public Domain</p></td>
+</tr>
+<tr>
+<td><strong>Caption</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Comments for CMP</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<p>To store a value into memory:</p>
+<ul>
+<li><p>input the value (if not already on display), then</p></li>
+<li><p>press &lt;kbd class="kbd-functions"&gt;STO&lt;/kbd&gt;,
+then</p></li>
+<li><p>press either &lt;kbd class="kbd-numbers"&gt;1&lt;/kbd&gt;,
+&lt;kbd class="kbd-numbers"&gt;2&lt;/kbd&gt; or &lt;kbd
+class="kbd-numbers"&gt;3&lt;/kbd&gt; (to store the value into memory
+slot one, two or three respectively).</p></li>
+</ul>
+<p>The calculator will display <strong>M1</strong>, <strong>M2</strong>
+or <strong>M3</strong> respectively to indicate that a value has been
+stored into that memory slot.</p>
+<p>[[style:standout]]</p>
+<h2 id="example-10">Example</h2>
+<p>To store the value 3.14 into memory slot two:</p>
+<ul>
+<li><p>input the value (if not already on display), then</p></li>
+<li><p>press &lt;kbd class="kbd-functions"&gt;STO&lt;/kbd&gt;,
+then</p></li>
+<li><p>press &lt;kbd class="kbd-numbers"&gt;2&lt;/kbd&gt;</p></li>
+</ul>
+<p>The calculator will display <strong>M2</strong> to indicate that a
+value has been stored in memory slot two.</p>
+<p>[[/style]]</p>
+<h1 id="recalling-a-value-from-memory">1.4.2 Recalling a Value from
+Memory</h1>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Graphics Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Size</strong></td>
+<td><p><em>width for landscape orientation and height for portrait
+orientation</em></p>
+<p>Sized for readability</p>
+<p>Size what would look good right floated beside the content
+below.</p></td>
+</tr>
+<tr>
+<td><strong>GDA Instructions</strong></td>
+<td><p>use image from LO1 intro and add red box around the RCL key.</p>
+<p><a
+href="https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg">https://commons.wikimedia.org/wiki/File:Calculator-TI-30XA-rev2015.jpg</a></p></td>
+</tr>
+<tr>
+<td><strong>Special Use</strong></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Image Sample</strong></td>
+<td><img src="media/image19.jpeg"
+style="width:1.70833in;height:3.27083in"
+alt="A grey calculator with a display AI-generated content may be incorrect." /></td>
+</tr>
+<tr>
+<td><strong>Completed Filename</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Alignment</strong></td>
+<td>Float right (text wrap)</td>
+</tr>
+<tr>
+<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>
+<p><strong>&#x2610;</strong> Decorative</p></td>
+<td>Picture of the TI-30Xa calculator with the exponent key
+emphasized.</td>
+</tr>
+<tr>
+<td><strong>Citation</strong></td>
+<td><p>Other</p>
+<p>Public Domain</p></td>
+</tr>
+<tr>
+<td><strong>Caption</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Comments for CMP</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<p>To recall a value previously stored into memory:</p>
+<ul>
+<li><p>press &lt;kbd class="kbd-functions"&gt;RCL&lt;/kbd&gt; ,
+then</p></li>
+<li><p>press either &lt;kbd class="kbd-numbers"&gt;1&lt;/kbd&gt;,
+&lt;kbd class="kbd-numbers"&gt;2&lt;/kbd&gt; or &lt;kbd
+class="kbd-numbers"&gt;3&lt;/kbd&gt; corresponding to the memory slot
+where the value is stored.</p></li>
+</ul>
+<p>[[style:standout]]</p>
+<h2 id="example-11">Example</h2>
+<p>To recall the value 3.14 that was stored into memory slot two:</p>
+<ul>
+<li><p>press &lt;kbd class="kbd-functions"&gt;RCL&lt;/kbd&gt; ,
+then</p></li>
+<li><p>press &lt;kbd class="kbd-numbers"&gt;2&lt;/kbd&gt;</p></li>
+</ul>
+<p>The calculator will display <strong>3.14</strong>.</p>
+<p>[[/style]]</p>
+<h1 id="erasing-a-value-stored-in-memory">1.4.3 Erasing a Value Stored
+in Memory</h1>
+<p>To erase a single memory slot:</p>
+<ul>
+<li><p>press &lt;kbd class="kbd-numbers"&gt;0&lt;/kbd&gt;, then</p></li>
+<li><p>press either &lt;kbd class="kbd-numbers"&gt;1&lt;/kbd&gt;,
+&lt;kbd class="kbd-numbers"&gt;2&lt;/kbd&gt; or &lt;kbd
+class="kbd-numbers"&gt;3&lt;/kbd&gt; corresponding to the memory slot to
+be erased.</p></li>
+</ul>
+<p>[[style:standout]]</p>
+<h2 id="example-12">Example</h2>
+<p>To erase the value 3.14 that was stored into memory slot two:</p>
+<ul>
+<li><p>press &lt;kbd class="kbd-numbers"&gt;0&lt;/kbd&gt;, then</p></li>
+<li><p>press &lt;kbd class="kbd-functions"&gt;STO&lt;/kbd&gt; ,
+then</p></li>
+<li><p>press &lt;kbd class="kbd-numbers"&gt;2&lt;/kbd&gt;</p></li>
+</ul>
+<p>The calculator will no longer display <strong>M2</strong>&#x37E; the value
+in memory slot two was erased.</p>
+<p>[[/style]]</p>
+<p>[[style:standout]]</p>
+<h2 id="note-10">Note</h2>
+<p>All memory slots of the calculator are reset if the &lt;kbd
+class="kbd-functions"&gt;OFF&lt;/kbd&gt; key is pressed!</p>
+<p>Pressing the &lt;kbd class="kbd-functions"&gt;ON/C&lt;/kbd&gt; key
+does not erase values stored into memory.</p>
+<p>[[/style]]</p>
+<h1 id="activity-storing-values-into-memory">1.4.4 Activity: Storing
+Values into Memory</h1>
+<p>[[style:standout]]</p>
+<h2 id="instructions-8">Instructions</h2>
+<ol type="1">
+<li><p>Place each of the numbers on the right side of the TI-30Xa
+Calculator over the keys on the calculator in the order you press them
+to complete the following.</p>
+<ol type="a">
+<li><p>Turn On the calculator</p></li>
+<li><p>Store the value 8 into memory slot three</p></li>
+<li><p>Clear the calculator display</p></li>
+<li><p>Recall the value stored in memory slot three</p></li>
+<li><p>Erase the value stored in memory slot three</p></li>
+</ol></li>
+<li><p>Choose Submit once you have placed all the coordinates.</p></li>
+<li><p>Choose Retry to try again.</p></li>
+</ol>
+<p>[[/style]]</p>
+<p>[[style:request]]</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr>
+<th colspan="2"><strong>Interactive Request</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Interactive Type</strong></td>
+<td><strong>H5P -- Drag and Drop</strong></td>
+</tr>
+<tr>
+<td><p><strong>Activity Details</strong></p>
+<p><strong>&#x2610;</strong> Details below ticket</p></td>
+<td><p><em>Add details here or immediately after the request ticket. For
+H5P include a title.</em></p>
+<p>Create an interactive the similar to 1.1.6 Activity: Basic Calculator
+Operation with ten numbers on the right that can be placed in the
+dropzone in the correct order to do the following:</p>
+<p>On/C button</p>
+<p>8</p>
+<p>STO button</p>
+<p>3</p>
+<p>On/C button</p>
+<p>RCL button</p>
+<p>3</p>
+<p>0</p>
+<p>STO button</p>
+<p>3</p></td>
+</tr>
+<tr>
+<td><strong>Graphics &amp; Media Support</strong></td>
+<td>Yes <em>If yes, provide details; add graphic request(s) below
+interactive request.</em></td>
+</tr>
+<tr>
+<td><p><strong>Text Version</strong></p>
+<p><em>Add click to reveal for accessibility?</em></p></td>
+<td><strong>No</strong> <em>If yes, provide details/description (e.g.,
+&#x201C;Use table from activity details.&#x201D;)</em></td>
+</tr>
+</tbody>
+</table>
+<p>[[/style]]</p>
+<h1 id="lo1-summary">LO1 Summary^^^</h1>
+<p>In this learning outcome, you were introduced to the layout and basic
+functions of the TI-30Xa calculator. In particular, you learned how you
+may:</p>
+<ul>
+<li><p>set the calculator to display a fixed number of decimal
+places,</p></li>
+<li><p>input fractions and mixed numbers,</p></li>
+<li><p>convert between improper fractions and mixed numbers,</p></li>
+<li><p>convert a decimal to a fraction,</p></li>
+<li><p>use brackets to correctly evaluate expressions requiring order of
+operations,</p></li>
+<li><p>use exponents, and</p></li>
+<li><p>store, recall and erase values in memory.</p></li>
+</ul>
+<p>It is strongly recommended that you practice these features of the
+TI-30Xa calculator to help simplify your computational effort in later
+sections of this course. In later sections, you will review calculations
+involving fractions, decimals, and percentages by hand; however, the use
+of the TI-30Xa calculator will be recommended.</p>
+<p>Looking Ahead</p>
+<p>"In the next learning outcome, you&#x2019;ll ...." [Instructor will add
+later]</p>
+</body>
+</html>
