@@ -168,44 +168,85 @@ Beyond simply cataloging what municipalities do, understanding WHY these service
 
 ## 1.2.2 Video: Municipal Services Impact Documentary Series
 
-### Objective
-Analyze real-world examples of municipal service impacts through curated multimedia content
+### Curated Video Resources
 
-**📹 AI-CURATED VIDEO SERIES**: Municipal Services Impact on Canadian Communities
+**📹 Video 1: Canadian Water Treatment Systems**
 
-**Video 1: Essential Services Foundation**
-**"Water Works: How Municipal Water Systems Drive Community Health"** by City of Toronto (12:34)
+**Option A - National Film Board (NFB):**
+[Let's Look at Water - NFB Documentary](https://www.nfb.ca/film/lets_look_at_water/)
+- **Duration**: 11 minutes
+- **Content**: Shows how a city's water supply is purified at a filtration plant and illustrates the complex system of underground mains
+- **Canadian Focus**: Produced by National Film Board of Canada
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Municipal Water Systems Impact" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+**Option B - YouTube Search Strategy:**
+Visit YouTube and search for: "R.C. Harris Water Treatment Plant Toronto" or "Canadian municipal water treatment"
+- **Recommended Channels**: City of Toronto, TVO, CBC News, Global News
+- **Keywords**: "municipal water treatment Canada", "Toronto water plant tour", "Canadian infrastructure"
 
-*Note: Instructor should replace with actual City of Toronto or similar municipal water services video*
+---
 
-**Focus**: How water treatment and distribution systems support public health, economic development, and quality of life
+**📹 Video 2: Public Transit Economic Impact**
 
-**Video 2: Public Transit and Economic Development**
-**"Moving Forward: Public Transit's Economic Impact"** by TransLink Vancouver (15:22)
+**YouTube Search Strategy:**
+Search YouTube for: "TransLink Vancouver economic impact" or "public transit economic development Canada"
+- **Recommended Channels**: TransLink Vancouver, TTC (Toronto Transit Commission), CBC News
+- **Alternative Search**: "Canadian public transit economic benefits" or "municipal transit investment impact"
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Public Transit Economic Impact" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+---
 
-*Note: Instructor should replace with actual TransLink or similar transit authority video*
+**📹 Video 3: Municipal Recreation Services Impact**
 
-**Focus**: Public transit connections to employment access, business development, and community connectivity
+**YouTube Search Strategy:**
+Search YouTube for: "municipal recreation services Canada community impact" or "Calgary recreation community programs"
+- **Recommended Channels**: City of Calgary, City of Toronto, Parks and Recreation Canada
+- **Alternative Search**: "community recreation programs economic impact Canada"
 
-**Video 3: Recreation Services and Community Building**
-**"More Than Fun: Municipal Recreation's Community Impact"** by City of Calgary (10:45)
+### Video Selection Criteria for Instructors
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Municipal Recreation Community Impact" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+**Content Requirements:**
+- **Duration**: 8-20 minutes optimal for class viewing
+- **Canadian Context**: Prefer Canadian municipalities and examples
+- **Educational Quality**: Clear narration, professional production
+- **Recent Content**: 2018-2024 preferred for current relevance
+- **Accessibility**: Closed captions available
 
-*Note: Instructor should replace with actual City of Calgary or similar municipal recreation video*
+**Recommended YouTube Channels:**
+- **Government Channels**: City of Toronto, City of Vancouver, City of Calgary official channels
+- **News Organizations**: CBC News, CTV News, Global News (municipal topics)
+- **Educational**: TVO, Knowledge Network, NFB official channels
+- **Infrastructure**: Engineering firms, municipal associations (AMO, FCM if available)
 
-**Focus**: Recreation programs' role in community health, social cohesion, and youth development
+### Discussion Questions for Any Selected Videos
 
-### Video Selection Criteria Applied
-- **Credible Sources**: Official municipal channels, CBC/CTV documentaries, university research presentations
-- **Recent Content**: 2020-2024 production dates for current relevance
-- **Canadian Focus**: Canadian municipalities and policy context
-- **Educational Quality**: Clear narration, professional production, evidence-based content
-- **Accessibility**: Closed captions available, clear audio/visual quality
+After viewing the selected videos, consider these questions:
+
+1. **Service Value Demonstration**: How do the videos illustrate the economic and social value of municipal services? What evidence is most compelling?
+
+2. **Stakeholder Perspectives**: Which community groups are featured or mentioned as benefiting from the municipal services shown?
+
+3. **Investment Justification**: How do the videos make the case for continued or increased investment in municipal services?
+
+4. **Interconnected Benefits**: What connections do you observe between the featured services and other community outcomes?
+
+5. **Canadian Context**: How do the examples shown reflect uniquely Canadian approaches to municipal service delivery?
+
+6. **Local Application**: How do the examples and impacts shown compare to similar services in your local community?
+
+### Alternative Resources if Videos Unavailable
+
+**Government Video Libraries:**
+- Visit [nfb.ca](https://www.nfb.ca) and search for "municipal" or "water" documentaries
+- Check municipal websites for virtual tours of facilities
+- Look for Infrastructure Canada video resources at [housing-infrastructure.canada.ca](https://housing-infrastructure.canada.ca)
+
+**Presentation Alternative:**
+If suitable videos cannot be found, instructors can create a presentation using:
+- Municipal annual reports with service statistics
+- Photos and infographics from municipal websites
+- Current news articles about municipal service impacts
+- Data from Statistics Canada on municipal service outcomes
+
+---
 
 ### Discussion Framework
 **Post-Viewing Analysis Questions**:

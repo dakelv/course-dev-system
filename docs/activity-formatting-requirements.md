@@ -38,6 +38,27 @@
 - **Add**: Analysis Questions (6 critical thinking questions)
 - **Purpose**: Students view and analyze completed graphics, not create them
 
+## Video Activities (x.y.z Video:)
+**Practical Video Curation:**
+- **Verified Links**: Include at least one verified, working video link when possible
+- **Search Strategies**: Provide specific YouTube search terms and recommended channels
+- **Government Sources**: Prioritize NFB, official municipal channels, CBC/CTV for Canadian content
+- **Backup Options**: Include alternative resources if videos become unavailable
+- **Discussion Questions**: 6 questions applicable to any video selected on the topic
+
+**Video Source Priorities:**
+1. **National Film Board (NFB)**: nfb.ca - Often has municipal/infrastructure documentaries
+2. **Official Municipal Channels**: City of Toronto, Vancouver, Calgary YouTube channels
+3. **Educational Broadcasters**: TVO, Knowledge Network, CBC Docs
+4. **News Organizations**: CBC News, CTV News, Global News municipal coverage
+5. **Professional Associations**: FCM, AMO, engineering organizations
+
+**Content Specifications:**
+- **Duration**: 8-20 minutes optimal for classroom use
+- **Canadian Focus**: Prioritize Canadian municipalities and examples
+- **Recent Content**: 2018-2024 preferred unless historical context needed
+- **Accessibility**: Must have or allow for closed captions
+
 ## Assignment Activities
 **Type Classification:**
 - **Change**: "Reflection" activities → "Assignment" activities  
