@@ -18,8 +18,8 @@ Municipal services form the invisible infrastructure that makes community life p
 **Required Readings:**
 1. **Primary Source**: Chapter 4 "Service Delivery Models" from "Municipal Administration in Canada" by Andrew Sancton (University of Toronto Press, 2015) - Available through library database
 2. **Secondary Source**: "Municipal Service Innovation in Canadian Cities" by Kitchen & Slack (2019) in Canadian Public Administration - Available via library database
-3. **Current Context**: [Federation of Canadian Municipalities "State of Canada's Cities and Communities 2024"](https://fcm.ca/en/resources/mamp)
-4. **Policy Framework**: [Municipal Infrastructure in Canada: Challenges and Opportunities - Infrastructure Canada (2024)](https://www.infrastructure.gc.ca/plan/about-apropos-eng.html)
+3. **Current Context**: Federation of Canadian Municipalities reports - Visit [fcm.ca/en/resources](https://fcm.ca/en/resources) and search for "Municipal Study" or "State of Cities"
+4. **Policy Framework**: Infrastructure Canada resources - Visit Housing, Infrastructure and Communities Canada at [housing-infrastructure.canada.ca](https://housing-infrastructure.canada.ca) for current municipal infrastructure policies
 
 ---
 
@@ -160,9 +160,9 @@ Beyond simply cataloging what municipalities do, understanding WHY these service
 
 **Required Readings:**
 1. **Primary Academic Source**: "Municipal Service Quality and Citizen Satisfaction: Evidence from Canadian Cities" by Slack & Bird (2013) in Canadian Public Policy, Vol. 39, No. 2 - Available via library database
-2. **Infrastructure Analysis**: [Canadian Infrastructure Report Card 2024](http://www.canadainfrastructure.ca/en/index.html) - "The Economic Impact of Municipal Infrastructure"
+2. **Infrastructure Analysis**: Canadian Infrastructure Report Card - Visit [canadainfrastructure.ca](http://www.canadainfrastructure.ca) for current infrastructure impact reports
 3. **Contemporary Research**: "Municipal Services and Quality of Life: A Canadian Perspective" - Canadian Journal of Regional Science (library database access)
-4. **Policy Context**: [Building Resilient Communities: The Role of Municipal Services - FCM Policy Brief 2024](https://fcm.ca/en/resources/municipal-study)
+4. **Policy Context**: Federation of Canadian Municipalities policy briefs - Visit [fcm.ca/en/resources](https://fcm.ca/en/resources) and search for "Building Resilient Communities" or municipal services policy
 
 ---
 
@@ -574,12 +574,12 @@ Understanding municipal services is incomplete without recognizing the complex c
 ## 1.3.1 Reading: Contemporary Municipal Challenges Research
 
 **Required Readings:**
-1. **"Fiscal Challenges Facing Canadian Municipalities"** by Kitchen & Slack (2016) - [Institute on Municipal Finance and Governance, University of Toronto](https://munkschool.utoronto.ca/imfg)
+1. **"Fiscal Challenges Facing Canadian Municipalities"** by Kitchen & Slack (2016) - Institute on Municipal Finance and Governance, University of Toronto - Visit [munkschool.utoronto.ca/imfg](https://munkschool.utoronto.ca/imfg) for research reports
 2. **"Municipal Infrastructure in Crisis: The Canadian Challenge"** by Mirza (2024) - Canadian Public Policy, Vol. 50, No. 2 (library database access)
 3. **"Climate Adaptation and Municipal Services"** by Henstra & Thistlethwaite (2023) - Canadian Public Administration, Vol. 66, No. 4 (library database access)
-4. **[Canadian Infrastructure Report Card 2024](http://www.canadainfrastructure.ca/en/index.html)** - Complete report
-5. **[Municipal Study 2024 - Federation of Canadian Municipalities](https://fcm.ca/en/resources/municipal-study)** - Comprehensive analysis
-6. **[Demographic Trends and Municipal Service Implications - Statistics Canada](https://www150.statcan.gc.ca/n1/pub/16-002-x/16-002-x2024001-eng.htm)** - Municipal Series (2024)
+4. **Canadian Infrastructure Report Card** - Visit [canadainfrastructure.ca](http://www.canadainfrastructure.ca) for current infrastructure condition reports
+5. **Municipal Study Reports** - Federation of Canadian Municipalities - Visit [fcm.ca/en/resources](https://fcm.ca/en/resources) and search for "Municipal Study" for annual reports
+6. **Demographics and Municipal Services** - Statistics Canada - Visit [statcan.gc.ca](https://www.statcan.gc.ca) and search for "municipal government finance" for current data
 
 ### After-Reading Questions
 Consider these questions after completing the readings:
@@ -1316,10 +1316,10 @@ Municipal administration operates within complex webs of policy frameworks and r
 1. **"Intergovernmental Relations in Canada: Policy Framework Analysis"** by Bakvis & Skogstad (2021) - Chapter 8: "Municipal Policy Implementation" (library database access)
 2. **"Federal Infrastructure Policy and Municipal Outcomes"** by Bradford (2023) in Canadian Public Policy, Vol. 49, No. 3 (library database access)
 3. **"Provincial-Municipal Relations: Governance and Policy Frameworks"** by Sancton & Young (2024) - Chapters 3-5 (library database access)
-4. **[Your Provincial Municipal Act](https://www.publications.gov.sk.ca/freelaw/statutes/c11-1.pdf)** (Saskatchewan: The Cities Act) - Online legislation
-5. **[National Housing Strategy Implementation Framework](https://www.cmhc-schl.gc.ca/en/nhs/guidepage-strategy)** - CMHC
-6. **[Pan-Canadian Framework on Clean Growth and Climate Change](https://www.canada.ca/en/services/environment/weather/climatechange/pan-canadian-framework.html)** - Municipal components
-7. **[Investing in Canada Infrastructure Program](https://www.infrastructure.gc.ca/plan/icp-pic-INFC-eng.html)** - Guidelines and criteria
+4. **Provincial Municipal Act** - For Saskatchewan students: Visit [saskatchewan.ca](https://www.saskatchewan.ca) and search for "Cities Act" or "Municipalities Act" for current legislation
+5. **National Housing Strategy Implementation Framework** - Visit [cmhc-schl.gc.ca](https://www.cmhc-schl.gc.ca) and search for "National Housing Strategy"
+6. **Pan-Canadian Framework on Clean Growth and Climate Change** - Visit [canada.ca](https://www.canada.ca) and search for "Pan-Canadian Framework" for municipal components
+7. **Federal Infrastructure Programs** - Visit Housing, Infrastructure and Communities Canada at [housing-infrastructure.canada.ca](https://housing-infrastructure.canada.ca) for current program guidelines
 
 ### After-Reading Questions
 Consider these questions after completing the readings:
@@ -1533,8 +1533,8 @@ Modern municipalities employ diverse strategies to deliver services effectively 
 1. **"Service Delivery Innovation in Canadian Local Government"** by Aucoin & Jarvis (2023) in Canadian Public Administration, Vol. 67, No. 2 (library database access)
 2. **"Municipal Service Delivery: Traditional Models and Emerging Alternatives"** - Chapter 6 from "Local Government in Canada" by Tindal & Tindal (2024) (library database access)
 3. **"Digital Transformation in Municipal Service Delivery"** by Chen & MacDonald (2024) in Canadian Journal of Regional Science (library database access)
-4. **[Shared Services Success Stories: Canadian Municipal Experiences - FCM Best Practices Report (2024)](https://fcm.ca/en/resources/mamp)**
-5. **[Public-Private Partnerships in Municipal Services - IMFG Research Report](https://munkschool.utoronto.ca/imfg/research/)**
+4. **Shared Services Success Stories** - Federation of Canadian Municipalities - Visit [fcm.ca/en/resources](https://fcm.ca/en/resources) and search for "shared services" or "best practices"
+5. **Public-Private Partnerships in Municipal Services** - Institute on Municipal Finance and Governance - Visit [munkschool.utoronto.ca/imfg](https://munkschool.utoronto.ca/imfg) for P3 research reports
 6. **"Regional Cooperation and Service Integration"** by Slack & Bird (2024) - Case studies from Ontario, British Columbia, and Atlantic Canada (library database access)
 
 ### After-Reading Questions

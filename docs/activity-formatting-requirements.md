@@ -10,16 +10,24 @@
 **Format Requirements:**
 - **Keep Only**: "Required Readings:" section
 - **Remove**: Objective, Learning Focus, Instructions, Deliverable, Assessment Criteria sections
-- **Add Direct URLs**: Provide clickable links to online resources when possible
+- **Add Verified URLs**: Provide working links to online resources when possible - **ALWAYS VERIFY LINKS BEFORE INCLUDING**
 - **Add**: "After-Reading Questions" section with 6 critical thinking questions
 - **Focus**: Questions should promote analysis, connection to municipal administration careers, and critical thinking
 
-**URL Examples:**
-- FCM reports: https://fcm.ca/en/resources/
-- Infrastructure Canada: https://www.infrastructure.gc.ca/
-- Statistics Canada: https://www150.statcan.gc.ca/
-- Provincial legislation: Direct links to online acts
-- Federal policy frameworks: Government of Canada sites
+**URL Guidelines:**
+- **Verify All Links**: Test each URL before including to ensure it works
+- **Use General Site Instructions**: When specific pages don't exist, provide main site + search instructions
+- **Reliable Government Sources**:
+  - FCM: fcm.ca/en/resources (search for specific reports)
+  - Statistics Canada: statcan.gc.ca (search for municipal data)
+  - Housing, Infrastructure and Communities Canada: housing-infrastructure.canada.ca
+  - IMFG: munkschool.utoronto.ca/imfg (for municipal research)
+  - Provincial sites: Use main government site + search instructions
+
+**Link Format Examples:**
+- **Working Direct Link**: [Report Title](https://verified-url.com)
+- **Search Instructions**: Visit [site-name.ca](https://site-name.ca) and search for "specific report name"
+- **Library Resources**: Available via library database access
 
 ## Visual Content Activities (Infographic/Graphic/Chart)
 **Student-Focused Format:**
