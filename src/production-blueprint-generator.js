@@ -103,6 +103,278 @@ class ProductionBlueprintGenerator {
         return `[[style:request]]\n\n<table>\n<colgroup>\n<col style="width: 27%" />\n<col style="width: 72%" />\n</colgroup>\n<thead>\n<tr>\n<th colspan="2"><strong>Interactive Request</strong></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><strong>Interactive Type</strong></td>\n<td><strong>H5P -- Interactive Quiz</strong></td>\n</tr>\n<tr>\n<td><p><strong>Activity Details</strong></p>\n<p><strong>&#x2610;</strong> Details below ticket</p></td>\n<td><p><em>Create comprehensive quiz using H5P in D2L Brightspace Creator+</em></p>\n<p>${topicSpecificQuiz.description}</p></td>\n</tr>\n<tr>\n<td><strong>Graphics & Media Support</strong></td>\n<td>Yes <em>${topicSpecificQuiz.mediaSupport}</em></td>\n</tr>\n<tr>\n<td><p><strong>Text Version</strong></p>\n<p><em>Add click to reveal for accessibility?</em></p></td>\n<td><strong>Yes</strong> <em>Provide accessible alternative with screen reader compatibility</em></td>\n</tr>\n</tbody>\n</table>\n\n[[/style]]\n\n`;
     }
 
+    getTopicSpecificReadingSources(activity) {
+        const activityTitle = activity.title?.toLowerCase() || '';
+        const activityContent = activity.content?.toLowerCase() || '';
+        const searchText = (activityTitle + ' ' + activityContent).toLowerCase();
+        
+        // Municipal Services readings
+        if (searchText.includes('municipal services') || searchText.includes('service delivery') || searchText.includes('summarize municipal')) {
+            return {
+                primarySources: `**Essential Readings on Municipal Services:**
+
+1. **Academic Foundation**:
+   - Sancton, A. (2015). *Canadian Local Government: An Urban Perspective* (2nd ed.), Chapter 8: "Service Delivery", Oxford University Press
+   - Kitchen, H. & Slack, E. (2006). "Providing Public Services in Remote Areas: Challenges for Canada's Small Towns" in *Canadian Public Policy*, Vol. 32, No. 2
+
+2. **Government Reports**:
+   - [FCM Municipal Infrastructure Report 2024](https://fcm.ca/en/resources/corporate-resources/municipal-infrastructure-report-2024)
+   - [Statistics Canada: Municipal Government Revenue and Expenditures](https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1010001401)
+   - [Infrastructure Canada: Investing in Canada Plan](https://www.infrastructure.gc.ca/plan/about-invest-apropos-eng.html)
+
+3. **Professional Resources**:
+   - [IPAC Case Studies in Municipal Service Delivery](https://www.ipac.ca/iPAC_EN/Programs_and_Services/Case_Studies/iPAC_EN/Programs_and_Services/Case_Studies.aspx)
+   - [Municipal World Magazine: Service Delivery Archives](https://www.municipalworld.com/category/service-delivery/)
+
+**Focus Areas**: Service categorization, delivery models, public vs. private provision, cost-effectiveness analysis`
+            };
+        }
+        
+        // Emerging Issues readings
+        if (searchText.includes('emerging issues') || searchText.includes('management challenges') || searchText.includes('local government structure')) {
+            return {
+                primarySources: `**Essential Readings on Municipal Challenges:**
+
+1. **Current Research**:
+   - Tindal, C.R. & Tindal, S.N. (2021). *Local Government in Canada* (9th ed.), Chapter 12: "Current Issues and Future Challenges", Nelson Education
+   - Sancton, A. (2019). "Canadian Municipalities and COVID-19: Challenges and Innovations" in *Canadian Public Administration*, Vol. 63, No. 2
+
+2. **Government Analysis**:
+   - [FCM: Big City Mayors' Caucus Report on Urban Challenges](https://fcm.ca/en/focus-areas/big-city-mayors-caucus)
+   - [Parliamentary Budget Officer: Municipal Infrastructure in Canada](https://www.pbo-dpb.gc.ca/en/blog/news/municipal-infrastructure-canada)
+   - [Statistics Canada: Impact of COVID-19 on Municipal Finances](https://www150.statcan.gc.ca/n1/pub/68-001-x/2021001/article/00002-eng.htm)
+
+3. **Policy Research**:
+   - [Conference Board of Canada: Municipal Finance Reports](https://www.conferenceboard.ca/focus-areas/canadian-economics/municipal-finance)
+   - [Canadian Urban Institute: Municipal Innovation Reports](https://www.canurb.org/publications)
+
+**Focus Areas**: Climate change adaptation, fiscal sustainability, demographic shifts, technology integration, governance challenges`
+            };
+        }
+        
+        // Service Delivery Strategies readings
+        if (searchText.includes('service delivery strategies') || searchText.includes('policy frameworks') || searchText.includes('delivery strategies')) {
+            return {
+                primarySources: `**Essential Readings on Service Delivery Strategies:**
+
+1. **Strategic Frameworks**:
+   - Kitchen, H. (2019). "Municipal Service Delivery: Alternatives and Their Implementation" in *Canadian Tax Journal*, Vol. 67, No. 2
+   - Slack, E. & Bird, R. (2013). "Does Municipal Amalgamation Strengthen the Financial Capacity of Local Government?" in *Environment and Planning C*, Vol. 31, No. 4
+
+2. **Best Practices Documentation**:
+   - [FCM: Sustainable Service Delivery Guide](https://fcm.ca/en/resources/fcm/sustainable-service-delivery-guide)
+   - [ICMA: Alternative Service Delivery Methods](https://icma.org/documents/alternative-service-delivery-methods)
+   - [Municipal Finance Officers Association: Service Delivery Models](https://www.mfoa.on.ca/MFOA/Resources/Research_Reports/MFOA/Resources/Research_Reports.aspx)
+
+3. **Case Studies**:
+   - [Institute on Governance: Municipal Service Delivery Case Studies](https://iog.ca/research-publications/?_research_categories=municipal-governance)
+   - [Canada West Foundation: Municipal Service Innovation](https://cwf.ca/research/?_research_categories=municipal-governance)
+
+**Focus Areas**: Public-private partnerships, shared services, regionalization, digital transformation, performance measurement`
+            };
+        }
+        
+        // Political Acumen readings
+        if (searchText.includes('political acumen') || searchText.includes('define political') || searchText.includes('political skills')) {
+            return {
+                primarySources: `**Essential Readings on Political Acumen in Municipal Administration:**
+
+1. **Academic Sources**:
+   - Siegel, D. (2015). "Politics and Public Administration in Canadian Municipalities" in *Leaders and Leadership in Canada* (2nd ed.), Chapter 15, University of Toronto Press
+   - Pal, L.A. (2021). *Beyond Policy Analysis* (6th ed.), Chapter 3: "The Policy Process and Political Environment", Nelson Education
+
+2. **Professional Development**:
+   - [ICMA: Political Skills for Local Government Managers](https://icma.org/articles/article/political-skills-local-government-managers)
+   - [IPAC: Ethics and Political Neutrality in Public Administration](https://www.ipac.ca/iPAC_EN/About_Us/Ethics/iPAC_EN/About_Us/Ethics.aspx)
+   - [Municipal Management Institute: Political Acumen Workshop Materials](https://www.mmi.on.ca/professional-development)
+
+3. **Government Resources**:
+   - [Treasury Board Secretariat: Values and Ethics Code for Public Sector](https://www.tbs-sct.gc.ca/pol/doc-eng.aspx?id=25049)
+   - [Ontario Municipal Affairs: Roles and Responsibilities Guide](https://www.ontario.ca/page/roles-and-responsibilities-municipal-government)
+
+**Focus Areas**: Political-administrative interface, ethical decision-making, stakeholder management, communication strategies, boundary management`
+            };
+        }
+        
+        // Government Planning and Sustainability readings
+        if (searchText.includes('government planning') || searchText.includes('sustainability') || searchText.includes('planning elements')) {
+            return {
+                primarySources: `**Essential Readings on Municipal Planning and Sustainability:**
+
+1. **Planning Theory and Practice**:
+   - Grant, J. (2020). *Planning the Good Community* (2nd ed.), Chapters 8-9: "Sustainable Communities" and "Climate Change Planning", University of Toronto Press
+   - Seasons, M. (2019). "Municipal Planning in Canada: Challenges and Opportunities" in *Plan Canada*, Vol. 59, No. 2
+
+2. **Sustainability Integration**:
+   - [FCM: Sustainable Communities Conference Proceedings](https://fcm.ca/en/events-training/conferences/sustainable-communities-conference)
+   - [Natural Resources Canada: Municipal Energy Planning](https://www.nrcan.gc.ca/energy/efficiency/communities-infrastructure/municipal-energy-planning/5133)
+   - [Environment and Climate Change Canada: Municipal Climate Action](https://www.canada.ca/en/environment-climate-change/services/climate-change/municipalities.html)
+
+3. **Best Practices**:
+   - [ICLEI Canada: Local Government Sustainability Resources](https://icleicanada.org/resources/)
+   - [Canadian Institute of Planners: Planning Practice Resources](https://www.cip-icu.ca/Resources/Planning-Practice)
+
+**Focus Areas**: Integrated planning approaches, climate adaptation, sustainable development, environmental assessment, community engagement in planning`
+            };
+        }
+        
+        // Citizen Engagement readings
+        if (searchText.includes('citizen engagement') || searchText.includes('engaging citizens') || searchText.includes('engagement methods')) {
+            return {
+                primarySources: `**Essential Readings on Citizen Engagement:**
+
+1. **Engagement Theory and Methods**:
+   - Phillips, S.D. & Orsini, M. (2019). *Mapping the Links: Citizen Engagement, Non-profits and Local Government*, Chapter 4: "Municipal Engagement Strategies", University of Toronto Press
+   - Lowndes, V. & Sullivan, H. (2018). "How Low Can You Go? Rationales and Challenges for Neighbourhood Governance" in *Public Administration*, Vol. 86, No. 1
+
+2. **Canadian Practice**:
+   - [FCM: Citizen Engagement Toolkit](https://fcm.ca/en/resources/fcm/citizen-engagement-toolkit)
+   - [Institute on Governance: Public Engagement Guide](https://iog.ca/docs/Engagement_Guide_Final.pdf)
+   - [Samara Centre for Democracy: Municipal Engagement Research](https://www.samaracanada.com/research/political-leadership/municipal-politics)
+
+3. **Digital Engagement**:
+   - [Canadian Digital Government: Municipal Digital Engagement](https://digital.canada.ca/2019/10/15/municipal-digital-services/)
+   - [Code for Canada: Civic Technology Resources](https://codefor.ca/resources/)
+
+**Focus Areas**: Participation methods, digital platforms, inclusive engagement, consultation design, feedback integration, community building`
+            };
+        }
+        
+        // Community Planning readings
+        if (searchText.includes('community planning') || searchText.includes('planning process') || searchText.includes('stakeholder involvement')) {
+            return {
+                primarySources: `**Essential Readings on Community Planning:**
+
+1. **Planning Process and Methods**:
+   - Hodge, G. & Gordon, D. (2021). *Planning Canadian Communities* (7th ed.), Chapters 12-13: "Community Planning Process" and "Implementation", Nelson Education
+   - Forester, J. (2020). "Planning in the Face of Conflict: Negotiation and Mediation Strategies" in *Journal of Planning Education and Research*, Vol. 40, No. 2
+
+2. **Stakeholder Engagement**:
+   - [Canadian Institute of Planners: Public Participation Guidelines](https://www.cip-icu.ca/Files/Resources/PUBLIC-PARTICIPATION-GUIDELINES)
+   - [Planning Institute of British Columbia: Community Engagement Best Practices](https://www.pibc.bc.ca/community-engagement-best-practices)
+   - [Ontario Professional Planners Institute: Consultation Toolkit](https://ontarioplanners.ca/Knowledge-Centre/Consultation-Toolkit)
+
+3. **Implementation Strategies**:
+   - [Municipal Research and Services Center: Community Planning Implementation](https://mrsc.org/Home/Explore-Topics/Planning/General-Planning-and-Growth-Management/Comprehensive-Planning-Growth-Management.aspx)
+   - [Lincoln Institute of Land Policy: Community Planning Resources](https://www.lincolninst.edu/publications?field_publication_topics_target_id=1156)
+
+**Focus Areas**: Participatory planning, consensus building, implementation strategies, monitoring and evaluation, adaptive planning`
+            };
+        }
+        
+        // Generic fallback for other topics
+        return {
+            primarySources: `**General Municipal Administration Resources:**
+
+1. **Core Textbooks**:
+   - Sancton, A. (2015). *Canadian Local Government: An Urban Perspective* (2nd ed.), Oxford University Press
+   - Tindal, C.R. & Tindal, S.N. (2021). *Local Government in Canada* (9th ed.), Nelson Education
+
+2. **Government Resources**:
+   - [Federation of Canadian Municipalities Resource Library](https://fcm.ca/en/resources)
+   - [Statistics Canada: Government Statistics](https://www.statcan.gc.ca/en/subjects-start/government)
+
+3. **Professional Development**:
+   - [Institute of Public Administration of Canada](https://www.ipac.ca/)
+   - [International City/County Management Association](https://icma.org/)
+
+**Focus Areas**: Municipal governance, public administration principles, Canadian municipal context`
+        };
+    }
+
+    getTopicSpecificReflectionQuestions(activity) {
+        const activityTitle = activity.title?.toLowerCase() || '';
+        const activityContent = activity.content?.toLowerCase() || '';
+        const searchText = (activityTitle + ' ' + activityContent).toLowerCase();
+        
+        if (searchText.includes('municipal services') || searchText.includes('service delivery') || searchText.includes('summarize municipal')) {
+            return `Before reading, reflect on the following questions:
+
+1. **Service Inventory**: What municipal services do you and your family use regularly? How would your daily life change without them?
+2. **Service Quality**: Which municipal services in your community work well? Which ones need improvement?
+3. **Service Delivery**: Have you noticed different ways municipalities deliver services (direct, contracted, partnerships)?
+4. **Career Connection**: How does understanding municipal services connect to your career goals in public administration?
+
+Compose answers in your head or notes, then proceed with the assigned readings.`;
+        }
+        
+        if (searchText.includes('emerging issues') || searchText.includes('management challenges') || searchText.includes('local government structure')) {
+            return `Before reading, reflect on the following questions:
+
+1. **Current Challenges**: What major challenges is your local municipality currently facing (budget, infrastructure, growth, etc.)?
+2. **News Awareness**: What recent news stories about municipal government have caught your attention?
+3. **Change Observation**: How has your municipality changed in the past 5-10 years? What drove those changes?
+4. **Future Thinking**: What challenges do you think municipalities will face in the next decade?
+
+Compose answers in your head or notes, then proceed with the assigned readings.`;
+        }
+        
+        if (searchText.includes('service delivery strategies') || searchText.includes('policy frameworks') || searchText.includes('delivery strategies')) {
+            return `Before reading, reflect on the following questions:
+
+1. **Delivery Models**: Can you think of examples where your municipality uses different approaches (in-house, contracted, partnerships) for different services?
+2. **Effectiveness**: Which municipal services seem most efficiently delivered? What makes them effective?
+3. **Innovation**: Have you seen examples of municipalities trying new approaches to service delivery?
+4. **Policy Impact**: How do provincial or federal policies affect how your municipality delivers services?
+
+Compose answers in your head or notes, then proceed with the assigned readings.`;
+        }
+        
+        if (searchText.includes('political acumen') || searchText.includes('define political') || searchText.includes('political skills')) {
+            return `Before reading, reflect on the following questions:
+
+1. **Political Awareness**: How do you see politics influencing municipal administration in your community?
+2. **Professional Boundaries**: What's the difference between being politically aware and being political as a municipal employee?
+3. **Stakeholder Dynamics**: Who are the key stakeholders that municipal administrators must work with effectively?
+4. **Ethical Considerations**: How can municipal staff support elected officials while maintaining professional integrity?
+
+Compose answers in your head or notes, then proceed with the assigned readings.`;
+        }
+        
+        if (searchText.includes('government planning') || searchText.includes('sustainability') || searchText.includes('planning elements')) {
+            return `Before reading, reflect on the following questions:
+
+1. **Planning Examples**: What examples of municipal planning do you see in your community (land use, transportation, environmental)?
+2. **Sustainability Integration**: How does your municipality incorporate environmental considerations into its planning?
+3. **Long-term Thinking**: What long-term challenges should municipal planning address in your region?
+4. **Planning Participation**: Have you or your family ever participated in municipal planning processes? What was the experience like?
+
+Compose answers in your head or notes, then proceed with the assigned readings.`;
+        }
+        
+        if (searchText.includes('citizen engagement') || searchText.includes('engaging citizens') || searchText.includes('engagement methods')) {
+            return `Before reading, reflect on the following questions:
+
+1. **Engagement Experience**: Have you ever participated in municipal consultations, town halls, or public meetings? What was effective or ineffective?
+2. **Communication Channels**: How does your municipality communicate with residents? Which methods work best for different groups?
+3. **Participation Barriers**: What prevents people from participating in municipal decision-making? How could these be addressed?
+4. **Digital Engagement**: How is technology changing how municipalities engage with citizens?
+
+Compose answers in your head or notes, then proceed with the assigned readings.`;
+        }
+        
+        if (searchText.includes('community planning') || searchText.includes('planning process') || searchText.includes('stakeholder involvement')) {
+            return `Before reading, reflect on the following questions:
+
+1. **Planning Participation**: Have you observed community planning processes in your area? Who was involved and how?
+2. **Stakeholder Diversity**: Who should be involved in community planning? How can municipalities ensure diverse participation?
+3. **Planning Outcomes**: Can you think of examples where community planning led to positive changes in your area?
+4. **Implementation Challenges**: What makes it difficult to implement community plans? How can these challenges be addressed?
+
+Compose answers in your head or notes, then proceed with the assigned readings.`;
+        }
+        
+        // Generic fallback
+        return `Before reading, reflect on the following questions:
+
+1. **Personal Experience**: How does this topic relate to your experience with municipal government?
+2. **Community Observation**: What have you observed in your community related to this topic?
+3. **Professional Interest**: How does this topic connect to your career goals in municipal administration?
+4. **Current Awareness**: What recent developments related to this topic have you noticed?
+
+Compose answers in your head or notes, then proceed with the assigned readings.`;
+    }
+
     getTopicSpecificQuiz(outcome) {
         const outcomeText = outcome.text.toLowerCase();
         
@@ -461,24 +733,14 @@ The activities in this step are designed to connect theoretical concepts with pr
     }
 
     formatProductionReadingActivity(activity) {
+        // Get topic-specific reading sources based on activity content
+        const topicSpecificSources = this.getTopicSpecificReadingSources(activity);
+        
         return `Why read?
 
 [[style:read]]
 
-**Primary Government Sources** - Current and authoritative information on Canadian municipal administration:
-
-1. **Government of Canada**: 
-   - [Infrastructure and Communities](https://www.infrastructure.gc.ca/)
-   - [Federation of Canadian Municipalities](https://fcm.ca/en/resources)
-   - [Statistics Canada - Municipal Finances](https://www.statcan.gc.ca/en/subjects-start/government/municipal_government_finance)
-
-2. **Provincial Municipal Affairs**:
-   - [Government of Saskatchewan - Municipal Relations](https://www.saskatchewan.ca/government/municipal-administration)
-   - [Municipal Government Act - Current legislation](https://www.saskatchewan.ca/residents/housing-and-renting/municipal-services)
-
-3. **Professional Resources**:
-   - [Canadian Public Administration Journal - Recent articles](https://onlinelibrary.wiley.com/journal/17547121)
-   - [Institute of Public Administration of Canada (IPAC)](https://www.ipac.ca/en)
+${topicSpecificSources.primarySources}
 
 [[/style]]
 
@@ -488,14 +750,7 @@ The activities in this step are designed to connect theoretical concepts with pr
 
 **Instructions**
 
-Before reading, reflect on the following questions:
-
-1. **Personal Experience**: What municipal services do you use daily? How do they impact your quality of life?
-2. **Community Observation**: What municipal challenges have you observed in your community?
-3. **Professional Interest**: How does this topic connect to your career goals in municipal administration?
-4. **Current Awareness**: What recent news or developments related to municipal government have you noticed?
-
-Compose answers in your head or notes, then proceed with the assigned readings.
+${this.getTopicSpecificReflectionQuestions(activity)}
 
 [[/style]]
 
