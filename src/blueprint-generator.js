@@ -561,27 +561,23 @@ For each activity, provide:
 - Technical requirements for media activities
 - Clear learning objectives
 
-CRITICAL INSTRUCTION: You are a JSON generator. Your ONLY job is to return valid JSON. 
+CRITICAL INSTRUCTION: You MUST return ONLY valid JSON. No other text allowed.
 
-DO NOT:
-- Write explanatory text
-- Provide educational analysis  
-- Give recommendations
-- Include markdown formatting
-- Add any text before or after the JSON
+STRICT REQUIREMENTS:
+1. Return ONLY the JSON object - no explanations, no analysis, no recommendations
+2. Do NOT include markdown code blocks (triple backticks)
+3. Do NOT include any text before or after the JSON
+4. Start your response with { and end with }
+5. Fill the activities array with 4-5 activities per learning step
+6. Use exactly the structure shown below
 
-DO:
-- Return ONLY the JSON object below
-- Fill in the activities array with 4-5 activities per learning step
-- Use the exact structure shown
-
-JSON RESPONSE REQUIRED:
+REQUIRED JSON FORMAT:
 
 {
   "activities": [
     {
       "stepId": "1",
-      "stepText": "${outcome.learningSteps[0]?.text || 'Step 1'}",
+      "stepText": "Step 1 Text",
       "activities": [
         {
           "type": "reading",
@@ -615,16 +611,41 @@ JSON RESPONSE REQUIRED:
 Generate 4-5 activities per learning step. Include diverse activity types: reading, case-study, research, discussion, infographic, presentation, simulation. Make activities specific to municipal administration with Canadian examples.
             `;
 
+            // Create a simplified JSON-only prompt
+            const jsonPrompt = `Generate learning activities for: "${outcome.text}"
+
+Learning Steps:
+${outcome.learningSteps.map((step, index) => `${index + 1}. ${step.text}`).join('\n')}
+
+Return ONLY this JSON structure with 4-5 activities per step:
+
+{
+  "activities": [
+    {
+      "stepId": "1",
+      "stepText": "Step 1 Text",
+      "activities": [
+        {
+          "type": "reading",
+          "title": "Activity Title",
+          "description": "Brief description",
+          "content": "Detailed instructions"
+        }
+      ]
+    }
+  ]
+}`;
+
             // Use the agent service to generate activities
             const response = await this.agentService.executeAgent('instructional-designer', {
                 courseId: 'activity-generation',
                 phase: 'activity-design',
                 inputData: { 
                     learningOutcome: outcome,
-                    prompt: activityPrompt,
+                    prompt: jsonPrompt,
                     courseContext: 'Municipal Administration',
                     targetAudience: 'Business Diploma students',
-                    systemInstruction: 'You are a JSON generator. Return ONLY valid JSON. No explanatory text, no analysis, no recommendations. Just the requested JSON structure with learning activities.'
+                    systemInstruction: 'Return ONLY valid JSON. No explanations. Start with { and end with }.'
                 },
                 processingHistory: [],
                 qualityRequirements: { minimumScore: 0.8 },
@@ -659,15 +680,28 @@ Generate 4-5 activities per learning step. Include diverse activity types: readi
                     
                     // If it's a string, try to parse as JSON
                     if (typeof activityData === 'string') {
-                        // Remove any markdown formatting
-                        let jsonString = activityData.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+                        // Remove any markdown formatting and extra text
+                        let jsonString = activityData
+                            .replace(/```json\n?/g, '')
+                            .replace(/```\n?/g, '')
+                            .replace(/^[^{]*/, '') // Remove any text before first {
+                            .replace(/[^}]*$/, '') // Remove any text after last }
+                            .trim();
                         
-                        // Find JSON object boundaries
+                        // Find JSON object boundaries more robustly
                         const startIndex = jsonString.indexOf('{');
                         const lastIndex = jsonString.lastIndexOf('}');
                         
-                        if (startIndex !== -1 && lastIndex !== -1) {
+                        if (startIndex !== -1 && lastIndex !== -1 && startIndex <= lastIndex) {
                             jsonString = jsonString.substring(startIndex, lastIndex + 1);
+                            
+                            // Clean up common JSON issues
+                            jsonString = jsonString
+                                .replace(/\n/g, ' ')
+                                .replace(/\r/g, ' ')
+                                .replace(/\t/g, ' ')
+                                .replace(/\s+/g, ' ')
+                                .trim();
                         }
                         
                         const parsedData = JSON.parse(jsonString);
