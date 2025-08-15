@@ -349,11 +349,32 @@ class BlueprintGenerator {
             console.log('Enhancing outcomes with learning steps...');
             const stepsData = this.extractOutcomesFromText(outcomesStepsDoc.content.text || '');
             
-            // Match outcomes with their steps
-            outcomes.forEach((outcome, index) => {
-                if (stepsData[index] && stepsData[index].steps) {
-                    outcome.learningSteps = stepsData[index].steps;
-                    console.log(`Added ${stepsData[index].steps.length} steps to outcome ${index + 1}`);
+            // Match outcomes with their steps by content similarity, not array index
+            outcomes.forEach((outcome, outcomeIndex) => {
+                const outcomeText = outcome.text.toLowerCase();
+                
+                // Find matching step data by content similarity
+                const matchingStepData = stepsData.find(stepData => {
+                    const stepText = stepData.text.toLowerCase();
+                    
+                    // Check for key phrase matches
+                    if (outcomeText.includes('municipal services') && stepText.includes('municipal services')) return true;
+                    if (outcomeText.includes('emerging issues') && stepText.includes('emerging issues')) return true;
+                    if (outcomeText.includes('service delivery strategies') && stepText.includes('service delivery strategies')) return true;
+                    if (outcomeText.includes('government planning') && stepText.includes('government planning')) return true;
+                    if (outcomeText.includes('engaging citizens') && stepText.includes('engaging citizens')) return true;
+                    if (outcomeText.includes('community planning') && stepText.includes('community planning')) return true;
+                    if (outcomeText.includes('best practices') && stepText.includes('best practices')) return true;
+                    if (outcomeText.includes('political acumen') && stepText.includes('political acumen')) return true;
+                    
+                    return false;
+                });
+                
+                if (matchingStepData && matchingStepData.steps) {
+                    outcome.learningSteps = matchingStepData.steps;
+                    console.log(`Added ${matchingStepData.steps.length} steps to outcome ${outcomeIndex + 1} (${outcome.text.substring(0, 50)}...)`);
+                } else {
+                    console.log(`No matching steps found for outcome ${outcomeIndex + 1}: ${outcome.text.substring(0, 50)}...`);
                 }
             });
         }

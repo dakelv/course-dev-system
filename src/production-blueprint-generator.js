@@ -98,45 +98,199 @@ class ProductionBlueprintGenerator {
     }
 
     generateInteractiveRequests(outcome) {
-        return `[[style:request]]\n\n<table>\n<colgroup>\n<col style="width: 27%" />\n<col style="width: 72%" />\n</colgroup>\n<thead>\n<tr>\n<th colspan="2"><strong>Interactive Request</strong></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><strong>Interactive Type</strong></td>\n<td><strong>H5P -- Interactive Quiz</strong></td>\n</tr>\n<tr>\n<td><p><strong>Activity Details</strong></p>\n<p><strong>&#x2610;</strong> Details below ticket</p></td>\n<td><p><em>Create comprehensive quiz using H5P in D2L Brightspace Creator+</em></p>\n<p>Municipal administration quiz with multiple choice, true/false, and scenario-based questions. Focus on Canadian municipal examples and practical applications. Include immediate feedback and explanations for all questions.</p></td>\n</tr>\n<tr>\n<td><strong>Graphics & Media Support</strong></td>\n<td>Yes <em>Include relevant charts and infographics to support questions</em></td>\n</tr>\n<tr>\n<td><p><strong>Text Version</strong></p>\n<p><em>Add click to reveal for accessibility?</em></p></td>\n<td><strong>Yes</strong> <em>Provide accessible alternative with screen reader compatibility</em></td>\n</tr>\n</tbody>\n</table>\n\n[[/style]]\n\n`;
+        const topicSpecificQuiz = this.getTopicSpecificQuiz(outcome);
+        
+        return `[[style:request]]\n\n<table>\n<colgroup>\n<col style="width: 27%" />\n<col style="width: 72%" />\n</colgroup>\n<thead>\n<tr>\n<th colspan="2"><strong>Interactive Request</strong></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><strong>Interactive Type</strong></td>\n<td><strong>H5P -- Interactive Quiz</strong></td>\n</tr>\n<tr>\n<td><p><strong>Activity Details</strong></p>\n<p><strong>&#x2610;</strong> Details below ticket</p></td>\n<td><p><em>Create comprehensive quiz using H5P in D2L Brightspace Creator+</em></p>\n<p>${topicSpecificQuiz.description}</p></td>\n</tr>\n<tr>\n<td><strong>Graphics & Media Support</strong></td>\n<td>Yes <em>${topicSpecificQuiz.mediaSupport}</em></td>\n</tr>\n<tr>\n<td><p><strong>Text Version</strong></p>\n<p><em>Add click to reveal for accessibility?</em></p></td>\n<td><strong>Yes</strong> <em>Provide accessible alternative with screen reader compatibility</em></td>\n</tr>\n</tbody>\n</table>\n\n[[/style]]\n\n`;
+    }
+
+    getTopicSpecificQuiz(outcome) {
+        const outcomeText = outcome.text.toLowerCase();
+        
+        if (outcomeText.includes('municipal services')) {
+            return {
+                description: 'Municipal services quiz with multiple choice, true/false, and scenario-based questions. Focus on service categorization, importance, and challenges facing Canadian municipalities. Include immediate feedback and explanations for all questions.',
+                mediaSupport: 'Include service delivery charts and municipal organizational diagrams to support questions'
+            };
+        } else if (outcomeText.includes('emerging issues') || outcomeText.includes('management challenges')) {
+            return {
+                description: 'Emerging issues and management challenges quiz with multiple choice, true/false, and scenario-based questions. Focus on current challenges facing Canadian municipalities and management responses. Include immediate feedback and explanations for all questions.',
+                mediaSupport: 'Include trend charts and challenge analysis infographics to support questions'
+            };
+        } else if (outcomeText.includes('service delivery strategies')) {
+            return {
+                description: 'Service delivery strategies quiz with multiple choice, true/false, and scenario-based questions. Focus on different delivery models, policy frameworks, and strategic approaches used by Canadian municipalities. Include immediate feedback and explanations for all questions.',
+                mediaSupport: 'Include service delivery model diagrams and strategy comparison charts to support questions'
+            };
+        } else if (outcomeText.includes('government planning') || outcomeText.includes('sustainability')) {
+            return {
+                description: 'Government planning and sustainability quiz with multiple choice, true/false, and scenario-based questions. Focus on planning elements, sustainability integration, and planning processes in Canadian municipalities. Include immediate feedback and explanations for all questions.',
+                mediaSupport: 'Include planning process flowcharts and sustainability framework diagrams to support questions'
+            };
+        } else if (outcomeText.includes('citizen engagement') || outcomeText.includes('engaging citizens')) {
+            return {
+                description: 'Citizen engagement quiz with multiple choice, true/false, and scenario-based questions. Focus on engagement methods, importance, and best practices in Canadian municipal contexts. Include immediate feedback and explanations for all questions.',
+                mediaSupport: 'Include engagement method comparisons and participation level charts to support questions'
+            };
+        } else if (outcomeText.includes('community planning')) {
+            return {
+                description: 'Community planning quiz with multiple choice, true/false, and scenario-based questions. Focus on planning elements, stakeholder involvement, and planning processes in Canadian municipalities. Include immediate feedback and explanations for all questions.',
+                mediaSupport: 'Include planning process diagrams and stakeholder mapping visuals to support questions'
+            };
+        } else if (outcomeText.includes('political acumen')) {
+            return {
+                description: 'Political acumen quiz with multiple choice, true/false, and scenario-based questions. Focus on political skills, importance in municipal administration, and ethical considerations. Include immediate feedback and explanations for all questions.',
+                mediaSupport: 'Include political skills frameworks and municipal governance structure diagrams to support questions'
+            };
+        } else {
+            return {
+                description: 'Municipal administration quiz with multiple choice, true/false, and scenario-based questions. Focus on Canadian municipal examples and practical applications. Include immediate feedback and explanations for all questions.',
+                mediaSupport: 'Include relevant charts and infographics to support questions'
+            };
+        }
     }
 
     generateGraphicsRequests(outcome) {
-        return `[[style:request]]\n\n<table>\n<colgroup>\n<col style="width: 24%" />\n<col style="width: 75%" />\n</colgroup>\n<thead>\n<tr>\n<th colspan="2"><strong>Graphics Request</strong></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><strong>Image Size</strong></td>\n<td><p><em>width for landscape orientation and height for portrait orientation</em></p>\n<p>11x17 inches for professional infographic, optimized for both print and digital use</p></td>\n</tr>\n<tr>\n<td><strong>GDA Instructions</strong></td>\n<td><p>Create professional infographic showing municipal service relationships and impacts.</p>\n<p>Requirements: Canadian municipal data, professional color scheme, accessibility compliant design, clear visual hierarchy, Saskatchewan Polytechnic branding</p></td>\n</tr>\n<tr>\n<td><strong>Special Use</strong></td>\n<td>Educational resource for student learning and analysis</td>\n</tr>\n<tr>\n<td><strong>Image Sample</strong></td>\n<td>[Reference examples from government infographics and municipal reports]</td>\n</tr>\n<tr>\n<td><strong>Completed Filename</strong></td>\n<td>municipal_services_framework.jpg</td>\n</tr>\n<tr>\n<td><strong>Alignment</strong></td>\n<td>Center alignment for maximum impact</td>\n</tr>\n<tr>\n<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>\n<p><strong>&#x2610;</strong> Decorative</p></td>\n<td>Professional infographic showing municipal service categories and their interconnected impacts on community development</td>\n</tr>\n<tr>\n<td><strong>Citation</strong></td>\n<td><p>Original work</p>\n<p>Saskatchewan Polytechnic - Municipal Administration Program</p></td>\n</tr>\n<tr>\n<td><strong>Caption</strong></td>\n<td>Municipal Services Impact Framework</td>\n</tr>\n<tr>\n<td><strong>Comments for CMP</strong></td>\n<td>This infographic should support the learning objective by clearly showing how different municipal services interconnect and impact community outcomes</td>\n</tr>\n</tbody>\n</table>\n\n[[/style]]\n\n`;
+        const topicSpecificGraphics = this.getTopicSpecificGraphics(outcome);
+        
+        return `[[style:request]]\n\n<table>\n<colgroup>\n<col style="width: 24%" />\n<col style="width: 75%" />\n</colgroup>\n<thead>\n<tr>\n<th colspan="2"><strong>Graphics Request</strong></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><strong>Image Size</strong></td>\n<td><p><em>width for landscape orientation and height for portrait orientation</em></p>\n<p>11x17 inches for professional infographic, optimized for both print and digital use</p></td>\n</tr>\n<tr>\n<td><strong>GDA Instructions</strong></td>\n<td><p>${topicSpecificGraphics.instructions}</p>\n<p>Requirements: Canadian municipal data, professional color scheme, accessibility compliant design, clear visual hierarchy, Saskatchewan Polytechnic branding</p></td>\n</tr>\n<tr>\n<td><strong>Special Use</strong></td>\n<td>Educational resource for student learning and analysis</td>\n</tr>\n<tr>\n<td><strong>Image Sample</strong></td>\n<td>${topicSpecificGraphics.imageSample}</td>\n</tr>\n<tr>\n<td><strong>Completed Filename</strong></td>\n<td>${topicSpecificGraphics.filename}</td>\n</tr>\n<tr>\n<td><strong>Alignment</strong></td>\n<td>Center alignment for maximum impact</td>\n</tr>\n<tr>\n<td><p><strong>Alt Tag (&lt; 125 char)</strong></p>\n<p><strong>&#x2610;</strong> Decorative</p></td>\n<td>${topicSpecificGraphics.altTag}</td>\n</tr>\n<tr>\n<td><strong>Citation</strong></td>\n<td><p>Original work</p>\n<p>Saskatchewan Polytechnic - Municipal Administration Program</p></td>\n</tr>\n<tr>\n<td><strong>Caption</strong></td>\n<td>${topicSpecificGraphics.caption}</td>\n</tr>\n<tr>\n<td><strong>Comments for CMP</strong></td>\n<td>${topicSpecificGraphics.comments}</td>\n</tr>\n</tbody>\n</table>\n\n[[/style]]\n\n`;
+    }
+
+    getTopicSpecificGraphics(outcome) {
+        const outcomeText = outcome.text.toLowerCase();
+        
+        if (outcomeText.includes('municipal services')) {
+            return {
+                instructions: 'Create professional infographic showing municipal service categories, types, and their interconnected impacts on community development.',
+                imageSample: '[Reference examples from FCM service delivery reports and municipal annual reports]',
+                filename: 'municipal_services_framework.jpg',
+                altTag: 'Professional infographic showing municipal service categories and their interconnected impacts on community development',
+                caption: 'Municipal Services Framework',
+                comments: 'This infographic should support learning by clearly showing how different municipal services interconnect and impact community outcomes'
+            };
+        } else if (outcomeText.includes('emerging issues') || outcomeText.includes('management challenges')) {
+            return {
+                instructions: 'Create professional infographic showing current emerging issues and management challenges facing Canadian municipalities.',
+                imageSample: '[Reference examples from FCM trend reports and municipal challenge studies]',
+                filename: 'municipal_challenges_framework.jpg',
+                altTag: 'Professional infographic showing emerging issues and management challenges facing Canadian municipalities',
+                caption: 'Municipal Management Challenges Framework',
+                comments: 'This infographic should illustrate current challenges municipalities face and potential management approaches'
+            };
+        } else if (outcomeText.includes('service delivery strategies')) {
+            return {
+                instructions: 'Create professional infographic showing different municipal service delivery strategies and models used across Canada.',
+                imageSample: '[Reference examples from service delivery best practice reports and municipal innovation studies]',
+                filename: 'service_delivery_strategies.jpg',
+                altTag: 'Professional infographic showing municipal service delivery strategies and implementation models',
+                caption: 'Municipal Service Delivery Strategies',
+                comments: 'This infographic should compare different service delivery approaches and their effectiveness'
+            };
+        } else if (outcomeText.includes('government planning') || outcomeText.includes('sustainability')) {
+            return {
+                instructions: 'Create professional infographic showing government planning elements and their relationship to sustainability principles.',
+                imageSample: '[Reference examples from municipal sustainability plans and government planning frameworks]',
+                filename: 'government_planning_sustainability.jpg',
+                altTag: 'Professional infographic showing government planning elements and sustainability integration',
+                caption: 'Government Planning and Sustainability Framework',
+                comments: 'This infographic should demonstrate how planning processes integrate sustainability considerations'
+            };
+        } else if (outcomeText.includes('citizen engagement') || outcomeText.includes('engaging citizens')) {
+            return {
+                instructions: 'Create professional infographic showing citizen engagement methods and their importance in municipal governance.',
+                imageSample: '[Reference examples from citizen engagement best practices and municipal consultation reports]',
+                filename: 'citizen_engagement_methods.jpg',
+                altTag: 'Professional infographic showing citizen engagement methods and importance in municipal governance',
+                caption: 'Citizen Engagement Methods and Importance',
+                comments: 'This infographic should illustrate various citizen engagement approaches and their benefits'
+            };
+        } else if (outcomeText.includes('community planning')) {
+            return {
+                instructions: 'Create professional infographic showing key elements of community planning in municipal administration.',
+                imageSample: '[Reference examples from community planning guides and municipal development frameworks]',
+                filename: 'community_planning_elements.jpg',
+                altTag: 'Professional infographic showing key elements of community planning in municipal administration',
+                caption: 'Community Planning Elements Framework',
+                comments: 'This infographic should outline the essential components of effective community planning'
+            };
+        } else if (outcomeText.includes('political acumen')) {
+            return {
+                instructions: 'Create professional infographic showing the importance of political acumen in municipal administration and key skills required.',
+                imageSample: '[Reference examples from municipal leadership guides and political skills frameworks]',
+                filename: 'political_acumen_framework.jpg',
+                altTag: 'Professional infographic showing political acumen importance and key skills in municipal administration',
+                caption: 'Political Acumen in Municipal Administration',
+                comments: 'This infographic should demonstrate why political acumen matters and what skills are essential'
+            };
+        } else {
+            // Generic fallback
+            return {
+                instructions: 'Create professional infographic related to municipal administration concepts.',
+                imageSample: '[Reference examples from government infographics and municipal reports]',
+                filename: 'municipal_administration_concept.jpg',
+                altTag: 'Professional infographic illustrating municipal administration concepts',
+                caption: 'Municipal Administration Framework',
+                comments: 'This infographic should support the learning objective with relevant visual information'
+            };
+        }
     }
 
     generateDetailedOutcomeDescription(outcome) {
-        const descriptions = {
-            'identify the types of municipal services': `Municipal services are the foundation of community life in Canada, encompassing everything from essential utilities to quality-of-life programs. This learning outcome will develop your expertise in categorizing and understanding the full spectrum of services that municipalities provide to their residents and businesses. You'll explore essential services (those legally required for public health and safety), infrastructure services (the physical systems supporting community function), and enhanced services (programs that improve quality of life).
+        const outcomeText = outcome.text.toLowerCase();
+        
+        if (outcomeText.includes('municipal services')) {
+            return `Municipal services are the foundation of community life in Canada, encompassing everything from essential utilities to quality-of-life programs. This learning outcome will develop your expertise in categorizing and understanding the full spectrum of services that municipalities provide to their residents and businesses. You'll explore essential services (those legally required for public health and safety), infrastructure services (the physical systems supporting community function), and enhanced services (programs that improve quality of life).
 
 Through real-world Canadian examples and hands-on activities, you'll analyze service delivery models, understand their critical importance to community well-being, and examine the complex challenges municipal administrators face in the 21st century. By completion, you'll be able to categorize services effectively, articulate their community impact, and critically evaluate municipal service delivery strategies used across Canada.
 
-This learning outcome prepares you for the practical realities of municipal administration by connecting theoretical knowledge with current Canadian municipal practices and challenges.`,
-            
-            'discuss emerging issues and management challenges': `Municipal governments today operate in an increasingly complex and rapidly changing environment. This learning outcome examines the contemporary challenges confronting local governments across Canada, from technological disruption and climate change impacts to demographic shifts, fiscal constraints, and evolving citizen expectations.
+This learning outcome prepares you for the practical realities of municipal administration by connecting theoretical knowledge with current Canadian municipal practices and challenges.`;
+        } else if (outcomeText.includes('emerging issues') || outcomeText.includes('management challenges')) {
+            return `Municipal governments today operate in an increasingly complex and rapidly changing environment. This learning outcome examines the contemporary challenges confronting local governments across Canada, from technological disruption and climate change impacts to demographic shifts, fiscal constraints, and evolving citizen expectations.
 
 You'll develop critical analytical skills to evaluate these multi-faceted challenges and explore innovative management approaches that municipalities are adopting to address them. Through case studies, current events analysis, and interactive discussions, you'll examine how Canadian municipalities are adapting their operations, service delivery, and governance approaches to meet 21st-century challenges.
 
-The focus throughout will be on practical problem-solving and strategic thinking, preparing you to contribute meaningfully to municipal organizations that must balance competing demands while serving diverse community needs within constrained resources.`,
-            
-            'identify service delivery strategies': `Effective service delivery is at the heart of successful municipal administration. This learning outcome explores the diverse strategies and models that Canadian municipalities use to deliver services to their communities, from traditional in-house delivery to innovative partnerships, shared services arrangements, and digital transformation initiatives.
+The focus throughout will be on practical problem-solving and strategic thinking, preparing you to contribute meaningfully to municipal organizations that must balance competing demands while serving diverse community needs within constrained resources.`;
+        } else if (outcomeText.includes('service delivery strategies')) {
+            return `Effective service delivery is at the heart of successful municipal administration. This learning outcome explores the diverse strategies and models that Canadian municipalities use to deliver services to their communities, from traditional in-house delivery to innovative partnerships, shared services arrangements, and digital transformation initiatives.
 
 You'll examine different approaches through the lens of effectiveness, efficiency, and community satisfaction, learning to evaluate which strategies work best in different contexts. Real examples from Canadian municipalities will illustrate successful implementations, challenges overcome, and lessons learned.
 
-This hands-on analysis will prepare you to make informed recommendations about service delivery options, understand the trade-offs involved in different approaches, and contribute to strategic planning processes in municipal organizations.`
-        };
-        
-        const outcomeKey = outcome.text.toLowerCase();
-        for (const [key, description] of Object.entries(descriptions)) {
-            if (outcomeKey.includes(key)) {
-                return description;
-            }
-        }
-        
-        // Generic fallback with professional focus
-        return `This learning outcome focuses on developing both theoretical understanding and practical skills in municipal administration. Through a combination of research, analysis, and hands-on activities, you'll build competencies that are essential for effective public service delivery in Canadian municipalities.
+This hands-on analysis will prepare you to make informed recommendations about service delivery options, understand the trade-offs involved in different approaches, and contribute to strategic planning processes in municipal organizations.`;
+        } else if (outcomeText.includes('government planning') || outcomeText.includes('sustainability')) {
+            return `Government planning is the strategic foundation that guides municipal decision-making and resource allocation. This learning outcome explores how municipalities develop comprehensive plans that balance community needs, environmental stewardship, and economic development while ensuring long-term sustainability.
+
+You'll examine the essential elements of government planning including land use planning, infrastructure development, environmental protection, and community engagement. Through Canadian case studies and planning frameworks, you'll understand how sustainability principles are integrated into municipal planning processes and how these plans guide day-to-day municipal operations.
+
+This learning outcome prepares you to contribute to municipal planning processes, understand the relationship between planning and sustainability, and evaluate planning decisions through multiple lenses including environmental, social, and economic impacts.`;
+        } else if (outcomeText.includes('citizen engagement') || outcomeText.includes('engaging citizens')) {
+            return `Citizen engagement is fundamental to effective democratic governance and successful municipal administration. This learning outcome explores why citizen participation matters, how it strengthens municipal decision-making, and the various methods municipalities use to involve residents in governance processes.
+
+You'll examine traditional engagement methods like public meetings and consultations alongside innovative approaches including digital platforms, citizen panels, and participatory budgeting. Through Canadian examples, you'll analyze what makes engagement effective, how to reach diverse community voices, and how to integrate citizen input into municipal decision-making.
+
+This learning outcome prepares you to design and implement citizen engagement strategies, understand the benefits and challenges of public participation, and contribute to building stronger relationships between municipalities and the communities they serve.`;
+        } else if (outcomeText.includes('community planning')) {
+            return `Community planning is the collaborative process through which municipalities work with residents, businesses, and stakeholders to shape their community's future. This learning outcome explores the key elements of effective community planning including visioning, stakeholder engagement, implementation strategies, and ongoing evaluation.
+
+You'll examine how successful community planning integrates diverse perspectives, balances competing interests, and creates actionable plans that guide municipal development. Through Canadian case studies, you'll analyze planning processes, understand the roles of different stakeholders, and learn how to facilitate collaborative planning initiatives.
+
+This learning outcome prepares you to participate in and lead community planning processes, understand the essential components of effective planning, and contribute to creating plans that reflect community values and priorities while being realistic and implementable.`;
+        } else if (outcomeText.includes('best practices') && outcomeText.includes('community planning')) {
+            return `Applying best practices in community planning requires understanding what works, why it works, and how to adapt successful approaches to different community contexts. This learning outcome focuses on identifying, evaluating, and implementing proven community planning strategies used by successful Canadian municipalities.
+
+You'll examine award-winning planning initiatives, analyze their key success factors, and learn how to adapt best practices to different community sizes, demographics, and challenges. Through practical exercises, you'll develop skills in evaluating planning approaches, identifying transferable elements, and implementing improvements in real municipal contexts.
+
+This learning outcome prepares you to be an effective practitioner who can learn from others' successes, avoid common pitfalls, and contribute to continuous improvement in municipal planning practices.`;
+        } else if (outcomeText.includes('political acumen')) {
+            return `Political acumen is the ability to understand and navigate the political dimensions of municipal administration effectively. This learning outcome explores why political awareness and skills are essential for municipal administrators, how political dynamics influence municipal operations, and the key competencies needed to work effectively in political environments.
+
+You'll examine the relationship between elected officials and municipal staff, understand how political considerations affect administrative decisions, and develop skills in stakeholder management, communication, and strategic thinking. Through Canadian municipal examples, you'll analyze how successful administrators balance political awareness with professional integrity.
+
+This learning outcome prepares you to work effectively in the political environment of municipal government, understand the importance of political sensitivity in administrative roles, and develop the skills needed to support elected officials while maintaining professional standards and serving the public interest.`;
+        } else {
+            // Generic fallback with professional focus
+            return `This learning outcome focuses on developing both theoretical understanding and practical skills in municipal administration. Through a combination of research, analysis, and hands-on activities, you'll build competencies that are essential for effective public service delivery in Canadian municipalities.
 
 The content emphasizes real-world application, current Canadian examples, and practical skills that directly prepare you for municipal administration careers. Each activity is designed to connect academic concepts with professional practice, ensuring you develop both knowledge and applied capabilities.`;
+        }
     }
 
     async formatProductionReadyStep(outcome, step, stepIndex) {
@@ -171,37 +325,76 @@ The content emphasizes real-world application, current Canadian examples, and pr
     }
 
     generateDetailedStepDescription(step, outcome) {
-        const stepDescriptions = {
-            'summarize municipal services': `Municipal services form the invisible infrastructure that makes community life possible. From the moment residents turn on a tap for clean water to walking on maintained sidewalks to accessing recreation programs, municipal services surround and support every aspect of daily life.
+        const stepText = step.text.toLowerCase();
+        const outcomeText = outcome.text.toLowerCase();
+        
+        // Topic-specific step descriptions based on both step and outcome context
+        if (stepText.includes('summarize municipal services')) {
+            return `Municipal services form the invisible infrastructure that makes community life possible. From the moment residents turn on a tap for clean water to walking on maintained sidewalks to accessing recreation programs, municipal services surround and support every aspect of daily life.
 
 In this step, you'll develop expertise in categorizing and summarizing the full spectrum of services that Canadian municipalities provide. You'll learn to distinguish between essential services (those legally required for public health and safety), infrastructure services (the physical systems supporting community function), and enhanced services (programs that improve quality of life).
 
-Understanding service categorization is crucial for municipal administrators who must allocate limited resources, plan budgets, and communicate with citizens about service priorities. This foundation will prepare you to analyze service delivery decisions and understand the complex trade-offs municipal leaders face.`,
-            
-            'explain the importance of municipal services': `Beyond simply cataloging what municipalities do, understanding WHY these services matter is crucial for effective public administration. Municipal services are the foundation of community prosperity, public health, economic development, and social equity.
+Understanding service categorization is crucial for municipal administrators who must allocate limited resources, plan budgets, and communicate with citizens about service priorities. This foundation will prepare you to analyze service delivery decisions and understand the complex trade-offs municipal leaders face.`;
+        } else if (stepText.includes('explain the importance of municipal services')) {
+            return `Beyond simply cataloging what municipalities do, understanding WHY these services matter is crucial for effective public administration. Municipal services are the foundation of community prosperity, public health, economic development, and social equity.
 
 In this step, you'll explore the complex web of connections between service quality and community outcomes. You'll examine how water treatment impacts economic development, how public transit affects social mobility, how recreation programs contribute to community cohesion, and how efficient service delivery attracts businesses and residents.
 
-This analytical framework will prepare you to articulate service value to diverse stakeholders—from budget-conscious taxpayers to economic development boards to community advocacy groups. You'll develop the skills to make compelling cases for municipal service investment and improvement.`,
-            
-            'identify challenges faced by municipal services': `Understanding municipal services is incomplete without recognizing the complex challenges that threaten their effectiveness and sustainability. Canadian municipalities face unprecedented pressures: aging infrastructure requiring $170+ billion in repairs, climate change creating new service demands, demographic shifts changing service needs, and constrained fiscal capacity limiting response options.
+This analytical framework will prepare you to articulate service value to diverse stakeholders—from budget-conscious taxpayers to economic development boards to community advocacy groups. You'll develop the skills to make compelling cases for municipal service investment and improvement.`;
+        } else if (stepText.includes('identify challenges faced by municipal services')) {
+            return `Understanding municipal services is incomplete without recognizing the complex challenges that threaten their effectiveness and sustainability. Canadian municipalities face unprecedented pressures: aging infrastructure requiring $170+ billion in repairs, climate change creating new service demands, demographic shifts changing service needs, and constrained fiscal capacity limiting response options.
 
 In this step, you'll analyze contemporary challenges through multiple lenses—financial constraints, infrastructure deficits, technological disruption, citizen expectations, and regulatory pressures. You'll examine how municipalities innovate to address these challenges while maintaining service quality and fiscal responsibility.
 
-This analysis prepares you for the strategic thinking required in municipal administration careers, where you'll need to balance competing demands and find creative solutions within significant constraints.`
-        };
-        
-        const stepKey = step.text.toLowerCase();
-        for (const [key, description] of Object.entries(stepDescriptions)) {
-            if (stepKey.includes(key)) {
-                return description;
-            }
-        }
-        
-        // Generic fallback with municipal focus
-        return `This step focuses on building specific knowledge and skills related to ${step.text.toLowerCase()}. Through practical exercises and real-world Canadian examples, you'll develop understanding that applies directly to municipal administration practice.
+This analysis prepares you for the strategic thinking required in municipal administration careers, where you'll need to balance competing demands and find creative solutions within significant constraints.`;
+        } else if (stepText.includes('review local government structure')) {
+            return `Understanding local government structure is fundamental to analyzing emerging issues and management challenges. Canadian municipalities operate within a complex framework of federal, provincial, and local jurisdictions, each with distinct roles, responsibilities, and constraints.
 
-The activities in this step are designed to connect theoretical concepts with practical application, ensuring you develop both knowledge and skills needed for effective municipal administration careers.`;
+In this step, you'll examine how municipal government structure influences decision-making capacity, service delivery options, and response to emerging challenges. You'll analyze different municipal structures across Canada, understand the roles of councils, mayors, and administrative staff, and explore how governance structures affect municipal effectiveness.
+
+This foundational knowledge prepares you to understand why certain challenges emerge and how structural factors influence municipal responses to contemporary issues.`;
+        } else if (stepText.includes('identify emerging issues')) {
+            return `Canadian municipalities face rapidly evolving challenges that require innovative responses and adaptive management. From climate change impacts to technological disruption, demographic shifts to changing citizen expectations, emerging issues test traditional municipal approaches and demand new solutions.
+
+In this step, you'll identify and analyze current emerging issues affecting Canadian municipalities. You'll examine trends in urbanization, aging populations, digital transformation, environmental pressures, and fiscal constraints. Through current examples and case studies, you'll understand how these issues manifest differently across various municipal contexts.
+
+This analysis develops your ability to recognize emerging trends early, understand their implications for municipal operations, and contribute to proactive rather than reactive municipal management.`;
+        } else if (stepText.includes('interpret policy frameworks')) {
+            return `Policy frameworks provide the foundation for municipal service delivery strategies, establishing the legal, regulatory, and strategic context within which municipalities operate. Understanding these frameworks is essential for developing effective service delivery approaches.
+
+In this step, you'll examine federal, provincial, and municipal policy frameworks that influence service delivery decisions. You'll analyze how policies create opportunities and constraints, understand the relationship between different levels of government, and explore how policy interpretation affects municipal operations.
+
+This knowledge prepares you to work effectively within policy frameworks, understand the rationale behind service delivery requirements, and contribute to policy implementation and development processes.`;
+        } else if (stepText.includes('describe service delivery strategies')) {
+            return `Municipal service delivery strategies determine how communities receive essential services, from traditional in-house delivery to innovative partnerships and digital solutions. Understanding different strategies and their applications is crucial for effective municipal administration.
+
+In this step, you'll examine various service delivery models used by Canadian municipalities, including direct delivery, contracting, partnerships, shared services, and hybrid approaches. You'll analyze the advantages and challenges of each strategy, understand when different approaches are most effective, and explore emerging trends in service delivery.
+
+This analysis prepares you to evaluate service delivery options, make informed recommendations about service delivery strategies, and contribute to strategic planning processes in municipal organizations.`;
+        } else if (stepText.includes('define political acumen')) {
+            return `Political acumen in municipal administration refers to the ability to understand, navigate, and work effectively within the political dimensions of local government. It's a critical skill that enables municipal administrators to support elected officials while maintaining professional integrity and serving the public interest.
+
+In this step, you'll explore what political acumen means in the municipal context, understand why it's essential for administrative effectiveness, and examine how political awareness differs from political involvement. You'll analyze the relationship between political and administrative roles and understand the boundaries that maintain professional integrity.
+
+This foundation prepares you to work effectively in the political environment of municipal government while maintaining the professional standards essential for effective public administration.`;
+        } else if (stepText.includes('describe the importance of political acumen')) {
+            return `Political acumen is not about playing politics—it's about understanding the political environment in which municipal administration operates and developing the skills to work effectively within that environment. For municipal administrators, political awareness is essential for successful policy implementation, stakeholder management, and public service delivery.
+
+In this step, you'll examine why political acumen matters for municipal administrators, how political dynamics affect administrative decisions, and the consequences of political naivety in municipal roles. Through Canadian examples, you'll analyze situations where political acumen made the difference between successful and unsuccessful municipal initiatives.
+
+This understanding prepares you to recognize the political dimensions of administrative work and develop the sensitivity needed to navigate complex stakeholder relationships effectively.`;
+        } else if (stepText.includes('identify the key skills of political acumen')) {
+            return `Political acumen encompasses a range of specific skills that enable municipal administrators to work effectively in political environments. These skills can be developed through practice, observation, and conscious effort to understand political dynamics and stakeholder relationships.
+
+In this step, you'll identify and examine the key skills that comprise political acumen, including stakeholder analysis, strategic communication, relationship building, timing and positioning, and ethical decision-making. You'll explore how these skills apply in municipal contexts and analyze examples of their effective use.
+
+This practical focus prepares you to develop your own political acumen skills and apply them effectively in municipal administration roles while maintaining professional integrity and serving the public interest.`;
+        } else {
+            // Generate contextual description based on step text and outcome
+            return `This step focuses on building specific knowledge and skills related to "${step.text}". Through practical exercises and real-world Canadian municipal examples, you'll develop understanding that applies directly to municipal administration practice in the context of ${outcomeText}.
+
+The activities in this step are designed to connect theoretical concepts with practical application, ensuring you develop both knowledge and skills needed for effective municipal administration careers. Each activity builds progressively toward mastery of this learning step while contributing to the broader learning outcome.`;
+        }
     }
 
     async formatProductionReadyActivity(activity, outcomeNumber, stepNumber, activityNumber) {
