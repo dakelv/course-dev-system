@@ -2151,7 +2151,7 @@ ${blueprint.nextSteps.map(step => `1. ${step}`).join('\n')}
       learningTheoryApplication: output.recommendations?.find(r => r.includes('theory')) || 'Constructivist approach',
       scaffoldingStrategy: output.recommendations?.find(r => r.includes('scaffold')) || 'Progressive skill building',
       multiModalDesign: output.recommendations?.find(r => r.includes('modal')) || 'Diverse learning styles',
-      engagementStrategies: output.output?.substring(0, 200) + '...' || 'Interactive and collaborative activities',
+      engagementStrategies: (typeof output.output === 'string' ? output.output.substring(0, 200) + '...' : output.output?.toString()?.substring(0, 200) + '...' || 'Interactive and collaborative activities'),
       udlCompliance: output.recommendations?.filter(r => r.includes('UDL') || r.includes('accessibility')) || [],
       qualityScore: instructionalDesigner.metadata?.qualityScore || 0.7
     };

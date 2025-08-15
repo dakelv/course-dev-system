@@ -268,34 +268,93 @@ The activities in this step are designed to connect theoretical concepts with pr
     }
 
     formatProductionReadingActivity(activity) {
-        return `In this section, you will examine foundational concepts related to municipal administration through guided reading of academic and professional sources.
+        return `Why read?
 
-**Required Readings:**
+[[style:read]]
 
-1. **Primary Academic Source**: Relevant chapter from "Municipal Administration in Canada" by Andrew Sancton (University of Toronto Press, 2015) - Available through library database access
-2. **Secondary Academic Source**: Recent journal article from Canadian Public Administration or Canadian Public Policy, Vol. XX (library database access)
-3. **Government Policy Source**: Current report from Federation of Canadian Municipalities (FCM) or Infrastructure Canada
-4. **Current Context**: Recent municipal government annual report or policy document from a Canadian municipality
+**Primary Government Sources** - Current and authoritative information on Canadian municipal administration:
 
-**Instructions:**
+1. **Government of Canada**: 
+   - [Infrastructure and Communities](https://www.infrastructure.gc.ca/)
+   - [Federation of Canadian Municipalities](https://fcm.ca/en/resources)
+   - [Statistics Canada - Municipal Finances](https://www.statcan.gc.ca/en/subjects-start/government/municipal_government_finance)
 
-1. **Preparation**: Schedule 2-3 hours for comprehensive reading and note-taking
-2. **Active Reading**: Focus on Canadian municipal examples, key concepts, and practical applications
-3. **Connection Building**: Identify how concepts relate to your local municipality or region
-4. **Critical Analysis**: Consider strengths, limitations, and current relevance of approaches described
+2. **Provincial Municipal Affairs**:
+   - [Government of Saskatchewan - Municipal Relations](https://www.saskatchewan.ca/government/municipal-administration)
+   - [Municipal Government Act - Current legislation](https://www.saskatchewan.ca/residents/housing-and-renting/municipal-services)
 
-**Post-Reading Analysis:**
+3. **Professional Resources**:
+   - [Canadian Public Administration Journal - Recent articles](https://onlinelibrary.wiley.com/journal/17547121)
+   - [Institute of Public Administration of Canada (IPAC)](https://www.ipac.ca/en)
 
-After completing all assigned readings, write brief responses (2-3 sentences each) to these questions:
+[[/style]]
 
-1. **Pattern Recognition**: What common themes or patterns emerge across the different sources?
-2. **Evidence Evaluation**: How compelling is the evidence presented? What sources provide the strongest support for their claims?
-3. **Regional Variations**: What differences do you observe in approaches used by different provinces or municipality sizes?
-4. **Solution Assessment**: Which approaches or solutions appear most promising based on the evidence presented?
-5. **Interconnections**: How do the different concepts and approaches relate to or support each other?
-6. **Future Implications**: Based on current trends discussed, what new challenges or opportunities do you anticipate for Canadian municipalities?
+**What are your current experiences and observations?**
 
-**Deliverable**: Submit a 400-500 word reflection that integrates insights from all readings and addresses the analysis questions above.
+[[style:instruction]]
+
+**Instructions**
+
+Before reading, reflect on the following questions:
+
+1. **Personal Experience**: What municipal services do you use daily? How do they impact your quality of life?
+2. **Community Observation**: What municipal challenges have you observed in your community?
+3. **Professional Interest**: How does this topic connect to your career goals in municipal administration?
+4. **Current Awareness**: What recent news or developments related to municipal government have you noticed?
+
+Compose answers in your head or notes, then proceed with the assigned readings.
+
+[[/style]]
+
+**Reading Assignment Structure**
+
+[[style:calloutRight]]
+
+**Professional Reading Approach**: Focus on how these sources inform evidence-based municipal administration practice. Look for concrete examples, data, and proven strategies.
+
+[[/style]]
+
+**Phase 1: Government Policy Context**
+- Read current Infrastructure Canada reports on municipal funding and priorities
+- Review Statistics Canada data on municipal finance trends
+- Examine provincial legislation relevant to your region
+
+**Phase 2: Professional Analysis**
+- Study recent Canadian Public Administration articles on municipal governance
+- Review IPAC resources on best practices and professional development
+- Analyze case studies from Federation of Canadian Municipalities
+
+**Phase 3: Local Application**
+- Research your local municipality's annual report and strategic plan
+- Review current council meeting minutes and policy decisions
+- Examine recent local news coverage of municipal issues
+
+**Critical Reading Questions**
+
+As you read each source, consider:
+
+1. **Evidence Quality**: What data supports the claims made? How current and reliable is the information?
+2. **Canadian Context**: How do approaches reflect uniquely Canadian municipal governance structures?
+3. **Practical Application**: What specific strategies or policies could be implemented locally?
+4. **Professional Relevance**: How does this information prepare you for municipal administration careers?
+5. **Comparative Analysis**: How do approaches vary across different Canadian jurisdictions?
+6. **Future Implications**: What trends or challenges are emerging for Canadian municipalities?
+
+**Post-Reading Synthesis**
+
+[[style:transcript]]
+
+**Sample Reflection Structure**
+
+**Integration Analysis**: After completing all readings, write a 400-500 word reflection addressing:
+
+1. **Theme Identification**: What common themes emerge across government, academic, and professional sources?
+2. **Evidence Assessment**: Which sources provide the most compelling evidence for effective municipal practices?
+3. **Local Relevance**: How do these concepts apply to your local municipal context?
+4. **Professional Preparation**: What insights are most valuable for municipal administration career preparation?
+5. **Future Focus**: Based on current trends, what challenges and opportunities do you anticipate?
+
+[[/style]]
 
 ${activity.content || ''}`;
     }
