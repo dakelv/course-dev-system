@@ -1,14 +1,21 @@
 const logger = require('../utils/logger');
+const SubjectActivityTemplates = require('./subject-activity-templates');
 
 class ProductionBlueprintGenerator {
     constructor() {
         this.currentCourse = null;
+        this.activityTemplates = new SubjectActivityTemplates();
     }
 
     async generateProductionReadyContent(blueprint) {
         logger.info(`Generating production-ready content for ${blueprint.courseInfo.courseId}`);
         
         this.currentCourse = blueprint.courseInfo;
+        
+        // Extract course context for subject-specific content generation
+        if (blueprint.courseContext) {
+            this.currentCourse.courseContext = blueprint.courseContext;
+        }
         
         // Generate detailed, production-ready content like MATH127 format
         const learningOutcomesContent = [];
@@ -74,7 +81,62 @@ class ProductionBlueprintGenerator {
     }
 
     generateCMPNotes(outcome) {
-        return `[[style:note]]\n\nCMP\n\nThe following learning activities include embedded production requests for graphics, interactive elements, and multimedia content. Please follow the specifications in each request table for consistent production quality.\n\nSpecial requirements for municipal administration content:\n- Use Canadian municipal examples and data throughout\n- Include accessibility features (alt text, captions) for all media\n- Follow Saskatchewan Polytechnic visual identity guidelines\n- Ensure professional presentation suitable for business diploma students\n- Reference current government sources and statistics when available\n\n[[/style]]\n\n`;
+        const courseContext = this.currentCourse?.courseContext || {};
+        const subjectArea = courseContext.subjectArea || 'general';
+        const programType = courseContext.programType || 'general';
+        const targetAudience = courseContext.targetAudience || 'students';
+        
+        const subjectRequirements = this.getSubjectSpecificRequirements(subjectArea, programType);
+        
+        return `[[style:note]]\n\nCMP\n\nThe following learning activities include embedded production requests for graphics, interactive elements, and multimedia content. Please follow the specifications in each request table for consistent production quality.\n\nSpecial requirements for ${subjectArea} content:\n${subjectRequirements.map(req => `- ${req}`).join('\n')}\n- Include accessibility features (alt text, captions) for all media\n- Follow Saskatchewan Polytechnic visual identity guidelines\n- Ensure professional presentation suitable for ${targetAudience.toLowerCase()}\n- Reference current authoritative sources and statistics when available\n\n[[/style]]\n\n`;
+    }
+
+    getSubjectSpecificRequirements(subjectArea, programType) {
+        const requirementsMap = {
+            'municipal administration': [
+                'Use Canadian municipal examples and data throughout',
+                'Reference current government policies and regulations',
+                'Include examples from various municipality sizes (urban, rural, regional)',
+                'Ensure compliance with municipal governance standards'
+            ],
+            'business management': [
+                'Use Canadian business examples and case studies',
+                'Reference current market data and business statistics',
+                'Include examples from various industry sectors',
+                'Ensure compliance with business ethics and professional standards'
+            ],
+            'accounting': [
+                'Use Canadian accounting standards (ASPE/IFRS) and examples',
+                'Reference current tax legislation and CRA guidelines',
+                'Include examples from various business types and sizes',
+                'Ensure compliance with professional accounting standards'
+            ],
+            'computer science': [
+                'Use current technology examples and best practices',
+                'Reference official documentation and industry standards',
+                'Include examples from various programming languages and platforms',
+                'Ensure code examples follow industry best practices'
+            ],
+            'health sciences': [
+                'Use Canadian healthcare examples and guidelines',
+                'Reference current Health Canada policies and research',
+                'Include examples from various healthcare settings',
+                'Ensure compliance with patient privacy and safety standards'
+            ],
+            'engineering': [
+                'Use Canadian engineering standards and examples',
+                'Reference current codes and professional engineering practices',
+                'Include examples from various engineering disciplines',
+                'Ensure compliance with safety and regulatory standards'
+            ]
+        };
+
+        return requirementsMap[subjectArea] || [
+            'Use Canadian examples and current practices',
+            'Reference authoritative sources and recent research',
+            'Include examples from various contexts and applications',
+            'Ensure compliance with professional and academic standards'
+        ];
     }
 
     needsInteractiveContent(outcome) {
@@ -103,13 +165,215 @@ class ProductionBlueprintGenerator {
         return `[[style:request]]\n\n<table>\n<colgroup>\n<col style="width: 27%" />\n<col style="width: 72%" />\n</colgroup>\n<thead>\n<tr>\n<th colspan="2"><strong>Interactive Request</strong></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><strong>Interactive Type</strong></td>\n<td><strong>H5P -- Interactive Quiz</strong></td>\n</tr>\n<tr>\n<td><p><strong>Activity Details</strong></p>\n<p><strong>&#x2610;</strong> Details below ticket</p></td>\n<td><p><em>Create comprehensive quiz using H5P in D2L Brightspace Creator+</em></p>\n<p>${topicSpecificQuiz.description}</p></td>\n</tr>\n<tr>\n<td><strong>Graphics & Media Support</strong></td>\n<td>Yes <em>${topicSpecificQuiz.mediaSupport}</em></td>\n</tr>\n<tr>\n<td><p><strong>Text Version</strong></p>\n<p><em>Add click to reveal for accessibility?</em></p></td>\n<td><strong>Yes</strong> <em>Provide accessible alternative with screen reader compatibility</em></td>\n</tr>\n</tbody>\n</table>\n\n[[/style]]\n\n`;
     }
 
-    getTopicSpecificReadingSources(activity) {
+    async getAICuratedReadingSources(activity) {
         const activityTitle = activity.title?.toLowerCase() || '';
         const activityContent = activity.content?.toLowerCase() || '';
         const searchText = (activityTitle + ' ' + activityContent).toLowerCase();
         
-        // Municipal Services readings
-        if (searchText.includes('municipal services') || searchText.includes('service delivery') || searchText.includes('summarize municipal')) {
+        // Initialize search service for AI curation
+        const SearchService = require('./search-service');
+        const searchService = new SearchService();
+        
+        try {
+            // Use AI to curate specific articles based on the topic
+            const curatedSources = await this.curateSpecificSources(searchText, searchService);
+            return curatedSources;
+        } catch (error) {
+            console.log('AI curation failed, using enhanced static sources:', error.message);
+            return this.getEnhancedStaticSources(activity);
+        }
+    }
+
+    async curateSpecificSources(searchText, searchService) {
+        const courseContext = this.currentCourse?.courseContext || {};
+        const subjectArea = courseContext.subjectArea || 'general';
+        
+        // Use dynamic topic detection based on course context
+        const { searchQuery, topicFocus } = this.buildContextualSearchQuery(searchText, subjectArea);
+
+        // Search for current, authoritative sources with subject-specific parameters
+        const searchResults = await searchService.searchForCourseContent(searchQuery, subjectArea, {
+            maxResults: 8,
+            location: 'Canada',
+            timeframe: '2023 2024',
+            sources: this.getSubjectSources(subjectArea),
+            courseContext: subjectArea
+        });
+
+        // Format the curated sources
+        return this.formatCuratedSources(searchResults, topicFocus);
+    }
+
+    buildContextualSearchQuery(searchText, subjectArea) {
+        // Generic topic detection that works for any subject
+        const searchLower = searchText.toLowerCase();
+        
+        // Extract key concepts from the search text
+        const concepts = this.extractKeyConcepts(searchLower, subjectArea);
+        
+        if (concepts.length > 0) {
+            const searchQuery = `${concepts.join(' ')} ${subjectArea} Canada academic research 2023 2024`;
+            const topicFocus = concepts[0]; // Use the first concept as primary focus
+            return { searchQuery, topicFocus };
+        }
+        
+        // Fallback to general search
+        return {
+            searchQuery: `${subjectArea} best practices Canada 2024`,
+            topicFocus: `general ${subjectArea}`
+        };
+    }
+
+    extractKeyConcepts(searchText, subjectArea) {
+        const concepts = [];
+        
+        // Subject-specific concept extraction
+        if (subjectArea === 'municipal administration') {
+            if (searchText.includes('municipal services') || searchText.includes('service delivery')) {
+                concepts.push('municipal services', 'service delivery');
+            }
+            if (searchText.includes('emerging issues') || searchText.includes('management challenges')) {
+                concepts.push('emerging issues', 'management challenges');
+            }
+            if (searchText.includes('political acumen') || searchText.includes('political skills')) {
+                concepts.push('political acumen', 'public sector ethics');
+            }
+            if (searchText.includes('citizen engagement') || searchText.includes('engaging citizens')) {
+                concepts.push('citizen engagement', 'public participation');
+            }
+        } else if (subjectArea === 'business management') {
+            if (searchText.includes('strategic planning') || searchText.includes('strategy')) {
+                concepts.push('strategic planning', 'business strategy');
+            }
+            if (searchText.includes('leadership') || searchText.includes('management')) {
+                concepts.push('leadership', 'management practices');
+            }
+            if (searchText.includes('marketing') || searchText.includes('promotion')) {
+                concepts.push('marketing', 'business promotion');
+            }
+        } else if (subjectArea === 'accounting') {
+            if (searchText.includes('financial') || searchText.includes('reporting')) {
+                concepts.push('financial reporting', 'accounting standards');
+            }
+            if (searchText.includes('tax') || searchText.includes('taxation')) {
+                concepts.push('taxation', 'tax compliance');
+            }
+            if (searchText.includes('audit') || searchText.includes('auditing')) {
+                concepts.push('auditing', 'audit procedures');
+            }
+        }
+        // Add more subject areas as needed
+        
+        // Generic concept extraction if no specific concepts found
+        if (concepts.length === 0) {
+            const words = searchText.split(' ').filter(word => word.length > 3);
+            concepts.push(...words.slice(0, 3)); // Take first 3 meaningful words
+        }
+        
+        return concepts;
+    }
+
+    getSubjectSources(subjectArea) {
+        const sourcesMap = {
+            'municipal administration': 'government municipal education academic',
+            'business management': 'business government statistics education',
+            'accounting': 'professional government regulatory education',
+            'computer science': 'technical documentation tutorial education',
+            'health sciences': 'medical government research education',
+            'engineering': 'professional technical government education'
+        };
+        
+        return sourcesMap[subjectArea] || 'government education academic';
+    }
+
+    formatCuratedSources(searchResults, topicFocus) {
+        // The search service returns a formatted string, not a structured object
+        if (!searchResults || typeof searchResults !== 'string') {
+            return this.getEnhancedStaticSources({ title: topicFocus });
+        }
+
+        // Extract the search summary and enhance it for educational use
+        let formattedSources = `**AI-Curated Current Sources on ${this.getTopicDisplayName(topicFocus)}:**\n\n`;
+        
+        // Add the search results content
+        formattedSources += searchResults;
+        
+        // Add educational focus areas
+        formattedSources += `\n\n**Educational Focus Areas**: ${this.getTopicFocusAreas(topicFocus)}`;
+        
+        // Add reading guidance
+        const courseContext = this.currentCourse?.courseContext || {};
+        const subjectArea = courseContext.subjectArea || 'general';
+        formattedSources += `\n\n**Reading Strategy**: Focus on Canadian examples, current challenges, and evidence-based practices. Look for specific data, case studies, and implementation strategies that apply to ${subjectArea} contexts.`;
+
+        return { primarySources: formattedSources };
+    }
+
+    getTopicDisplayName(topicFocus) {
+        const displayNames = {
+            'municipal services': 'Municipal Service Delivery',
+            'emerging issues': 'Municipal Challenges and Emerging Issues',
+            'service delivery strategies': 'Service Delivery Strategies',
+            'political acumen': 'Political Acumen in Municipal Administration',
+            'government planning': 'Municipal Planning and Sustainability',
+            'citizen engagement': 'Citizen Engagement in Municipal Government',
+            'community planning': 'Community Planning Processes',
+            'general municipal': 'Municipal Administration'
+        };
+        const courseContext = this.currentCourse?.courseContext || {};
+        const subjectArea = courseContext.subjectArea || 'general';
+        return displayNames[topicFocus] || this.capitalizeSubject(subjectArea);
+    }
+
+    getTopicFocusAreas(topicFocus) {
+        const focusAreas = {
+            'municipal services': 'Service categorization, delivery models, public vs. private provision, cost-effectiveness analysis',
+            'emerging issues': 'Climate adaptation, fiscal sustainability, demographic changes, technology integration, governance innovation',
+            'service delivery strategies': 'Public-private partnerships, shared services, regionalization, digital transformation, performance measurement',
+            'political acumen': 'Political-administrative interface, ethical decision-making, stakeholder management, communication strategies',
+            'government planning': 'Integrated planning approaches, climate adaptation, sustainable development, environmental assessment',
+            'citizen engagement': 'Participation methods, digital platforms, inclusive engagement, consultation design, feedback integration',
+            'community planning': 'Participatory planning, consensus building, implementation strategies, monitoring and evaluation',
+            'general municipal': 'Municipal governance, public administration principles, Canadian municipal context'
+        };
+        const courseContext = this.currentCourse?.courseContext || {};
+        const subjectArea = courseContext.subjectArea || 'general';
+        return focusAreas[topicFocus] || `${this.capitalizeSubject(subjectArea)} principles and practices`;
+    }
+
+    getEnhancedStaticSources(activity) {
+        const courseContext = this.currentCourse?.courseContext || {};
+        const subjectArea = courseContext.subjectArea || 'general';
+        
+        // Use subject-specific templates for source generation
+        const SubjectActivityTemplates = require('./subject-activity-templates');
+        const templates = new SubjectActivityTemplates();
+        const template = templates.getActivityTemplate(subjectArea, 'reading');
+        
+        return {
+            primarySources: `**Essential Readings for ${this.capitalizeSubject(subjectArea)}:**
+
+1. **Academic Foundation**:
+   ${template.sources.map(source => `- ${source}`).join('\n   ')}
+
+2. **Professional Resources**:
+   ${template.examples.map(example => `- ${example}`).join('\n   ')}
+
+3. **Current Practice**:
+   - Recent industry reports and case studies
+   - Professional association publications
+   - Government and regulatory resources
+
+**Focus Areas**: ${template.instructions.join(', ')}`
+        };
+        
+        // Keep the old logic as fallback for municipal administration
+        const activityTitle = activity.title?.toLowerCase() || '';
+        const activityContent = activity.content?.toLowerCase() || '';
+        const searchText = (activityTitle + ' ' + activityContent).toLowerCase();
+        
+        // Only use hardcoded content for municipal administration
+        if (subjectArea === 'municipal administration' && (searchText.includes('municipal services') || searchText.includes('service delivery') || searchText.includes('summarize municipal'))) {
             return {
                 primarySources: `**Essential Readings on Municipal Services:**
 
@@ -507,8 +771,95 @@ Compose answers in your head or notes, then proceed with the assigned readings.`
     }
 
     generateDetailedOutcomeDescription(outcome) {
+        const courseContext = this.currentCourse?.courseContext || {};
+        const subjectArea = courseContext.subjectArea || 'general';
         const outcomeText = outcome.text.toLowerCase();
         
+        // Generate subject-specific descriptions
+        if (subjectArea === 'computer science') {
+            return this.generateComputerScienceDescription(outcome, outcomeText);
+        } else if (subjectArea === 'municipal administration') {
+            return this.generateMunicipalAdminDescription(outcome, outcomeText);
+        } else if (subjectArea === 'business management') {
+            return this.generateBusinessDescription(outcome, outcomeText);
+        } else if (subjectArea === 'accounting') {
+            return this.generateAccountingDescription(outcome, outcomeText);
+        } else {
+            return this.generateGenericDescription(outcome, outcomeText);
+        }
+    }
+
+    generateComputerScienceDescription(outcome, outcomeText) {
+        if (outcomeText.includes('programming terminology') || outcomeText.includes('explain')) {
+            return `Programming terminology forms the foundation of effective communication in software development. This learning outcome develops your understanding of essential programming concepts, vocabulary, and technical language used in Java programming and software development generally.
+
+You'll master key terms related to variables, data types, control structures, methods, and object-oriented programming concepts. Through hands-on examples and practical applications, you'll learn to use programming terminology accurately and communicate technical concepts clearly with other developers.
+
+This learning outcome prepares you for professional software development by establishing the vocabulary and conceptual framework necessary for advanced programming topics and effective collaboration in development teams.`;
+        } else if (outcomeText.includes('elementary programming') || outcomeText.includes('perform')) {
+            return `Elementary programming skills are the building blocks of software development. This learning outcome focuses on developing your ability to write basic Java programs that demonstrate fundamental programming concepts including variables, input/output operations, and simple calculations.
+
+You'll practice creating programs that solve real-world problems using proper Java syntax, coding conventions, and development tools. Through progressive exercises, you'll build confidence in writing, testing, and debugging simple programs while establishing good programming habits.
+
+This learning outcome provides the practical foundation for more advanced programming concepts by ensuring you can implement basic algorithms and understand how programs execute.`;
+        } else if (outcomeText.includes('debugging') || outcomeText.includes('troubleshoot')) {
+            return `Debugging and troubleshooting are essential skills for every programmer. This learning outcome develops your ability to identify, analyze, and resolve programming errors using systematic debugging techniques and development tools.
+
+You'll learn to use debugging tools effectively, interpret error messages, trace program execution, and apply logical problem-solving approaches to fix code issues. Through hands-on practice with common programming errors, you'll develop the analytical skills necessary for efficient troubleshooting.
+
+This learning outcome prepares you for professional software development by building the problem-solving skills and debugging techniques that are essential for maintaining and improving software systems.`;
+        } else if (outcomeText.includes('strings') || outcomeText.includes('mathematical')) {
+            return `String manipulation and mathematical operations are fundamental programming skills used in countless applications. This learning outcome develops your ability to create programs that process text data and perform mathematical calculations using Java's built-in libraries and methods.
+
+You'll explore string methods for text processing, mathematical functions for calculations, and learn to combine these capabilities to solve practical programming problems. Through project-based learning, you'll apply these skills to create useful programs that demonstrate real-world applications.
+
+This learning outcome builds essential programming capabilities that form the foundation for more complex applications involving data processing, user interfaces, and business logic.`;
+        } else if (outcomeText.includes('operators') || outcomeText.includes('decision')) {
+            return `Operators and decision statements enable programs to make choices and respond to different conditions. This learning outcome develops your understanding of comparison operators, logical operators, and conditional statements that control program flow.
+
+You'll learn to implement if-else statements, switch statements, and complex conditional logic to create programs that respond appropriately to user input and changing conditions. Through practical exercises, you'll master the logic and syntax needed for effective decision-making in programs.
+
+This learning outcome provides essential skills for creating interactive and responsive programs that can handle multiple scenarios and user requirements.`;
+        } else if (outcomeText.includes('repetition') || outcomeText.includes('loops')) {
+            return `Repetition structures (loops) are powerful programming constructs that enable efficient processing of data and automation of repetitive tasks. This learning outcome develops your ability to implement and control various types of loops in Java programs.
+
+You'll master for loops, while loops, and do-while loops, learning when to use each type and how to control loop execution effectively. Through hands-on programming exercises, you'll create programs that process arrays, validate input, and perform iterative calculations.
+
+This learning outcome builds essential programming skills for data processing, user interaction, and algorithm implementation that are fundamental to most software applications.`;
+        } else if (outcomeText.includes('methods') || outcomeText.includes('create')) {
+            return `Methods are the building blocks of well-organized, reusable code. This learning outcome develops your ability to design, implement, and use methods to create modular, maintainable Java programs.
+
+You'll learn method syntax, parameter passing, return values, and method overloading while practicing good software design principles. Through progressive projects, you'll create programs that demonstrate effective use of methods for code organization and reusability.
+
+This learning outcome establishes fundamental software design skills that are essential for creating professional-quality programs and collaborating effectively in development teams.`;
+        }
+        
+        return this.generateGenericDescription(outcome, outcomeText);
+    }
+
+    generateBusinessDescription(outcome, outcomeText) {
+        return `This learning outcome focuses on developing both theoretical understanding and practical skills in business management. Through a combination of research, analysis, and hands-on activities, you'll build competencies that are essential for effective business operations and strategic decision-making.
+
+The content emphasizes real-world application, current Canadian business examples, and practical skills that directly prepare you for business management careers. Each activity is designed to connect academic concepts with professional practice, ensuring you develop both knowledge and applied capabilities.`;
+    }
+
+    generateAccountingDescription(outcome, outcomeText) {
+        return `This learning outcome focuses on developing both theoretical understanding and practical skills in accounting and financial management. Through a combination of research, analysis, and hands-on activities, you'll build competencies that are essential for accurate financial reporting and compliance with Canadian accounting standards.
+
+The content emphasizes real-world application, current Canadian accounting practices, and practical skills that directly prepare you for accounting careers. Each activity is designed to connect academic concepts with professional practice, ensuring you develop both knowledge and applied capabilities.`;
+    }
+
+    generateGenericDescription(outcome, outcomeText) {
+        const courseContext = this.currentCourse?.courseContext || {};
+        const subjectArea = courseContext.subjectArea || 'general';
+        const targetAudience = courseContext.targetAudience || 'students';
+        
+        return `This learning outcome focuses on developing both theoretical understanding and practical skills in ${subjectArea}. Through a combination of research, analysis, and hands-on activities, you'll build competencies that are essential for effective professional practice in your field.
+
+The content emphasizes real-world application, current Canadian examples, and practical skills that directly prepare you for careers in ${subjectArea}. Each activity is designed to connect academic concepts with professional practice, ensuring you develop both knowledge and applied capabilities.`;
+    }
+
+    generateMunicipalAdminDescription(outcome, outcomeText) {
         if (outcomeText.includes('municipal services')) {
             return `Municipal services are the foundation of community life in Canada, encompassing everything from essential utilities to quality-of-life programs. This learning outcome will develop your expertise in categorizing and understanding the full spectrum of services that municipalities provide to their residents and businesses. You'll explore essential services (those legally required for public health and safety), infrastructure services (the physical systems supporting community function), and enhanced services (programs that improve quality of life).
 
@@ -678,7 +1029,7 @@ The activities in this step are designed to connect theoretical concepts with pr
         // Format based on activity type with production specifications
         switch (activity.type.toLowerCase()) {
             case 'reading':
-                content += this.formatProductionReadingActivity(activity);
+                content += await this.formatProductionReadingActivity(activity);
                 break;
             case 'infographic':
             case 'infographic_request':
@@ -732,9 +1083,9 @@ The activities in this step are designed to connect theoretical concepts with pr
         return typeMap[type] || type.charAt(0).toUpperCase() + type.slice(1);
     }
 
-    formatProductionReadingActivity(activity) {
-        // Get topic-specific reading sources based on activity content
-        const topicSpecificSources = this.getTopicSpecificReadingSources(activity);
+    async formatProductionReadingActivity(activity) {
+        // Get AI-curated, topic-specific reading sources with verified links
+        const topicSpecificSources = await this.getAICuratedReadingSources(activity);
         
         return `Why read?
 
@@ -1329,8 +1680,86 @@ This activity develops competencies essential for municipal administration caree
 
     generateOutcomeSummary(outcome) {
         const outcomeNumber = outcome.id.split('.')[0];
+        const courseContext = this.currentCourse?.courseContext || {};
+        const subjectArea = courseContext.subjectArea || 'general';
+        const targetAudience = courseContext.targetAudience || 'students';
+        const subjectDisplay = this.capitalizeSubject(subjectArea);
         
-        return `\n## LO${outcomeNumber} Summary\n\nIn this learning outcome, you explored the essential concepts related to ${outcome.text.toLowerCase()}. Through a combination of readings, analysis, interactive activities, and practical applications, you have developed both theoretical understanding and practical skills relevant to municipal administration careers.\n\n**Key Competencies Developed**:\n- Understanding of fundamental concepts and Canadian municipal context\n- Analytical skills for evaluating municipal policies and practices\n- Professional communication abilities for municipal administration settings\n- Critical thinking skills for addressing complex municipal challenges\n- Research and investigation capabilities using credible sources\n\n**Professional Application**: The knowledge and skills developed in this learning outcome directly prepare you for municipal administration careers by providing practical understanding of how Canadian municipalities operate, the challenges they face, and the strategies they use to serve their communities effectively.\n\n**Looking Ahead**: The concepts and analytical skills developed in this learning outcome provide the foundation for more advanced study of municipal governance, policy implementation, and strategic management in subsequent learning outcomes.\n\n`;
+        // Generate subject-specific competencies and applications
+        const competencies = this.getSubjectSpecificCompetencies(subjectArea);
+        const professionalApplication = this.getSubjectSpecificApplication(subjectArea, outcome.text);
+        const lookingAhead = this.getSubjectSpecificLookingAhead(subjectArea);
+        
+        return `\n## LO${outcomeNumber} Summary\n\nIn this learning outcome, you explored the essential concepts related to ${outcome.text.toLowerCase()}. Through a combination of readings, analysis, interactive activities, and practical applications, you have developed both theoretical understanding and practical skills relevant to ${subjectArea} careers.\n\n**Key Competencies Developed**:\n${competencies.map(comp => `- ${comp}`).join('\n')}\n\n**Professional Application**: ${professionalApplication}\n\n**Looking Ahead**: ${lookingAhead}\n\n`;
+    }
+
+    capitalizeSubject(subjectArea) {
+        return subjectArea.split(' ').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+    }
+
+    getSubjectSpecificCompetencies(subjectArea) {
+        const competencyMap = {
+            'computer science': [
+                'Programming fundamentals and software development principles',
+                'Problem-solving and algorithmic thinking skills',
+                'Technical communication and code documentation abilities',
+                'Debugging and troubleshooting capabilities',
+                'Understanding of software development best practices'
+            ],
+            'business management': [
+                'Strategic thinking and business analysis skills',
+                'Leadership and team management capabilities',
+                'Financial analysis and decision-making abilities',
+                'Communication and stakeholder management skills',
+                'Understanding of business operations and market dynamics'
+            ],
+            'accounting': [
+                'Financial reporting and analysis expertise',
+                'Understanding of accounting principles and standards',
+                'Compliance and regulatory knowledge',
+                'Attention to detail and accuracy in financial calculations',
+                'Professional communication of financial information'
+            ],
+            'municipal administration': [
+                'Understanding of fundamental concepts and Canadian municipal context',
+                'Analytical skills for evaluating municipal policies and practices',
+                'Professional communication abilities for municipal administration settings',
+                'Critical thinking skills for addressing complex municipal challenges',
+                'Research and investigation capabilities using credible sources'
+            ]
+        };
+        
+        return competencyMap[subjectArea] || [
+            `Understanding of fundamental concepts and principles in ${subjectArea}`,
+            `Analytical and critical thinking skills relevant to ${subjectArea}`,
+            `Professional communication abilities for ${subjectArea} contexts`,
+            `Problem-solving skills for addressing ${subjectArea} challenges`,
+            'Research and investigation capabilities using credible sources'
+        ];
+    }
+
+    getSubjectSpecificApplication(subjectArea, outcomeText) {
+        const applicationMap = {
+            'computer science': `The programming skills and technical knowledge developed in this learning outcome directly prepare you for software development careers by providing hands-on experience with coding, debugging, and problem-solving techniques essential for professional programming work.`,
+            'business management': `The strategic thinking and analytical skills developed in this learning outcome directly prepare you for business management careers by providing practical understanding of business operations, decision-making processes, and leadership strategies.`,
+            'accounting': `The financial analysis and reporting skills developed in this learning outcome directly prepare you for accounting careers by providing practical understanding of accounting principles, compliance requirements, and professional financial communication.`,
+            'municipal administration': `The knowledge and skills developed in this learning outcome directly prepare you for municipal administration careers by providing practical understanding of how Canadian municipalities operate, the challenges they face, and the strategies they use to serve their communities effectively.`
+        };
+        
+        return applicationMap[subjectArea] || `The knowledge and skills developed in this learning outcome directly prepare you for ${subjectArea} careers by providing practical understanding of professional practices, challenges, and strategies used in the field.`;
+    }
+
+    getSubjectSpecificLookingAhead(subjectArea) {
+        const lookingAheadMap = {
+            'computer science': `The programming concepts and problem-solving skills developed in this learning outcome provide the foundation for more advanced programming topics, software design patterns, and professional development practices in subsequent learning outcomes.`,
+            'business management': `The strategic thinking and analytical skills developed in this learning outcome provide the foundation for more advanced business strategy, organizational leadership, and management practices in subsequent learning outcomes.`,
+            'accounting': `The financial analysis and reporting skills developed in this learning outcome provide the foundation for more advanced accounting topics, auditing practices, and professional accounting standards in subsequent learning outcomes.`,
+            'municipal administration': `The concepts and analytical skills developed in this learning outcome provide the foundation for more advanced study of municipal governance, policy implementation, and strategic management in subsequent learning outcomes.`
+        };
+        
+        return lookingAheadMap[subjectArea] || `The concepts and skills developed in this learning outcome provide the foundation for more advanced study of ${subjectArea} principles, professional practices, and specialized applications in subsequent learning outcomes.`;
     }
 }
 

@@ -1,13 +1,38 @@
-# AI Curriculum Design System - Simplified Implementation
+# AI Curriculum Design System - Universal Implementation
 
-A proof-of-concept AI-powered curriculum design system that transforms course materials into structured educational blueprints and HTML learning objects.
+A production-ready AI-powered curriculum design system that transforms course materials from **any academic discipline** into structured educational blueprints and HTML learning objects with automatic subject-area adaptation.
 
 ## 🎯 Project Goals
 
-- **Automate curriculum design** using AI agents with educational expertise
+- **Automate curriculum design** using AI agents with educational expertise **for any subject**
 - **Process course materials** (PDFs, Word docs, PowerPoints) into structured content
+- **Generate subject-specific learning activities** with contextual resources and assessments
+- **Provide AI-powered web search** for current, authoritative sources
 - **Generate HTML learning objects** ready for LMS deployment via cmp-doc-converter
 - **Maintain educational quality** with built-in validation and review processes
+- **Support universal disciplines** from business to engineering to health sciences
+
+## 🌟 Universal Course Support
+
+**NEW**: The system now automatically adapts to any academic discipline!
+
+### Supported Disciplines
+- **Municipal Administration** - Government, policy, public sector
+- **Business Management** - Strategy, operations, marketing, finance  
+- **Accounting** - Financial reporting, taxation, auditing
+- **Computer Science** - Programming, web development, software engineering
+- **Health Sciences** - Nursing, medical practice, healthcare systems
+- **Engineering** - Design, technical standards, safety protocols
+- **And many more** - Automatic fallback for any subject area
+
+### Automatic Adaptations
+- **Subject Detection** - Extracts Program/Course from syllabus automatically
+- **Contextual Activities** - Generates discipline-appropriate learning experiences
+- **Relevant Sources** - Curates authoritative resources for each subject
+- **Professional Standards** - Applies subject-specific assessment criteria
+- **Current Content** - AI-powered web search for up-to-date information
+
+📖 **See [COURSE-GENERALIZATION-GUIDE.md](COURSE-GENERALIZATION-GUIDE.md) for complete details**
 
 ## 🏗️ Architecture Overview
 

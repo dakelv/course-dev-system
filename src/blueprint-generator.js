@@ -4,6 +4,8 @@ const DocumentProcessor = require('./document-processor');
 const AgentService = require('./agent-service');
 const SearchService = require('./search-service');
 const ProductionBlueprintGenerator = require('./production-blueprint-generator');
+const CourseContextExtractor = require('./course-context-extractor');
+const SubjectActivityTemplates = require('./subject-activity-templates');
 
 class BlueprintGenerator {
     constructor() {
@@ -12,6 +14,8 @@ class BlueprintGenerator {
         this.agentService = new AgentService();
         this.searchService = new SearchService();
         this.productionGenerator = new ProductionBlueprintGenerator();
+        this.courseContextExtractor = new CourseContextExtractor();
+        this.activityTemplates = new SubjectActivityTemplates();
     }
 
     async generateCourseBlueprint(courseId, options = {}) {
@@ -30,22 +34,26 @@ class BlueprintGenerator {
                 throw new Error('No course content available for processing');
             }
 
-            // Step 2: Execute Phase A agents
+            // Step 2: Extract course context for generalization
+            const courseContext = this.courseContextExtractor.extractCourseContext(courseContent);
+            courseContent.courseContext = courseContext;
+
+            // Step 3: Execute Phase A agents
             const phaseAResults = await this.executePhaseA(courseContent, options);
 
-            // Step 3: Save Phase A results
+            // Step 4: Save Phase A results
             await this.savePhaseResults(courseId, 'A', phaseAResults);
 
-            // Step 4: Execute Phase B agents (Activity Design)
+            // Step 5: Execute Phase B agents (Activity Design)
             const phaseBResults = await this.executePhaseB(courseContent, phaseAResults, options);
 
-            // Step 5: Save Phase B results
+            // Step 6: Save Phase B results
             await this.savePhaseResults(courseId, 'B', phaseBResults);
 
-            // Step 6: Generate enhanced blueprint with Phase B integration
+            // Step 7: Generate enhanced blueprint with Phase B integration
             const blueprint = await this.generateEnhancedBlueprint(courseContent, phaseAResults, phaseBResults);
 
-            // Step 7: Save blueprint
+            // Step 8: Save blueprint
             await this.saveBlueprint(courseId, blueprint);
 
             const duration = Date.now() - startTime;
@@ -212,6 +220,11 @@ class BlueprintGenerator {
             nextSteps: this.generateEnhancedNextSteps(phaseAResults, phaseBResults)
         };
 
+        // Add course context if available
+        if (courseContent.courseContext) {
+            blueprint.courseContext = courseContent.courseContext;
+        }
+
         return blueprint;
     }
 
@@ -250,7 +263,12 @@ class BlueprintGenerator {
     }
 
     extractCourseTitle(courseContent) {
-        // Try to extract from syllabus first
+        // Use the course context extractor for consistency
+        if (courseContent.courseContext) {
+            return courseContent.courseContext.title;
+        }
+        
+        // Fallback to original logic
         if (courseContent.syllabus?.content?.text) {
             const titleMatch = courseContent.syllabus.content.text.match(/^([A-Z]{2,4}[-\s]\d{3}[:\s]+.+?)$/m);
             if (titleMatch) {
@@ -258,11 +276,16 @@ class BlueprintGenerator {
             }
         }
 
-        // Fallback to course ID
         return courseContent.courseId || 'Unknown Course';
     }
 
     extractCredits(courseContent) {
+        // Use the course context extractor for consistency
+        if (courseContent.courseContext) {
+            return courseContent.courseContext.credits;
+        }
+        
+        // Fallback to original logic
         if (courseContent.syllabus?.content?.text) {
             const creditMatch = courseContent.syllabus.content.text.match(/(\d+)\s*credit/i);
             if (creditMatch) {
@@ -273,6 +296,12 @@ class BlueprintGenerator {
     }
 
     extractDuration(courseContent) {
+        // Use the course context extractor for consistency
+        if (courseContent.courseContext) {
+            return courseContent.courseContext.duration;
+        }
+        
+        // Fallback to original logic
         if (courseContent.syllabus?.content?.text) {
             const durationMatch = courseContent.syllabus.content.text.match(/(\d+)\s*week/i);
             if (durationMatch) {
@@ -318,7 +347,13 @@ class BlueprintGenerator {
             doc.fileName.toLowerCase().includes('outline')
         );
 
-        // Step 2: Find the outcomes and steps document (secondary source for learning steps)
+        // Step 2: Find any document that might contain learning outcomes
+        const outlineDoc = courseContent.documents.find(doc => 
+            doc.fileName.toLowerCase().includes('outline') ||
+            doc.fileName.toLowerCase().includes('syllabus')
+        );
+
+        // Step 3: Find the outcomes and steps document (secondary source for learning steps)
         const outcomesStepsDoc = courseContent.documents.find(doc => 
             doc.fileName.toLowerCase().includes('outcome') && 
             doc.fileName.toLowerCase().includes('steps') &&
@@ -326,9 +361,10 @@ class BlueprintGenerator {
         );
 
         console.log('Primary source (syllabus outline):', syllabusOutlineDoc?.fileName || 'Not found');
+        console.log('Alternative source (outline):', outlineDoc?.fileName || 'Not found');
         console.log('Secondary source (outcomes-steps):', outcomesStepsDoc?.fileName || 'Not found');
 
-        // Step 3: Extract learning outcomes from syllabus outline document
+        // Step 4: Extract learning outcomes from syllabus outline document
         if (syllabusOutlineDoc) {
             const syllabusOutcomes = this.extractOutcomesFromSyllabus(syllabusOutlineDoc);
             console.log(`Extracted ${syllabusOutcomes.length} outcomes from syllabus outline`);
@@ -339,6 +375,21 @@ class BlueprintGenerator {
                     text: outcome,
                     bloomLevel: this.classifyBloomLevel(outcome),
                     source: syllabusOutlineDoc.fileName,
+                    learningSteps: []
+                });
+            });
+        }
+        // Step 5: Try alternative outline document if primary not found
+        else if (outlineDoc) {
+            const outlineOutcomes = this.extractOutcomesFromDocument(outlineDoc);
+            console.log(`Extracted ${outlineOutcomes.length} outcomes from outline document`);
+            
+            outlineOutcomes.forEach((outcome, index) => {
+                outcomes.push({
+                    id: `${index + 1}.0.0`,
+                    text: outcome,
+                    bloomLevel: this.classifyBloomLevel(outcome),
+                    source: outlineDoc.fileName,
                     learningSteps: []
                 });
             });
@@ -439,6 +490,65 @@ class BlueprintGenerator {
         return outcomes;
     }
 
+    extractOutcomesFromDocument(doc) {
+        const outcomes = [];
+        
+        // First try to extract from structured lists in the document
+        if (doc.content.structure && doc.content.structure.lists) {
+            const lists = doc.content.structure.lists;
+            console.log('Found structured lists:', lists.length);
+            
+            // Look for learning outcomes in the lists
+            for (const item of lists) {
+                if (typeof item === 'string' && 
+                    item.match(/^(Explain|Develop|Perform|Use|Create|Troubleshoot|Identify|Describe|Discuss|Apply|Illustrate|Analyze|Evaluate|Compare|Implement|Assess)/i) && 
+                    item.length > 10 && 
+                    item.endsWith('.')) {
+                    outcomes.push(item);
+                    console.log(`Found outcome from list: ${item}`);
+                }
+            }
+        }
+        
+        // If no outcomes found in structured lists, try text parsing
+        if (outcomes.length === 0) {
+            console.log('No outcomes in structured lists, trying text parsing...');
+            const text = doc.content.text || '';
+            const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+            let inLearningOutcomesSection = false;
+            
+            for (const line of lines) {
+                if (line.toLowerCase().includes('learning outcomes:')) {
+                    inLearningOutcomesSection = true;
+                    console.log('Found Learning Outcomes section in text');
+                    continue;
+                }
+                
+                if (inLearningOutcomesSection) {
+                    // Stop if we hit another section
+                    if (line.toLowerCase().includes('prepared') || 
+                        line.toLowerCase().includes('approved') ||
+                        line.toLowerCase().includes('assessment') ||
+                        line.toLowerCase().includes('page ')) {
+                        console.log('Stopping extraction at:', line.substring(0, 50));
+                        break;
+                    }
+                    
+                    // Extract learning outcomes that start with action verbs
+                    if (line.match(/^(Explain|Develop|Perform|Use|Create|Troubleshoot|Identify|Describe|Discuss|Apply|Illustrate|Analyze|Evaluate|Compare|Implement|Assess)/i) && 
+                        line.length > 10 && 
+                        line.endsWith('.')) {
+                        outcomes.push(line);
+                        console.log(`Found outcome from text: ${line}`);
+                    }
+                }
+            }
+        }
+        
+        console.log(`Extracted ${outcomes.length} outcomes from document:`, outcomes);
+        return outcomes;
+    }
+
     extractOutcomesFromText(text) {
         const outcomes = [];
         const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
@@ -502,19 +612,30 @@ class BlueprintGenerator {
 
     async generateLearningActivities(outcome, phaseAResults) {
         try {
+            // Extract course context - use the extracted context if available
+            const courseInfo = this.extractCourseContext(phaseAResults);
+            const subjectArea = courseInfo.subjectArea || 'general';
+            
+            // Get subject-specific activity templates
+            const activityTemplate = this.activityTemplates.getActivityTemplate(subjectArea, 'general');
+            
             // Create a comprehensive prompt for activity generation
             const courseContext = `
-Course: Municipal Administration (MUNI 201)
-Subject Area: Public Administration, Local Government
-Target Audience: Business Diploma students
-Course Level: Intermediate
+Course: ${courseInfo.title || 'Course'}
+Subject Area: ${subjectArea}
+Program: ${courseInfo.program || 'General Program'}
+Target Audience: ${courseInfo.targetAudience || 'Students'}
+Course Level: ${courseInfo.level || 'Intermediate'}
 
 Learning Outcome: "${outcome.text}"
 
 Learning Steps:
 ${outcome.learningSteps.map((step, index) => `${index + 1}. ${step.text}`).join('\n')}
 
-Context: This is a course about municipal administration covering local government services, governance, planning, and citizen engagement. Students need practical, real-world activities that connect theory to municipal administration practice.
+Subject-Specific Activity Types: ${activityTemplate.activities ? activityTemplate.activities.join(', ') : 'Various learning activities'}
+Recommended Sources: ${activityTemplate.sources ? activityTemplate.sources.join(', ') : 'Academic and professional sources'}
+
+Context: Generate activities appropriate for ${subjectArea} and this course's learning objectives.
             `;
 
             const activityPrompt = `
@@ -524,7 +645,7 @@ Generate 4-5 diverse, engaging learning activities for each learning step. Each 
 
 1. Have a unique, descriptive title (not just repeating the learning step)
 2. Include detailed, actionable instructions
-3. Connect to real municipal administration scenarios
+3. Connect to real professional scenarios relevant to the subject area
 4. Build progressively in complexity
 5. Use varied activity types: readings, case studies, discussions, research, simulations, reflections, media creation, etc.
 6. Include at least one reading activity with specific academic sources, textbooks, or journal articles
@@ -532,7 +653,7 @@ Generate 4-5 diverse, engaging learning activities for each learning step. Each 
 
 For reading activities:
 - Suggest specific textbooks, journal articles, or government reports
-- Include Canadian municipal administration sources where possible
+- Include Canadian sources relevant to the subject area where possible
 - Mention library database access for journal articles
 - Provide specific chapter or page references when possible
 
@@ -565,7 +686,7 @@ CRITICAL INSTRUCTION: You MUST return ONLY valid JSON. No other text allowed.
 
 STRICT REQUIREMENTS:
 1. Return ONLY the JSON object - no explanations, no analysis, no recommendations
-2. Do NOT include markdown code blocks (triple backticks)
+2. Do NOT include markdown code blocks (triple backticks with json or triple backticks alone)
 3. Do NOT include any text before or after the JSON
 4. Start your response with { and end with }
 5. Fill the activities array with 4-5 activities per learning step
@@ -608,11 +729,14 @@ REQUIRED JSON FORMAT:
   ]
 }
 
-Generate 4-5 activities per learning step. Include diverse activity types: reading, case-study, research, discussion, infographic, presentation, simulation. Make activities specific to municipal administration with Canadian examples.
+Generate 4-5 activities per learning step. Include diverse activity types: reading, case-study, research, discussion, infographic, presentation, simulation. Make activities specific to the subject area with relevant Canadian examples.
             `;
 
             // Create a simplified JSON-only prompt
             const jsonPrompt = `Generate learning activities for: "${outcome.text}"
+
+Course Context: ${courseInfo.title || 'General Course'}
+Subject: ${courseInfo.subjectArea || 'General'}
 
 Learning Steps:
 ${outcome.learningSteps.map((step, index) => `${index + 1}. ${step.text}`).join('\n')}
@@ -643,8 +767,8 @@ Return ONLY this JSON structure with 4-5 activities per step:
                 inputData: { 
                     learningOutcome: outcome,
                     prompt: jsonPrompt,
-                    courseContext: 'Municipal Administration',
-                    targetAudience: 'Business Diploma students',
+                    courseContext: courseInfo.title || 'General Course',
+                    targetAudience: courseInfo.targetAudience || 'Students',
                     systemInstruction: 'Return ONLY valid JSON. No explanations. Start with { and end with }.'
                 },
                 processingHistory: [],
@@ -781,14 +905,46 @@ Return ONLY this JSON structure with 4-5 activities per step:
         const activities = [];
         const outcomeNumber = outcome.id.split('.')[0];
         
-        // Municipal Administration specific activity templates
+        // Subject-specific activity templates
+        const courseContext = this.currentCourse?.courseContext || {};
+        const subjectArea = courseContext.subjectArea || 'general';
+        
+        // Use subject-specific templates instead of hardcoded municipal content
+        const SubjectActivityTemplates = require('./subject-activity-templates');
+        const templates = new SubjectActivityTemplates();
+        
+        // Generate basic activities using templates
+        const basicActivities = [
+            {
+                type: 'reading',
+                title: `Foundational Reading for ${outcome.text}`,
+                description: `Read foundational materials relevant to ${outcome.text.toLowerCase()}`,
+                content: templates.getActivityTemplate(subjectArea, 'reading').sources.join(', ')
+            },
+            {
+                type: 'research',
+                title: `Research Project: ${outcome.text}`,
+                description: `Research and analyze current practices related to ${outcome.text.toLowerCase()}`,
+                content: `Conduct research on current practices and examples related to ${outcome.text.toLowerCase()}. Use credible sources and Canadian examples where possible.`
+            },
+            {
+                type: 'discussion',
+                title: `Discussion: ${outcome.text}`,
+                description: `Engage in structured discussion about ${outcome.text.toLowerCase()}`,
+                content: `Participate in structured discussion about key concepts related to ${outcome.text.toLowerCase()}. Prepare evidence-based arguments and engage respectfully with diverse perspectives.`
+            }
+        ];
+        
+        return basicActivities;
+        
+        // Keep the old municipal templates as fallback for municipal administration courses
         const municipalActivityTemplates = {
             'summarize municipal services': [
                 {
                     type: 'reading',
                     title: 'Foundations of Municipal Service Delivery',
                     description: 'Read foundational materials on municipal service types and frameworks',
-                    content: 'Read Chapter 3 "Municipal Service Delivery" from "Local Government in Canada" by Andrew Sancton (University of Toronto Press, 2015). Additionally, review the Federation of Canadian Municipalities (FCM) report "The State of Canada\'s Cities and Communities 2018" available at fcm.ca. Focus on service categorization frameworks and delivery models. Take notes on key service types and their characteristics for class discussion.'
+                    content: ''
                 },
                 {
                     type: 'research',
@@ -814,7 +970,7 @@ Return ONLY this JSON structure with 4-5 activities per step:
                     type: 'reading',
                     title: 'Municipal Services and Community Well-being',
                     description: 'Read academic research on municipal service impacts',
-                    content: 'Read the journal article "Municipal Service Quality and Citizen Satisfaction: Evidence from Canadian Cities" by Slack & Bird (2013) in Canadian Public Policy, Vol. 39, No. 2. Access through your library\'s database. Also review "The Economic Impact of Municipal Infrastructure" from the Canadian Infrastructure Report Card 2019 (available at canadainfrastructure.ca). Focus on the relationship between service quality and community outcomes.'
+                    content: ''
                 },
                 {
                     type: 'youtube_curation',
@@ -930,7 +1086,7 @@ Include immediate feedback for each question and final score with personalized f
                     type: 'reading',
                     title: 'Contemporary Municipal Challenges',
                     description: 'Read current research on municipal service challenges',
-                    content: 'Read "Fiscal Challenges Facing Canadian Municipalities" by Kitchen & Slack (2016) from the Institute on Municipal Finance and Governance, University of Toronto (available at munkschool.utoronto.ca/imfg). Also review the most recent "Municipal Study" by the Federation of Canadian Municipalities. Focus on identifying recurring themes and emerging challenges across different municipality sizes.'
+                    content: ''
                 },
                 {
                     type: 'news_analysis',
@@ -1103,7 +1259,7 @@ Include detailed feedback explaining the interconnected nature of municipal chal
             type: 'reading',
             title: `Academic Reading on ${stepText}`,
             description: `Read scholarly materials related to: ${stepText}`,
-            content: `Read relevant chapters from "Municipal Administration in Canada" by Andrew Sancton or "Local Government in a Global World" by Tindal & Tindal. Additionally, search for recent journal articles on "${stepText}" using your library's academic databases (JSTOR, ProQuest, or Google Scholar). Focus on Canadian municipal contexts where possible. Prepare a 1-page summary of key concepts and findings.`
+            content: ''
         });
         
         // Add one primary activity based on the step content
@@ -1265,27 +1421,53 @@ Political acumen is a critical skill for municipal administrators who must navig
         // Get current information to enhance the activity
         const currentInfo = await this.searchService.searchForActivityContent('reading', title, 'municipal administration');
         
-        return `## Objective
-${description || 'Develop foundational knowledge through guided reading'}
+        let readingRequirements = `## Required Readings
 
-## Required Readings
-1. **Primary Source**: Relevant chapter from "Municipal Administration in Canada" by Andrew Sancton (University of Toronto Press, 2015)
-2. **Secondary Source**: Recent journal article from Canadian Public Administration or Canadian Public Policy (access via library database)
-3. **Current Context**: Recent municipal government report or policy document
+• **"Municipal Administration in Canada"** by Andrew Sancton (University of Toronto Press, 2015)
+  - Chapter relevant to ${title.toLowerCase()}
+  - Available in library reserves
 
-${currentInfo ? `## Current Context\n${currentInfo}\n` : ''}
+• **Recent Journal Article** from Canadian Public Administration or Canadian Public Policy
+  - Search library database for articles on "${title.toLowerCase().replace(/academic reading on /i, '')}"
+  - Focus on articles published within the last 5 years
 
-## Instructions
-1. Read the assigned materials with focus on key concepts and Canadian examples
-2. Take notes on main themes, definitions, and practical applications
-3. Identify 3-5 key takeaways that relate to your local municipality
-4. Prepare a 1-page summary highlighting connections between theory and practice
+• **Government Reports and Policy Documents**
+  - Federation of Canadian Municipalities: https://fcm.ca/en/resources
+  - Statistics Canada Municipal Data: https://www.statcan.gc.ca/en/subjects-start/government
+  - Your local municipality's website (reports/policies section)
+`;
 
-## Deliverable
-Submit a 300-500 word reflection connecting the readings to current municipal challenges
+        // Add specific resources if we found relevant current information
+        if (currentInfo && currentInfo.includes('http')) {
+            readingRequirements += `\n• **Additional Current Resources**\n`;
+            // Extract URLs and format them properly
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            const urls = currentInfo.match(urlRegex);
+            if (urls) {
+                urls.forEach(url => {
+                    readingRequirements += `  - ${url}\n`;
+                });
+            }
+        }
 
-## Assessment Criteria
-Understanding of concepts (40%), Canadian context application (30%), Critical analysis (30%)`;
+        return `${readingRequirements}
+
+## Questions to Consider While Reading
+
+• How do the concepts in these readings apply to your local municipality?
+• What are the key differences between theory and practice in municipal administration?
+• Which challenges mentioned in the readings are most relevant to Canadian municipalities today?
+• How have municipal services evolved since the textbook was published?
+• What innovative approaches are municipalities using to address current challenges?
+• How do different municipality sizes (small, medium, large) approach these issues differently?
+
+## After Reading
+
+Prepare a 300-500 word reflection that:
+• Summarizes the key concepts from your readings
+• Connects theory to real-world examples from your community
+• Identifies one challenge and one opportunity for municipal administration
+• Cites all sources using APA format`;
     }
 
     async generateCaseStudyActivity(title, description) {
@@ -1731,6 +1913,68 @@ ${qualityCriteria.map(criteria => `- ${criteria}`).join('\n')}
         return this.generateEnhancedActivities(outcome);
     }
 
+    extractCourseContext(phaseAResults) {
+        // Use the course context if available from the course content
+        if (phaseAResults.courseContent && phaseAResults.courseContent.courseContext) {
+            return phaseAResults.courseContent.courseContext;
+        }
+        
+        // Fallback: Extract course context from Phase A results and course content
+        const courseInfo = {
+            title: 'Course',
+            subjectArea: 'general',
+            targetAudience: 'Students',
+            level: 'intermediate',
+            program: 'General Program'
+        };
+
+        // Try to extract from various Phase A agents
+        const curriculumArchitect = phaseAResults.agentResults?.['curriculum-architect'];
+        const instructionalDesigner = phaseAResults.agentResults?.['instructional-designer'];
+        const businessAnalyst = phaseAResults.agentResults?.['business-analyst'];
+
+        // Extract course title from agent outputs
+        if (curriculumArchitect?.output?.analysis) {
+            const titleMatch = curriculumArchitect.output.analysis.match(/course[:\s]+([^\n\.]+)/i);
+            if (titleMatch) {
+                courseInfo.title = titleMatch[1].trim();
+            }
+        }
+
+        // Extract subject area
+        if (instructionalDesigner?.output?.analysis) {
+            const subjectMatch = instructionalDesigner.output.analysis.match(/subject\s*area[:\s]+([^\n\.]+)/i);
+            if (subjectMatch) {
+                courseInfo.subjectArea = subjectMatch[1].trim();
+            }
+        }
+
+        // Extract target audience
+        if (businessAnalyst?.output?.analysis) {
+            const audienceMatch = businessAnalyst.output.analysis.match(/audience[:\s]+([^\n\.]+)/i);
+            if (audienceMatch) {
+                courseInfo.targetAudience = audienceMatch[1].trim();
+            }
+        }
+
+        // Extract course level
+        if (instructionalDesigner?.output?.recommendations) {
+            const levelRecommendations = instructionalDesigner.output.recommendations
+                .find(r => r.toLowerCase().includes('level') || r.toLowerCase().includes('difficulty'));
+            if (levelRecommendations) {
+                if (levelRecommendations.includes('beginner') || levelRecommendations.includes('introductory')) {
+                    courseInfo.level = 'Beginner';
+                } else if (levelRecommendations.includes('advanced')) {
+                    courseInfo.level = 'Advanced';
+                } else {
+                    courseInfo.level = 'Intermediate';
+                }
+            }
+        }
+
+        return courseInfo;
+    }
+
     classifyBloomLevel(text) {
         const lowerText = text.toLowerCase();
 
@@ -1936,6 +2180,7 @@ ${qualityCriteria.map(criteria => `- ${criteria}`).join('\n')}
         await this.fileManager.saveJSON(jsonPath, blueprint);
 
         // Save production-ready blueprint (detailed learning content like MATH127)
+        // Course context should already be in the blueprint
         const productionContent = await this.productionGenerator.generateProductionReadyContent(blueprint);
         const productionPath = this.fileManager.getCoursePath(courseId, `final-output/${courseId}-production-ready.md`);
         await this.fileManager.saveText(productionPath, productionContent);
@@ -2206,7 +2451,7 @@ ${blueprint.nextSteps.map(step => `1. ${step}`).join('\n')}
       learningTheoryApplication: output.recommendations?.find(r => r.includes('theory')) || 'Constructivist approach',
       scaffoldingStrategy: output.recommendations?.find(r => r.includes('scaffold')) || 'Progressive skill building',
       multiModalDesign: output.recommendations?.find(r => r.includes('modal')) || 'Diverse learning styles',
-      engagementStrategies: (typeof output.output === 'string' ? output.output.substring(0, 200) + '...' : output.output?.toString()?.substring(0, 200) + '...' || 'Interactive and collaborative activities'),
+      engagementStrategies: this.safeSubstring(output.output, 200) || 'Interactive and collaborative activities',
       udlCompliance: output.recommendations?.filter(r => r.includes('UDL') || r.includes('accessibility')) || [],
       qualityScore: instructionalDesigner.metadata?.qualityScore || 0.7
     };
@@ -2353,6 +2598,25 @@ ${blueprint.nextSteps.map(step => `1. ${step}`).join('\n')}
     ];
     
     return enhancedSteps;
+  }
+
+  // Helper method to safely handle string operations on different data types
+  safeSubstring(value, maxLength = 200) {
+    if (!value) return null;
+    
+    let stringValue;
+    
+    if (typeof value === 'string') {
+      stringValue = value;
+    } else if (typeof value === 'object' && value !== null) {
+      stringValue = JSON.stringify(value);
+    } else {
+      stringValue = String(value);
+    }
+    
+    return stringValue.length > maxLength 
+      ? stringValue.substring(0, maxLength) + '...' 
+      : stringValue;
   }
 }
 

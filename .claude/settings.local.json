@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(git add:*)",
+      "Bash(git config:*)",
+      "Bash(git push:*)",
+      "WebFetch(domain:fcm.ca)",
+      "WebFetch(domain:www.infrastructure.gc.ca)",
+      "WebFetch(domain:housing-infrastructure.canada.ca)",
+      "WebFetch(domain:www.canada.ca)",
+      "WebFetch(domain:www150.statcan.gc.ca)",
+      "WebFetch(domain:www.statcan.gc.ca)",
+      "WebFetch(domain:www.publications.gov.sk.ca)",
+      "WebFetch(domain:www.saskatchewan.ca)",
+      "WebFetch(domain:www.youtube.com)",
+      "WebSearch",
+      "WebFetch(domain:www.nfb.ca)"
+    ],
+    "deny": [],
+    "ask": [],
+    "defaultMode": "acceptEdits"
+  }
+}
